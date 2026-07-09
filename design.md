@@ -1,6 +1,6 @@
 # Design System & Theme Engine
 
-This document outlines the UI/UX architecture, visual aesthetics, theme properties, and dynamic styling engine of the Resume AI Builder.
+This document outlines the UI/UX architecture, visual aesthetics, theme properties, and dynamic styling engine of Resume Solutions.
 
 ---
 

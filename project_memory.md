@@ -1,11 +1,11 @@
-# Project Memory: Resume AI Builder
+# Project Memory: Resume Solutions
 
 This document serves as the single source of truth for the project's architecture, state management, database schema, and design patterns.
 
 ---
 
 ## 1. Project Overview
-The Resume AI Builder is a high-performance, premium web application designed to help users generate, edit, and optimize resumes with the help of AI. Unlike traditional builders that store templates in HTML or markdown, this application relies on a **structured JSON document** as the single source of truth. Every edit updates this JSON, and all previews, templates, and exports are dynamically rendered from it.
+The Resume Solutions builder is a high-performance, premium web application designed to help users create, edit, and optimize resumes with a clean, structured JSON document as the single source of truth. Every edit updates this JSON, and all previews, templates, and exports are dynamically rendered from it.
 
 ---
 
@@ -15,9 +15,9 @@ The application is built using a modern, scalable web stack:
 - **State Management**: Zustand (stores global resume state, theme, editor UI state, and user auth state).
 - **Forms**: React Hook Form + Zod (for type-safe schema validation).
 - **Backend & Auth**: Supabase (PostgreSQL, Auth with Magic Link/Google/GitHub, and Supabase Storage for PDFs/Images).
-- **AI Integrations**: Gemini 1.5 Flash (Primary) with automated fallback to Groq (Secondary) and OpenRouter (Tertiary) for maximum reliability and uptime.
-- **Drag & Drop**: `@dnd-kit` for reordering resume sections (Experience, Projects, Education, etc.).
-- **PDF Generation**: `react-to-print` (for high-fidelity HTML printing using the browser's print engine) and/or `@react-pdf/renderer`.
+- **AI Integrations**: Gemini 3.1 Flash Lite (Primary) with automated fallback to Groq (Secondary) and OpenRouter (Tertiary) for maximum reliability and uptime.
+- **Drag & Drop**: Native HTML5 Drag and Drop API for reordering resume sections (Experience, Projects, Education, etc.), avoiding React 19 library conflicts.
+- **PDF Generation**: Native browser printing mediated by `react-to-print` with custom print layout stylesheets.
 
 ---
 
@@ -174,7 +174,7 @@ export interface ResumeData {
 To prevent hitting free-tier limits, our AI gateway is designed with an automatic failover strategy.
 All client features request AI processing via single abstractions (`generateResume`, `rewriteSection`). Internally, the gateway does:
 
-1. **Attempt 1: Google Gemini 1.5 Flash** (via Google AI Studio). Extremely fast, accurate, and offers a generous free tier.
+1. **Attempt 1: Google Gemini 3.1 Flash Lite** (via Google AI Studio). Extremely fast, accurate, and offers a generous free tier.
 2. **Attempt 2 (Fallback): Groq** (using Llama 3/Qwen2.5/Gemma). Highly responsive and has generous throughput limits.
 3. **Attempt 3 (Fallback): OpenRouter** (aggregating Llama 3 Free, DeepSeek, Qwen). Guarantees the application remains functional.
 
