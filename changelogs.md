@@ -14,11 +14,14 @@ All notable changes to the Resume Solutions project will be documented in this f
 - **Direct jsPDF HTML Rendering**: Replaced browser printing fallback with direct client-side `jsPDF` HTML rendering (`doc.html()`) inside `editor-workspace.tsx`.
 - **Modern Color Support in PDF Engine**: Upgraded `html2canvas` to `html2canvas-pro` in root dependencies. Registered `html2canvas-pro` globally for `jsPDF` to parse CSS Color Module Level 4 spaces (like `oklch` and `lab`) without throwing exceptions.
 - **Transforms & Scaling Sandbox Isolation**: Added an `onclone` callback to `html2canvas` inside `handleDownloadPDF`. The callback clears the cloned sandbox document body and appends only the targeted `#resume-print-area` inside an unscaled, unpositioned wrapper. This strips any active viewport transforms (`transform: scale()`) and scroll-container clipping properties, resolving the blank pages generation bug.
-- **Natural Height Expansion in Sandbox**: Forced `height: auto` and `min-height: auto` on `#resume-print-area` and its rendering sandbox wrapper inside the `onclone` callback. This allows multi-page resumes to grow naturally beyond one page in the render sandbox, resolving the missing second page bug.
+- **Natural Height Expansion in Sandbox**: Forced `height: auto` and `min-height: auto` on `#resume-print-area` and its rendering sandbox wrapper inside the `onclone` callback. In addition, reset `clonedDoc.documentElement` and `clonedDoc.body` styles to `height: auto` and `overflow: visible` to clear parent scroll locks and enable multi-page PDF generation.
+- **Sandbox Wrapper Style Resets**: Reset `border`, `outline`, and `boxShadow` styles to `none` on the cloned sandbox wrapper and element inside `onclone` to prevent page outlines or borders from rendering on A4 page breaks.
 - **Stylesheet Safety Checks**: Implemented a stylesheet verification loop in `onclone` and on the main document before rendering that detects and disables broken or cross-origin stylesheets (which throw errors during hot-reload cycles in Next.js dev mode or due to CORS restrictions). This prevents the `unexpected EOF` SyntaxError from crashing PDF exports.
 - **A4 Points Dimensions Config**: Configured the `jsPDF` constructor to render in points (`unit: "pt"`, A4 width `595.28` points, representing standard `595.28 x 841.89` pt boundaries) to ensure proper multi-page splitting.
 - **Chrome Hiding during Print**: Added `print:hidden` utility classes to the editor workspace header and sidebar elements.
 - **Fallback Print Styling**: Updated the `@media print` rules in `ResumePreview.tsx` to target `@page { size: A4; margin: 0; }` for removing browser margin headers, and configured `.resume-print-container` with absolute positioning at `0, 0` and standard `210mm` width to prevent right-offset squeezing.
+- **Print Ancestor Scroll Unlock**: Configured `@media print` rules to force `overflow: visible !important` and `height: auto !important` on `html`, `body`, and all ancestor wrapper divs of the print container (targeted via `div:has(.resume-print-container)`). This clears the editor viewport's scroll lock and restores standard multi-page browser pagination.
+- **Print border/Outline Removal**: Configured print stylesheets to force `border: none !important`, `outline: none !important`, and `box-shadow: none !important` on `.resume-print-container` and `#resume-print-area` to prevent grey borders, outlines, or page-break shadows from rendering on fallback print PDFs.
 - **Candidate Header visibility in Print**: Removed generic `header` selectors from the print display-none list to prevent candidate name, job title, and contact headers from being hidden.
 
 ### Changed
@@ -129,4 +132,4 @@ All notable changes to the Resume Solutions project will be documented in this f
 - Added dynamic 3D tilting preview mockup and infinite 2D marquee layout scroller on homepage.
 - Updated primary Gemini model identifier to `gemini-3.1-flash-lite` in client configs and documentation.
 ### Fixed
-- Replaced outdated `Github` and `Linkedin` Lucide imports in template components with lightweight inline SVGs to fix compiler errors.
+- Replaced outdated `Github` and `LinkedIn` Lucide imports in template components with lightweight inline SVGs to fix compiler errors.

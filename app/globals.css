@@ -121,11 +121,15 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-zinc-950 text-zinc-100;
   }
+
   html {
     @apply font-sans scroll-smooth;
+    scrollbar-color: #27272a #09090b;
+    scrollbar-width: thin;
   }
 
   ::-webkit-scrollbar {
@@ -147,16 +151,4 @@
     background: #3b82f6;
   }
 
-  html {
-    scrollbar-color: #27272a #09090b;
-    scrollbar-width: thin;
-    overflow-x: hidden;
-    overflow-y: auto;
-    height: auto;
-  }
-  body {
-    overflow-x: hidden;
-    overflow-y: visible;
-    min-height: 100vh;
-  }
 }

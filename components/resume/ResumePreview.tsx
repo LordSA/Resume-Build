@@ -81,6 +81,13 @@ export default function ResumePreview() {
           margin: 0;
         }
         @media print {
+          html,
+          body,
+          div:has(.resume-print-container) {
+            overflow: visible !important;
+            height: auto !important;
+            min-height: auto !important;
+          }
           body * {
             visibility: hidden;
           }
@@ -121,8 +128,15 @@ export default function ResumePreview() {
             height: auto !important;
             transform: none !important;
             box-shadow: none !important;
+            border: none !important;
+            outline: none !important;
             margin: 0 !important;
             padding: 0 !important;
+          }
+          #resume-print-area {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
           }
           .resume-print-container * {
             visibility: visible !important;

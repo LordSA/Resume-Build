@@ -132,6 +132,13 @@ export default function EditorWorkspace({
           logging: false,
           letterRendering: true,
           onclone: (clonedDoc) => {
+            clonedDoc.documentElement.style.height = "auto";
+            clonedDoc.documentElement.style.minHeight = "auto";
+            clonedDoc.documentElement.style.overflow = "visible";
+            clonedDoc.body.style.height = "auto";
+            clonedDoc.body.style.minHeight = "auto";
+            clonedDoc.body.style.overflow = "visible";
+
             const el = clonedDoc.getElementById("resume-print-area");
             if (el) {
               el.style.height = "auto";
@@ -147,6 +154,14 @@ export default function EditorWorkspace({
               wrapper.style.left = "0px";
               wrapper.style.top = "0px";
               wrapper.style.transform = "none";
+              wrapper.style.border = "none";
+              wrapper.style.outline = "none";
+              wrapper.style.boxShadow = "none";
+
+              el.style.border = "none";
+              el.style.outline = "none";
+              el.style.boxShadow = "none";
+
               wrapper.appendChild(el);
               clonedDoc.body.appendChild(wrapper);
             }
