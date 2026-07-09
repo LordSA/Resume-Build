@@ -10,13 +10,13 @@ import EditorSidebar from "@/components/editor/EditorSidebar";
 import ResumePreview from "@/components/resume/ResumePreview";
 import { useAutosave } from "@/hooks/useAutosave";
 import { toast } from "react-hot-toast";
-import { 
-  ArrowLeft, 
-  Undo2, 
-  Redo2, 
-  Download, 
-  Check, 
-  Loader2 
+import {
+  ArrowLeft,
+  Undo2,
+  Redo2,
+  Download,
+  Check,
+  Loader2
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -35,16 +35,16 @@ export default function EditorWorkspace({
   initialResumeData,
   initialThemeConfig,
 }: EditorWorkspaceProps) {
-  const { 
-    title, 
+  const {
+    title,
     resumeData,
-    isSaving, 
-    history, 
-    historyIndex, 
-    setResume, 
+    isSaving,
+    history,
+    historyIndex,
+    setResume,
     setTitle,
-    undo, 
-    redo 
+    undo,
+    redo
   } = useResumeStore();
 
   const { themeConfig, setTheme } = useThemeStore();
@@ -66,116 +66,64 @@ export default function EditorWorkspace({
     }
 
     const loadToast = toast.loading("Generating PDF download...");
-    const disabledSheets: (HTMLStyleElement | HTMLLinkElement)[] = [];
-
     try {
-      const styles = Array.from(document.getElementsByTagName("style"));
-      styles.forEach((style) => {
-        try {
-          const text = style.textContent || "";
-          if (text.trim() === "" || text.includes("unexpected EOF")) {
-            style.disabled = true;
-            disabledSheets.push(style);
-          }
-        } catch (e) {
-          style.disabled = true;
-          disabledSheets.push(style);
-        }
-      });
-
-      const links = Array.from(document.getElementsByTagName("link"));
-      links.forEach((link) => {
-        if (link.rel === "stylesheet") {
-          try {
-            const sheet = link.sheet;
-            if (sheet) {
-              const rules = sheet.cssRules;
-              if (!rules || rules.length === 0) {
-                link.disabled = true;
-                disabledSheets.push(link);
-              }
-            } else {
-              link.disabled = true;
-              disabledSheets.push(link);
-            }
-          } catch (e) {
-            link.disabled = true;
-            disabledSheets.push(link);
-          }
-        }
-      });
-
       const { jsPDF } = await import("jspdf");
       const html2canvasPro = (await import("html2canvas-pro")).default;
       (window as any).html2canvas = html2canvasPro;
 
-      const doc = new jsPDF({
+      const pdf = new jsPDF({
         orientation: "portrait",
         unit: "pt",
         format: "a4",
       });
 
-      await doc.html(element, {
-        callback: function (pdf) {
-          pdf.save(`${title.trim() || "resume"}.pdf`);
-          toast.success("PDF downloaded successfully!", { id: loadToast });
+      const a4WidthPx = 794;
+      const a4HeightPx = 1123;
+
+      const canvas = await html2canvasPro(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+
+
+        ignoreElements: (node) => {
+          return node.nodeName === 'STYLE' || node.nodeName === 'LINK';
         },
-        margin: [0, 0, 0, 0],
-        autoPaging: "text",
-        x: 0,
-        y: 0,
-        width: 595.28,
-        windowWidth: 794,
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          logging: false,
-          letterRendering: true,
-          onclone: (clonedDoc) => {
-            clonedDoc.documentElement.style.height = "auto";
-            clonedDoc.documentElement.style.minHeight = "auto";
-            clonedDoc.documentElement.style.overflow = "visible";
-            clonedDoc.body.style.height = "auto";
-            clonedDoc.body.style.minHeight = "auto";
-            clonedDoc.body.style.overflow = "visible";
-
-            const el = clonedDoc.getElementById("resume-print-area");
-            if (el) {
-              el.style.height = "auto";
-              el.style.minHeight = "auto";
-
-              clonedDoc.body.innerHTML = "";
-              const wrapper = clonedDoc.createElement("div");
-              wrapper.style.width = "794px";
-              wrapper.style.height = "auto";
-              wrapper.style.minHeight = "1123px";
-              wrapper.style.background = "white";
-              wrapper.style.position = "absolute";
-              wrapper.style.left = "0px";
-              wrapper.style.top = "0px";
-              wrapper.style.transform = "none";
-              wrapper.style.border = "none";
-              wrapper.style.outline = "none";
-              wrapper.style.boxShadow = "none";
-
-              el.style.border = "none";
-              el.style.outline = "none";
-              el.style.boxShadow = "none";
-
-              wrapper.appendChild(el);
-              clonedDoc.body.appendChild(wrapper);
-            }
+        onclone: (clonedDoc) => {
+          const el = clonedDoc.getElementById("resume-print-area");
+          if (el) {
+            el.style.width = `${a4WidthPx}px`;
+            el.style.height = 'auto';
           }
         }
       });
+
+      const imgData = canvas.toDataURL("image/jpeg", 1.0);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      const imgProps = pdf.getImageProperties(imgData);
+      const imgHeightInPdf = (imgProps.height * pdfWidth) / imgProps.width;
+
+      let heightLeft = imgHeightInPdf;
+      let position = 0;
+
+      pdf.addImage(imgData, "JPEG", 0, position, pdfWidth, imgHeightInPdf);
+      heightLeft -= pdfHeight;
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeightInPdf;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, position, pdfWidth, imgHeightInPdf);
+        heightLeft -= pdfHeight;
+      }
+
+      pdf.save(`${title.trim() || "resume"}.pdf`);
+      toast.success("PDF downloaded successfully!", { id: loadToast });
+
     } catch (err) {
       console.error(err);
       toast.error("Direct PDF download failed, opening print dialog...", { id: loadToast });
       window.print();
-    } finally {
-      disabledSheets.forEach((sheet) => {
-        sheet.disabled = false;
-      });
     }
   };
 
@@ -240,7 +188,7 @@ export default function EditorWorkspace({
         </div>
       </header>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}

@@ -57,19 +57,19 @@ export default function ResumePreview() {
       </div>
 
       <div className="flex-1 overflow-auto p-8 flex justify-center bg-zinc-900/40 scrollbar-thin print:p-0 print:bg-white print:overflow-visible">
-        <div 
+        <div
           className="resume-print-container shadow-2xl origin-top transition-transform duration-75 print:shadow-none print:transform-none shrink-0"
-          style={{ 
+          style={{
             transform: `scale(${previewZoom})`,
             width: "794px",
             minHeight: "1123px",
           }}
         >
           <div id="resume-print-area" className="w-full h-full bg-white text-zinc-900">
-            <TemplateRenderer 
-              data={resumeData} 
-              template={template} 
-              theme={themeConfig} 
+            <TemplateRenderer
+              data={resumeData}
+              template={template}
+              theme={themeConfig}
             />
           </div>
         </div>
@@ -77,7 +77,7 @@ export default function ResumePreview() {
 
       <style jsx global>{`
         @page {
-          size: A4;
+          size: A4 potrait;
           margin: 0;
         }
         @media print {
@@ -87,6 +87,7 @@ export default function ResumePreview() {
             overflow: visible !important;
             height: auto !important;
             min-height: auto !important;
+            background-color: white !important;
           }
           body * {
             visibility: hidden;
@@ -98,30 +99,13 @@ export default function ResumePreview() {
             display: none !important;
           }
           body {
-            background-color: white !important;
             padding: 0 !important;
             margin: 0 !important;
           }
-          .print\:p-0 {
-            padding: 0 !important;
-          }
-          .print\:bg-white {
-            background: white !important;
-            background-color: white !important;
-          }
-          .print\:overflow-visible {
-            overflow: visible !important;
-          }
-          .print\:shadow-none {
-            box-shadow: none !important;
-          }
-          .print\:transform-none {
-            transform: none !important;
-          }
-          
+
           .resume-print-container {
             visibility: visible !important;
-            position: absolute !important;
+            position: relative !important;
             left: 0 !important;
             top: 0 !important;
             width: 210mm !important;
@@ -137,9 +121,19 @@ export default function ResumePreview() {
             border: none !important;
             outline: none !important;
             box-shadow: none !important;
+            background: white !important;
           }
           .resume-print-container * {
             visibility: visible !important;
+          }
+          .page-break-avoid {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+
+          .page-break-before {
+            page-break-before: always !important;
+            break-before: page !important;
           }
         }
       `}</style>
