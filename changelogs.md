@@ -13,13 +13,17 @@ All notable changes to the Resume Solutions project will be documented in this f
 - **Magic-Link Signup Flow**: Simplified signup in `signup/page.tsx` to directly send a confirmation link without asking for an OTP code immediately. Users are pushed to `/verify-email` upon click.
 - **Direct jsPDF HTML Rendering**: Replaced browser printing fallback with direct client-side `jsPDF` HTML rendering (`doc.html()`) inside `editor-workspace.tsx`.
 - **Modern Color Support in PDF Engine**: Upgraded `html2canvas` to `html2canvas-pro` in root dependencies. Registered `html2canvas-pro` globally for `jsPDF` to parse CSS Color Module Level 4 spaces (like `oklch` and `lab`) without throwing exceptions.
+- **Transforms & Scaling Sandbox Isolation**: Added an `onclone` callback to `html2canvas` inside `handleDownloadPDF`. The callback clears the cloned sandbox document body and appends only the targeted `#resume-print-area` inside an unscaled, unpositioned wrapper. This strips any active viewport transforms (`transform: scale()`) and scroll-container clipping properties, resolving the blank pages generation bug.
+- **Stylesheet Safety Checks**: Implemented a stylesheet verification loop in `onclone` that detects and disables broken or cross-origin stylesheets (which throw errors during hot-reload cycles in Next.js dev mode or due to CORS restrictions). This prevents the `unexpected EOF` SyntaxError from crashing PDF exports.
+- **A4 Points Dimensions Config**: Configured the `jsPDF` constructor to render in points (`unit: "pt"`, A4 width `595.28` points, representing standard `595.28 x 841.89` pt boundaries) to ensure proper multi-page splitting.
 - **Chrome Hiding during Print**: Added `print:hidden` utility classes to the editor workspace header and sidebar elements.
 - **Fallback Print Styling**: Updated the `@media print` rules in `ResumePreview.tsx` to target `@page { size: A4; margin: 0; }` for removing browser margin headers, and configured `.resume-print-container` with absolute positioning at `0, 0` and standard `210mm` width to prevent right-offset squeezing.
+- **Candidate Header visibility in Print**: Removed generic `header` selectors from the print display-none list to prevent candidate name, job title, and contact headers from being hidden.
 
 ### Changed
 - **Auth Callback Redirect**: Updated `auth/callback/route.ts` to redirect to `/verify-email?confirmed=true` upon successful session verification, triggering the 3-second redirect countdown.
 - **Production Dependencies**: Swapped `"html2canvas"` for `"html2canvas-pro"` and registered `"jspdf"` in the project's root `package.json`.
-- Updated `project_memory.md` and `design.md` to record the new verify-email path, simplified signup mechanism, html2canvas-pro color engine, and print layout behaviors.
+- Updated `project_memory.md` and `design.md` to record the new verify-email path, simplified signup mechanism, html2canvas-pro color engine, DOM sandbox isolation, points page configurations, and print layout behaviors.
 
 ---
 

@@ -74,7 +74,7 @@ export default function EditorWorkspace({
 
       const doc = new jsPDF({
         orientation: "portrait",
-        unit: "mm",
+        unit: "pt",
         format: "a4",
       });
 
@@ -87,13 +87,41 @@ export default function EditorWorkspace({
         autoPaging: "text",
         x: 0,
         y: 0,
-        width: 210,
+        width: 595.28,
         windowWidth: 794,
         html2canvas: {
           scale: 2,
           useCORS: true,
           logging: false,
           letterRendering: true,
+          onclone: (clonedDoc) => {
+            const styleSheets = Array.from(clonedDoc.styleSheets);
+            styleSheets.forEach((sheet) => {
+              try {
+                const rules = sheet.cssRules;
+                if (!rules || rules.length === 0) {
+                  sheet.disabled = true;
+                }
+              } catch (e) {
+                sheet.disabled = true;
+              }
+            });
+
+            const el = clonedDoc.getElementById("resume-print-area");
+            if (el) {
+              clonedDoc.body.innerHTML = "";
+              const wrapper = clonedDoc.createElement("div");
+              wrapper.style.width = "794px";
+              wrapper.style.minHeight = "1123px";
+              wrapper.style.background = "white";
+              wrapper.style.position = "absolute";
+              wrapper.style.left = "0px";
+              wrapper.style.top = "0px";
+              wrapper.style.transform = "none";
+              wrapper.appendChild(el);
+              clonedDoc.body.appendChild(wrapper);
+            }
+          }
         }
       });
     } catch (err) {

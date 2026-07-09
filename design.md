@@ -89,8 +89,10 @@ The templates are implemented in `components/templates/`. Each component receive
 
 ## 6. PDF Rendering Engine
 - **Method**: Client-side jsPDF rendering engine (`doc.html()`) powered by `html2canvas-pro`.
-- **Features**: Generates printable PDF layouts preserving styles, margins, and custom fonts.
+- **Dimensions**: Rendered in points (`pt` unit, width `595.28` points, representing standard `595.28 x 841.89` pt A4 paper dimensions) to match native PDF page structures.
 - **Modern Color Support**: Integrates `html2canvas-pro` to support CSS Color Module Level 4 color syntax (such as `oklch`, `lab`, `oklab`, `lch`), avoiding parser crashes on modern Tailwind v4 files.
+- **Sandbox Isolation**: Leverages `onclone` to clean up the rendering sandbox DOM (body content is replaced and the target element is placed in an absolute, unscaled wrapper at `0, 0` of width `794px` and height `auto`). This disables parent scale transforms and scroll container clippings.
+- **Stylesheet Safety Verification**: Iterates over all stylesheets loaded in the sandbox and disables sheets that throw errors during `cssRules` reads (e.g. unfinished Turbopack hot-reload stylesheets or cross-origin stylesheets).
 - **Page Breaking**: Uses `autoPaging: "text"` configuration to split pages cleanly.
 - **Fallback**: Triggers browser print-to-pdf flow (`window.print()`) if dynamic import or canvas rendering fails.
 
@@ -110,4 +112,5 @@ Defined in `app/globals.css` under `@layer base`:
 To guarantee a pixel-perfect export via `window.print()` (when used as a fallback):
 - **Page Boundaries**: `@page { size: A4; margin: 0; }` removes default browser print titles, date headers, and URLs.
 - **A4 Scaling**: The container `.resume-print-container` is locked to a width of `210mm` and positioned absolutely at `0, 0` on the page to prevent clipping.
-- **Chrome Removal**: Sibling elements (`header`, `aside`, `.editor-sidebar`, `.print:hidden`) are completely hidden during printing via `display: none !important`. This forces the preview pane to expand to the full width of the document workspace.
+- **Chrome Removal**: Sibling elements (`aside`, `.editor-sidebar`, `.print:hidden`) are completely hidden during printing via `display: none !important`. This forces the preview pane to expand to the full width of the document workspace.
+- **Candidate Header Visibility**: The generic `header` tag selector is omitted from the print display-none rules, ensuring candidate name, job title, and contact elements are fully rendered.

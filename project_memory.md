@@ -18,7 +18,7 @@ The application is built using a modern, scalable web stack:
 - **File Storage**: Supabase Storage (`resume-assets` bucket) for profile photos and custom font files.
 - **AI Integrations**: Gemini 3.1 Flash Lite (Primary) with automated fallback to Groq (Secondary) and OpenRouter (Tertiary) for maximum reliability and uptime.
 - **Drag & Drop**: Native HTML5 Drag and Drop API for reordering resume sections (Experience, Projects, Education, etc.), avoiding React 19 library conflicts.
-- **PDF Generation**: Client-side jsPDF rendering engine (`doc.html()`) powered by `html2canvas-pro` (to support CSS Color Module Level 4 spaces like OKLCH/lab without parsing crashes), with page-break splitting (`autoPaging: "text"`) and native print dialog fallback.
+- **PDF Generation**: Client-side jsPDF rendering engine (`doc.html()`) configured in points (`pt` unit, `595.28 x 841.89` A4 size) and powered by `html2canvas-pro` (supporting CSS Color Module Level 4 spaces like OKLCH/lab without parsing crashes). Utilizes dynamic DOM isolation in the `onclone` sandbox (clearing the cloned body, placing the target element in an unscaled absolute wrapper, and disabling broken/cross-origin stylesheets) to bypass parser crashes and strip active transforms/clippings, with page-break splitting (`autoPaging: "text"`) and print dialog fallback.
 
 ---
 
@@ -180,7 +180,9 @@ All client features request AI processing via single abstractions (`generateResu
 ## 7. PDF Generation
 The download system targets the `.resume-print-container` element inside `ResumePreview.tsx`:
 - **Engine**: Dynamic client-side `jsPDF` HTML renderer (`doc.html()`) registered with custom global `html2canvas-pro` resolver.
-- **Features**: Generates high-fidelity printable layouts preserving styles, margins, and custom fonts. Handles CSS Color Module Level 4 variables (e.g. OKLCH, lab) without parser crashes. Leverages `autoPaging: "text"` to break pages cleanly.
+- **Transforms & Scaling Sandbox**: Integrates an `onclone` sandbox callback to isolate the target element (placing it in an unscaled, absolute wrapper at `0, 0` of width `794px` and height `auto`). This removes parent scale matrices and overflow clips that cause blank output pages.
+- **Stylesheet Safety**: The `onclone` handler iterates over all stylesheets inside `clonedDoc` and sets `disabled = true` on any sheet that throws an error when accessing `cssRules` (common in hot-reload dev cycles with Turbopack or cross-origin stylesheets). This completely eliminates `unexpected EOF` parsing crashes.
+- **Dimensions & Format**: Configured in points (`pt` unit) with a width of `595.28` and windowWidth `794` to match standard A4 paper dimensions (`595.28 x 841.89` pt) cleanly.
 - **Fallback**: Native browser print dialog (`window.print()`). Expanded print styles ensure sidebars and headers are hidden via `display: none !important` and margins are removed via `@page { margin: 0; }` for a clean full-width print canvas.
 
 ---

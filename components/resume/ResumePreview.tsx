@@ -84,8 +84,6 @@ export default function ResumePreview() {
           body * {
             visibility: hidden;
           }
-          header, 
-          header *, 
           aside,
           .editor-sidebar,
           .print\:hidden,
