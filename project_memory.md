@@ -14,7 +14,7 @@ The application is built using a modern, scalable web stack:
 - **Frontend**: Next.js 16 (App Router) + React 19 + TypeScript + Tailwind CSS v4 + Shadcn UI + Framer Motion.
 - **State Management**: Zustand (stores global resume state, theme, editor UI state, and user auth state).
 - **Forms**: React Hook Form + Zod (for type-safe schema validation).
-- **Backend & Auth**: Supabase (PostgreSQL, Auth with Magic Link/Google/GitHub, and Supabase Storage for PDFs/Images).
+- **Backend & Auth**: Supabase (PostgreSQL, passwordless Email OTP verification, Google OAuth, and Supabase Storage for PDFs/Images).
 - **AI Integrations**: Gemini 3.1 Flash Lite (Primary) with automated fallback to Groq (Secondary) and OpenRouter (Tertiary) for maximum reliability and uptime.
 - **Drag & Drop**: Native HTML5 Drag and Drop API for reordering resume sections (Experience, Projects, Education, etc.), avoiding React 19 library conflicts.
 - **PDF Generation**: Native browser printing mediated by `react-to-print` with custom print layout stylesheets.
