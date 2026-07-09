@@ -2,24 +2,8 @@
 "use client";
 
 import Link from "next/link";
-import { Layout, Award, Zap, ArrowRight, ShieldCheck, Mail, Globe } from "lucide-react";
+import { Layout, Award, Zap, ArrowRight, ShieldCheck } from "lucide-react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
-
-const LogoSVG = () => (
-  <svg className="h-9 w-9 text-blue-500 shrink-0" viewBox="0 0 100 100" fill="none">
-    <defs>
-      <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#2563eb" />
-        <stop offset="100%" stopColor="#00ed64" />
-      </linearGradient>
-    </defs>
-    <rect x="20" y="20" width="45" height="60" rx="6" stroke="url(#logo-grad)" strokeWidth="6" fill="none" />
-    <rect x="35" y="30" width="45" height="60" rx="6" stroke="url(#logo-grad)" strokeWidth="6" fill="#09090b" opacity="0.9" />
-    <line x1="45" y1="45" x2="70" y2="45" stroke="url(#logo-grad)" strokeWidth="4" strokeLinecap="round" />
-    <line x1="45" y1="58" x2="65" y2="58" stroke="url(#logo-grad)" strokeWidth="4" strokeLinecap="round" />
-    <line x1="45" y1="71" x2="60" y2="71" stroke="url(#logo-grad)" strokeWidth="4" strokeLinecap="round" />
-  </svg>
-);
 
 const MockResumeCanvas = () => {
   const x = useMotionValue(200);
@@ -46,24 +30,24 @@ const MockResumeCanvas = () => {
       style={{ perspective: 1000 }} 
       onMouseMove={handleMouse}
       onMouseLeave={handleMouseLeave}
-      className="w-full max-w-2xl mt-12 mb-4 mx-auto select-none cursor-grab active:cursor-grabbing"
+      className="w-full max-w-2xl mt-12 mb-4 mx-auto select-none cursor-grab active:cursor-grabbing px-2 sm:px-0"
     >
       <motion.div
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        className="w-full rounded-2xl border border-zinc-800 bg-[#001e2b]/15 p-8 backdrop-blur-md shadow-2xl relative flex flex-col gap-6 text-left overflow-hidden group"
+        className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/10 p-5 sm:p-8 backdrop-blur-md shadow-2xl relative flex flex-col gap-6 text-left overflow-hidden group"
         whileHover={{ boxShadow: "0 0 35px rgba(59,130,246,0.12)" }}
         transition={{ type: "spring", stiffness: 150, damping: 22 }}
       >
-        <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-blue-500/10 to-[#00ed64]/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none duration-500" />
+        <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-blue-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none duration-500" />
 
         <div className="flex justify-between items-end border-b border-zinc-800 pb-5">
           <div className="flex flex-col gap-2">
-            <div className="h-6 w-44 bg-zinc-800/80 rounded" />
-            <div className="h-4 w-28 bg-zinc-850/80 rounded" />
+            <div className="h-6 w-32 sm:w-44 bg-zinc-800/80 rounded" />
+            <div className="h-4 w-20 sm:w-28 bg-zinc-850/80 rounded" />
           </div>
           <div className="flex flex-col gap-1.5 items-end">
-            <div className="h-3 w-32 bg-zinc-850/80 rounded" />
-            <div className="h-3 w-24 bg-zinc-850/80 rounded" />
+            <div className="h-3 w-24 sm:w-32 bg-zinc-850/80 rounded" />
+            <div className="h-3 w-16 sm:w-24 bg-zinc-850/80 rounded" />
           </div>
         </div>
 
@@ -123,7 +107,7 @@ export default function Home() {
   } as const;
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white font-sans flex flex-col selection:bg-blue-600/30 overflow-x-hidden relative">
+    <div className="min-h-screen bg-zinc-950 text-white font-sans flex flex-col selection:bg-blue-600/30 overflow-x-hidden relative max-w-full">
       {/* Background Gradient Orbs */}
       <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-blue-600/5 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-blue-900/5 blur-[120px] pointer-events-none" />
@@ -136,8 +120,15 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             className="flex items-center gap-2.5"
           >
-            <LogoSVG />
-            <span className="font-extrabold tracking-tight text-lg">Resume Solutions</span>
+            <img 
+              src="/logo.png" 
+              alt="Logo" 
+              className="h-8 w-auto opacity-95"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
+            <span className="font-extrabold tracking-tight text-lg text-white">Resume Solutions</span>
           </motion.div>
 
           <motion.div 
@@ -162,7 +153,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col items-center justify-center py-20 px-6 max-w-7xl mx-auto w-full z-10">
+      <main className="flex-1 flex flex-col items-center justify-center py-20 px-4 sm:px-6 max-w-7xl mx-auto w-full z-10 overflow-hidden">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -178,14 +169,14 @@ export default function Home() {
           
           <motion.p 
             variants={itemVariants}
-            className="text-zinc-400 text-base sm:text-lg max-w-xl leading-relaxed"
+            className="text-zinc-400 text-sm sm:text-base max-w-xl leading-relaxed"
           >
             Paste your experience, profile nodes, or education history. Our structural document editor refines, matches, and aligns it into pixel-perfect PDF resumes.
           </motion.p>
 
           <motion.div 
             variants={itemVariants}
-            className="flex flex-col sm:flex-row gap-4 mt-4 w-full sm:w-auto"
+            className="flex flex-col sm:flex-row gap-4 mt-4 w-full sm:w-auto px-4 sm:px-0"
           >
             <Link
               href="/signup"
@@ -208,15 +199,15 @@ export default function Home() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="w-full"
+          className="w-full overflow-hidden"
         >
           <MockResumeCanvas />
         </motion.div>
 
         {/* 2D Scrolling Marquee Slider */}
-        <div className="w-full overflow-hidden relative py-4 border-y border-zinc-900/60 my-16 bg-zinc-950/20">
-          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-zinc-950 to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-zinc-950 to-transparent z-10 pointer-events-none" />
+        <div className="w-full overflow-hidden relative py-4 border-y border-zinc-900/60 my-16 bg-zinc-950/20 max-w-full">
+          <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-zinc-955 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-zinc-955 to-transparent z-10 pointer-events-none" />
           <motion.div
             animate={{ x: [0, -1000] }}
             transition={{ repeat: Infinity, ease: "linear", duration: 25 }}
@@ -273,13 +264,20 @@ export default function Home() {
         </motion.div>
       </main>
 
-      {/* Redesigned Multi-Column Premium Footer */}
-      <footer className="border-t border-zinc-900 bg-zinc-950 py-16 text-zinc-400 z-10 w-full">
-        <div className="mx-auto max-w-7xl px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-left">
+      {/* Redesigned Multi-Column Premium Footer with strict padding bounds to avoid mobile horizontal scroll */}
+      <footer className="border-t border-zinc-900 bg-zinc-950 py-16 text-zinc-400 z-10 w-full overflow-hidden max-w-full">
+        <div className="mx-auto max-w-7xl px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-left w-full">
           
           <div className="flex flex-col gap-4 col-span-1 md:col-span-2">
             <div className="flex items-center gap-2.5">
-              <LogoSVG />
+              <img 
+                src="/logo.png" 
+                alt="Logo" 
+                className="h-8 w-auto opacity-95"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
+              />
               <span className="font-extrabold tracking-tight text-lg text-white">Resume Solutions</span>
             </div>
             <p className="text-zinc-500 text-xs leading-relaxed max-w-sm">
@@ -311,14 +309,14 @@ export default function Home() {
             <p className="text-zinc-500 text-xs leading-relaxed">
               If you found this tool useful, feel free to support our work and check out our other projects.
             </p>
-            {/* Custom styled Coffee Cup button linking to user's website */}
+            {/* Custom Support button linking to your website */}
             <a 
               href="https://www.shibili.tech" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="inline-flex items-center gap-2.5 rounded-xl border border-zinc-800 bg-[#001e2b] hover:bg-[#002e3b] hover:border-[#00ed64]/40 px-4 py-2.5 text-xs font-bold text-white transition-all shadow-sm w-fit cursor-pointer group"
+              className="inline-flex items-center gap-2.5 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-850 hover:border-zinc-700 px-4 py-2.5 text-xs font-bold text-white transition-all shadow-sm w-fit cursor-pointer group"
             >
-              <svg className="h-4.5 w-4.5 text-[#00ed64] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+              <svg className="h-4.5 w-4.5 text-blue-500 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M2 21h18v-2H2v2zM20 8h-2V5h2v3zm2-5H4v14h14v-4h4V3zm-6 12H6V5h10v10z"/>
               </svg>
               Support on shibili.tech
@@ -327,12 +325,12 @@ export default function Home() {
 
         </div>
 
-        <div className="mx-auto max-w-7xl px-6 border-t border-zinc-900 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-550 text-xs">
+        <div className="mx-auto max-w-7xl px-6 border-t border-zinc-900 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-550 text-xs w-full">
           <div className="flex items-center gap-1.5 font-medium">
             <ShieldCheck className="h-4 w-4" />
             <span>Securely saved in Supabase PostgreSQL</span>
           </div>
-          <span>&copy; {new Date().getFullYear()} shibili aman. All rights reserved.</span>
+          <span className="uppercase tracking-wider font-semibold">&copy; {new Date().getFullYear()} SHIBILI AMAN. All rights reserved.</span>
         </div>
       </footer>
     </div>
