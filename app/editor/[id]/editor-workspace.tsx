@@ -66,8 +66,45 @@ export default function EditorWorkspace({
     }
 
     const loadToast = toast.loading("Generating PDF download...");
+    const disabledSheets: (HTMLStyleElement | HTMLLinkElement)[] = [];
 
     try {
+      const styles = Array.from(document.getElementsByTagName("style"));
+      styles.forEach((style) => {
+        try {
+          const text = style.textContent || "";
+          if (text.trim() === "" || text.includes("unexpected EOF")) {
+            style.disabled = true;
+            disabledSheets.push(style);
+          }
+        } catch (e) {
+          style.disabled = true;
+          disabledSheets.push(style);
+        }
+      });
+
+      const links = Array.from(document.getElementsByTagName("link"));
+      links.forEach((link) => {
+        if (link.rel === "stylesheet") {
+          try {
+            const sheet = link.sheet;
+            if (sheet) {
+              const rules = sheet.cssRules;
+              if (!rules || rules.length === 0) {
+                link.disabled = true;
+                disabledSheets.push(link);
+              }
+            } else {
+              link.disabled = true;
+              disabledSheets.push(link);
+            }
+          } catch (e) {
+            link.disabled = true;
+            disabledSheets.push(link);
+          }
+        }
+      });
+
       const { jsPDF } = await import("jspdf");
       const html2canvasPro = (await import("html2canvas-pro")).default;
       (window as any).html2canvas = html2canvasPro;
@@ -95,23 +132,15 @@ export default function EditorWorkspace({
           logging: false,
           letterRendering: true,
           onclone: (clonedDoc) => {
-            const styleSheets = Array.from(clonedDoc.styleSheets);
-            styleSheets.forEach((sheet) => {
-              try {
-                const rules = sheet.cssRules;
-                if (!rules || rules.length === 0) {
-                  sheet.disabled = true;
-                }
-              } catch (e) {
-                sheet.disabled = true;
-              }
-            });
-
             const el = clonedDoc.getElementById("resume-print-area");
             if (el) {
+              el.style.height = "auto";
+              el.style.minHeight = "auto";
+
               clonedDoc.body.innerHTML = "";
               const wrapper = clonedDoc.createElement("div");
               wrapper.style.width = "794px";
+              wrapper.style.height = "auto";
               wrapper.style.minHeight = "1123px";
               wrapper.style.background = "white";
               wrapper.style.position = "absolute";
@@ -128,6 +157,10 @@ export default function EditorWorkspace({
       console.error(err);
       toast.error("Direct PDF download failed, opening print dialog...", { id: loadToast });
       window.print();
+    } finally {
+      disabledSheets.forEach((sheet) => {
+        sheet.disabled = false;
+      });
     }
   };
 

@@ -92,6 +92,7 @@ The templates are implemented in `components/templates/`. Each component receive
 - **Dimensions**: Rendered in points (`pt` unit, width `595.28` points, representing standard `595.28 x 841.89` pt A4 paper dimensions) to match native PDF page structures.
 - **Modern Color Support**: Integrates `html2canvas-pro` to support CSS Color Module Level 4 color syntax (such as `oklch`, `lab`, `oklab`, `lch`), avoiding parser crashes on modern Tailwind v4 files.
 - **Sandbox Isolation**: Leverages `onclone` to clean up the rendering sandbox DOM (body content is replaced and the target element is placed in an absolute, unscaled wrapper at `0, 0` of width `794px` and height `auto`). This disables parent scale transforms and scroll container clippings.
+- **Natural Height Expansion**: The `onclone` handler overrides the cloned `#resume-print-area` styles to `height: auto` and `min-height: auto`. This ensures that multi-page resumes expand to their full layout height, enabling `jsPDF` to render all pages.
 - **Stylesheet Safety Verification**: Iterates over all stylesheets loaded in the sandbox and disables sheets that throw errors during `cssRules` reads (e.g. unfinished Turbopack hot-reload stylesheets or cross-origin stylesheets).
 - **Page Breaking**: Uses `autoPaging: "text"` configuration to split pages cleanly.
 - **Fallback**: Triggers browser print-to-pdf flow (`window.print()`) if dynamic import or canvas rendering fails.
