@@ -1,4 +1,3 @@
-// components/editor/panels/TemplatesPanel.tsx
 "use client";
 
 import { useResumeStore } from "@/store/resumeStore";
@@ -18,6 +17,11 @@ const TEMPLATES = [
     id: "classic",
     name: "Classic Elegant",
     description: "Traditional resume formatting, perfect for academic and corporate fields.",
+  },
+  {
+    id: "ats",
+    name: "Standard ATS",
+    description: "Rigorous ATS-compatible single/multi-page layout optimized for parsing.",
   },
 ];
 

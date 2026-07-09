@@ -1,5 +1,4 @@
-// components/templates/ModernTemplate.tsx
-"use client";
+
 
 import { ResumeData } from "@/types/resume";
 import { ThemeConfig } from "@/store/themeStore";
@@ -39,8 +38,15 @@ export default function ModernTemplate({ data, theme }: TemplateProps) {
   const spacingClass = getSpacingClass();
   const fontSizeClass = getFontSizeClass();
 
-  const activeFont = fontFamily || "Inter";
-  const fontImport = `@import url('https://fonts.googleapis.com/css2?family=${activeFont.replace(/\s+/g, "+")}:wght@300;400;500;600;700;800&display=swap');`;
+  const activeFont = theme.customFontName || fontFamily || "Inter";
+  const fontImport = theme.customFontName && theme.customFontUrl
+    ? `@font-face {
+        font-family: '${theme.customFontName}';
+        src: url('${theme.customFontUrl}');
+        font-weight: normal;
+        font-style: normal;
+      }`
+    : `@import url('https://fonts.googleapis.com/css2?family=${activeFont.replace(/\s+/g, "+")}:wght@300;400;500;600;700;800&display=swap');`;
 
   return (
     <div 

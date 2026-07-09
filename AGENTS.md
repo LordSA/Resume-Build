@@ -20,3 +20,6 @@ Any automated developer agent or human coder working in this codebase **MUST** f
 
 3. **Check Documentation First**:
    - Before attempting any repository modification or code execution, the agent **must** read [project_memory.md](./project_memory.md) and [design.md](./design.md) to understand current schemas, configurations, and component behaviors.
+
+4. **Remove All Comments After Work**:
+   - **CRITICAL**: After completing any task, the agent **MUST** scan all modified source files (`.ts`, `.tsx`, `.js`, `.css`) and remove **every** comment — including file path headers (`// path/to/file`), inline explanatory comments (`// this does X`), JSX block comments (`{/* ... */}`), and CSS comments (`/* ... */`). The only exception is comments required by tooling (e.g., `next-env.d.ts`, ESLint directives). Zero comments in production source code is mandatory.

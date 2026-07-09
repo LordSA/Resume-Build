@@ -1,4 +1,3 @@
-// lib/ai/provider.ts
 import { callGemini } from "./gemini";
 import { callGroq } from "./groq";
 import { callOpenRouter } from "./openrouter";

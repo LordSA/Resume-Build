@@ -1,4 +1,3 @@
-// app/api/ai/ats/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { callAI } from "@/lib/ai/provider";
 import { ATS_SCORE_PROMPT } from "@/constants/prompts";

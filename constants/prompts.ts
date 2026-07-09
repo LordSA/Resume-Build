@@ -1,4 +1,3 @@
-// constants/prompts.ts
 
 export const RESUME_GENERATE_PROMPT = `
 You are an expert ATS (Applicant Tracking System) Resume Consultant and Professional Writer.

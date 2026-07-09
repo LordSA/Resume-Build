@@ -10,6 +10,7 @@ The application workspace features a premium, modern design following these core
 - **Glassmorphism**: Subtle backdrops, thin borders, and soft shadows for sidebar panels.
 - **Micro-Animations**: Framer Motion handles section dragging, active button states, and live update indicators.
 - **Typography Hierarchy**: Clear font scale adjustments between heading and body fonts.
+- **Custom Scrollbar**: Themed scrollbar matching the zinc palette (`#27272a` thumb, `#09090b` track, blue hover accent).
 
 ---
 
@@ -18,35 +19,29 @@ Every resume document contains a styling object stored in the database as `theme
 
 ```typescript
 export interface ThemeConfig {
-  fontFamily: string;     // Heading & Body font combination
-  primaryColor: string;   // Accent/brand color for headings, icons, borders
-  secondaryColor: string; // Subheadings & metadata text color
-  textColor: string;      // Body font color
-  backgroundColor: string;// Paper background color
+  fontFamily: string;
+  primaryColor: string;
+  secondaryColor: string;
+  textColor: string;
+  backgroundColor: string;
   spacing: "compact" | "comfortable" | "loose";
   borderRadius: "none" | "small" | "medium" | "large";
   fontSize: "sm" | "base" | "lg";
-  sectionOrder: string[]; // Section IDs for drag-and-drop reordering
+  sectionOrder: string[];
+  customFontName?: string;
+  customFontUrl?: string;
 }
 ```
 
-### Design Token Mappings
-
-#### Spacing Configs (Margin & Padding)
-- **`compact`**: Heading margins: `1.5rem`, section paddings: `0.5rem`, line height: `1.25`.
-- **`comfortable`**: Heading margins: `2.25rem`, section paddings: `0.85rem`, line height: `1.5`.
-- **`loose`**: Heading margins: `3.0rem`, section paddings: `1.2rem`, line height: `1.75`.
-
-#### Border Radius Mappings
-- **`none`**: `0px`
-- **`small`**: `4px` (`rounded-sm`)
-- **`medium`**: `8px` (`rounded-md`)
-- **`large`**: `12px` (`rounded-lg`)
+### Custom Font Support
+- Users can upload custom font files (`.ttf`, `.otf`, `.woff`, `.woff2`) via the Theme panel.
+- Fonts are stored in the Supabase `resume-assets` bucket under `fonts/{userId}/{uuid}.{ext}`.
+- When `customFontUrl` and `customFontName` are set, templates inject a dynamic `@font-face` CSS rule and apply the custom font family to all text.
 
 ---
 
 ## 3. Typography Stack
-We support dynamic loading of curated font families from Google Fonts. Users can choose from combinations of serif (for elegant/classic looks) and sans-serif (for modern/clean resumes).
+We support dynamic loading of curated font families from Google Fonts, plus user-uploaded custom fonts.
 
 | Preset Combination | Heading Font | Body Font | Feel / Category |
 |--------------------|--------------|-----------|-----------------|
@@ -55,6 +50,7 @@ We support dynamic loading of curated font families from Google Fonts. Users can
 | **Playfair + Noto**| Playfair     | Noto Sans | Elegant / Academic |
 | **Merriweather**   | Merriweather | Roboto    | Classic / Corporate |
 | **Roboto Mono**    | Roboto Mono  | Roboto    | Developer / Technical |
+| **Custom Upload**  | User-defined | User-defined | User-defined |
 
 ---
 
@@ -73,24 +69,45 @@ We support dynamic loading of curated font families from Google Fonts. Users can
 ## 5. Resume Templates
 The templates are implemented in `components/templates/`. Each component receives the `resume_json` data and the `theme_json` properties and renders accordingly:
 
-1. **Modern (`modern.tsx`)**:
+1. **Modern (`ModernTemplate.tsx`)**:
    - Clean top header layout.
    - Left-column for personal details, languages, skills.
    - Right-column (wider) for experience, projects, education.
-2. **Minimalist (`minimal.tsx`)**:
+2. **Minimalist (`MinimalTemplate.tsx`)**:
    - Center-aligned header.
    - Single-column flow with thin, elegant divider lines.
-   - Ideal for single-page resumes.
-3. **Classic (`classic.tsx`)**:
+3. **Classic (`ClassicTemplate.tsx`)**:
    - Left-aligned header, side-by-side dates and company names.
-   - Solid font sizing, excellent readability for ATS tracking.
-4. **Creative (`creative.tsx`)**:
-   - Dynamic top banner color block.
-   - Asymmetric two-column grid layout with colorful icon elements.
+4. **Standard ATS (`AtsTemplate.tsx`)**:
+   - Centered top header with role tagline and pipe-separated contact info (Location | Phone | Email | LinkedIn).
+   - Core Competencies rendered in a neat 3-column bullet grid with custom circular icons.
+   - Experience in inline role/date layout, followed by company name and descriptions.
+   - Education rendered in a split-column grid: Date ranges on the left, Degree and Institution on the right.
+   - Personal Details & Availability section combining Languages and Interests dynamically.
 
 ---
 
 ## 6. PDF Rendering Engine
-To achieve pixel-perfect outputs, we support two methods:
-- **`react-to-print`**: Leverages the browser's native CSS print media engine (`@media print`). This translates Tailwind CSS styles directly onto standard A4 paper dimensions with native font quality.
-- **`@react-pdf/renderer`**: Pre-compiles the JSON tree into a PDF stream, generating downloadable PDF files programmatically.
+- **Method**: Client-side jsPDF rendering engine (`doc.html()`).
+- **Features**: Generates printable PDF layouts preserving styles, margins, and custom fonts.
+- **Page Breaking**: Uses `autoPaging: "text"` configuration to split pages cleanly.
+- **Fallback**: Triggers browser print-to-pdf flow (`window.print()`) if dynamic import or canvas rendering fails.
+
+---
+
+## 7. Global Scrollbar Design
+Defined in `app/globals.css` under `@layer base`:
+- **Track**: `#09090b` (zinc-950)
+- **Thumb**: `#27272a` (zinc-800) with `border-radius: 9999px`
+- **Hover**: `#3b82f6` (blue-500)
+- **Width**: 8px (thin scrollbar via `scrollbar-width: thin`)
+- Single scrollbar on `html` (`overflow-y: auto`), `body` uses `overflow-y: visible` to prevent double scrollbars.
+
+---
+
+## 8. Authentication UI Design
+Split-screen layout inspired by MongoDB Atlas console:
+- **Left panel**: Auth form with Google OAuth button, Email input (Magic Link for signup / OTP for login), back navigation.
+- **Right panel**: Branded gradient with floating value proposition text.
+- **Color scheme**: Deep forest slate (`#001e2b`) background with emerald green (`#00ed64`) accent borders.
+- **Email Verification Page**: Beautiful console check-envelope instructions with automated 3-second animated redirect countdown upon confirmation.

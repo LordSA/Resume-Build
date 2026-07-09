@@ -1,4 +1,3 @@
-// types/resume.ts
 
 export interface ResumeData {
   personal: {

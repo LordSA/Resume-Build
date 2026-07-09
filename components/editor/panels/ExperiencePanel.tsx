@@ -1,4 +1,3 @@
-// components/editor/panels/ExperiencePanel.tsx
 "use client";
 
 import { useState } from "react";

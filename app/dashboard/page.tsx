@@ -1,4 +1,3 @@
-// app/dashboard/page.tsx
 import { createClient } from "@/lib/server";
 import { redirect } from "next/navigation";
 import DashboardClient from "./dashboard-client";

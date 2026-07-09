@@ -1,4 +1,3 @@
-// components/editor/panels/AchievementsPanel.tsx
 "use client";
 
 import { useState } from "react";

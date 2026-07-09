@@ -1,4 +1,3 @@
-// lib/ai/openrouter.ts
 export async function callOpenRouter(prompt: string, isJson: boolean = false): Promise<string> {
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {

@@ -1,4 +1,3 @@
-// components/editor/panels/SkillsPanel.tsx
 "use client";
 
 import { useResumeStore } from "@/store/resumeStore";

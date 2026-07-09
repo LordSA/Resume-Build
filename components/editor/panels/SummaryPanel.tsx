@@ -1,4 +1,3 @@
-// components/editor/panels/SummaryPanel.tsx
 "use client";
 
 import { useState } from "react";

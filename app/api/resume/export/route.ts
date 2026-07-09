@@ -1,4 +1,3 @@
-// app/api/resume/export/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/server";
 

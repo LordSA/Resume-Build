@@ -1,4 +1,3 @@
-// lib/ai/gemini.ts
 export async function callGemini(prompt: string, isJson: boolean = false): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {

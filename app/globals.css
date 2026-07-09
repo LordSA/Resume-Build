@@ -128,7 +128,6 @@
     @apply font-sans scroll-smooth;
   }
 
-  /* Custom Scrollbar Styles */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -148,9 +147,16 @@
     background: #3b82f6;
   }
 
-  html, body {
+  html {
     scrollbar-color: #27272a #09090b;
     scrollbar-width: thin;
     overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+  }
+  body {
+    overflow-x: hidden;
+    overflow-y: visible;
+    min-height: 100vh;
   }
 }

@@ -1,4 +1,3 @@
-// schemas/resume.schema.ts
 import { z } from "zod";
 
 export const PersonalSchema = z.object({

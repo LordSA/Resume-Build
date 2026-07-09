@@ -1,4 +1,3 @@
-// components/editor/panels/AIPanel.tsx
 "use client";
 
 import { useState } from "react";

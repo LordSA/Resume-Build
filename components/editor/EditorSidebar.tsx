@@ -1,4 +1,3 @@
-// components/editor/EditorSidebar.tsx
 "use client";
 
 import { useEditorStore } from "@/store/editorStore";

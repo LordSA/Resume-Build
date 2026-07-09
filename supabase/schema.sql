@@ -126,3 +126,31 @@ CREATE OR REPLACE TRIGGER trigger_handle_updated_at
     BEFORE UPDATE ON public.resumes
     FOR EACH ROW
     EXECUTE FUNCTION public.handle_updated_at();
+
+-- --------------------------------------------------------
+-- 5. Storage Buckets & Policies (RLS is enabled by default)
+-- --------------------------------------------------------
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('resume-assets', 'resume-assets', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+CREATE POLICY "Public Read Access to resume-assets"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'resume-assets');
+
+CREATE POLICY "Authenticated Insert to resume-assets"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'resume-assets');
+
+CREATE POLICY "Users Update own uploads in resume-assets"
+ON storage.objects FOR UPDATE
+TO authenticated
+USING (bucket_id = 'resume-assets')
+WITH CHECK (bucket_id = 'resume-assets');
+
+CREATE POLICY "Users Delete own uploads in resume-assets"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (bucket_id = 'resume-assets');
+

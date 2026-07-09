@@ -1,4 +1,3 @@
-// app/(editor)/[id]/page.tsx
 import { createClient } from "@/lib/server";
 import { redirect } from "next/navigation";
 import EditorWorkspace from "./editor-workspace";

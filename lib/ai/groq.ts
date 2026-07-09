@@ -1,4 +1,3 @@
-// lib/ai/groq.ts
 export async function callGroq(prompt: string, isJson: boolean = false): Promise<string> {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {

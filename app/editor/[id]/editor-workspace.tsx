@@ -1,4 +1,3 @@
-// app/(editor)/[id]/editor-workspace.tsx
 "use client";
 
 import { useEffect } from "react";
@@ -66,32 +65,39 @@ export default function EditorWorkspace({
       return;
     }
 
-    try {
-      const html2pdf = (await import("html2pdf.js")).default;
-      
-      const opt = {
-        margin: 0,
-        filename: `${title.trim() || "resume"}.pdf`,
-        image: { type: "jpeg" as const, quality: 0.98 },
-        html2canvas: { 
-          scale: 2, 
-          useCORS: true, 
-          letterRendering: true,
-        },
-        jsPDF: { unit: "mm" as const, format: "a4" as const, orientation: "portrait" as const }
-      };
+    const loadToast = toast.loading("Generating PDF download...");
 
-      toast.promise(
-        html2pdf().from(element).set(opt).save(),
-        {
-          loading: "Generating PDF download...",
-          success: "PDF downloaded successfully!",
-          error: "Failed to generate PDF",
+    try {
+      const { jsPDF } = await import("jspdf");
+
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+
+      await doc.html(element, {
+        callback: function (pdf) {
+          pdf.save(`${title.trim() || "resume"}.pdf`);
+          toast.success("PDF downloaded successfully!", { id: loadToast });
+        },
+        margin: [0, 0, 0, 0],
+        autoPaging: "text",
+        x: 0,
+        y: 0,
+        width: 210,
+        windowWidth: 794,
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          letterRendering: true,
         }
-      );
+      });
     } catch (err) {
       console.error(err);
-      toast.error("Failed to load PDF engine");
+      toast.error("Direct PDF download failed, opening print dialog...", { id: loadToast });
+      window.print();
     }
   };
 

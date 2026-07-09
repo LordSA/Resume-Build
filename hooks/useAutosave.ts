@@ -1,4 +1,3 @@
-// hooks/useAutosave.ts
 import { useEffect, useRef } from "react";
 import { useResumeStore } from "@/store/resumeStore";
 import { useThemeStore } from "@/store/themeStore";

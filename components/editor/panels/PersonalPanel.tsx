@@ -1,12 +1,11 @@
-// components/editor/panels/PersonalPanel.tsx
 "use client";
 
 import { useRef, useState } from "react";
 import { useResumeStore } from "@/store/resumeStore";
 import { Loader2, Camera, Trash2 } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { createClient } from "@/lib/client";
 
-// Helper function to compress and resize image client-side to WebP
 const compressToWebP = (file: File, maxWidth = 256, maxHeight = 256, quality = 0.85): Promise<Blob> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -17,7 +16,6 @@ const compressToWebP = (file: File, maxWidth = 256, maxHeight = 256, quality = 0
         let width = img.width;
         let height = img.height;
 
-        // Force a square crop for user profile photos
         const size = Math.min(width, height);
         const sourceX = (width - size) / 2;
         const sourceY = (height - size) / 2;
@@ -82,32 +80,44 @@ export default function PersonalPanel() {
 
     setIsUploading(true);
     try {
-      // 1. Compress & convert to WebP blob
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("You must be logged in to upload photos");
+        return;
+      }
+
       const compressedBlob = await compressToWebP(file);
 
-      // 2. Try uploading to Cloudflare R2
-      const uploadData = new FormData();
-      const webpFile = new File([compressedBlob], `${file.name.replace(/\.[^/.]+$/, "")}.webp`, { type: "image/webp" });
-      uploadData.append("file", webpFile);
+      const filePath = `photos/${user.id}/${Date.now()}.webp`;
+      const { data, error } = await supabase.storage
+        .from("resume-assets")
+        .upload(filePath, compressedBlob, {
+          contentType: "image/webp",
+          upsert: true,
+        });
 
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: uploadData,
-      });
+      if (error) {
+        throw error;
+      }
 
-      if (res.ok) {
-        const { url } = await res.json();
-        updatePersonal({ photoUrl: url });
-        toast.success("Profile photo uploaded to Cloudflare R2!");
-      } else {
-        // Fallback: store as WebP Base64 locally inside document
+      const { data: { publicUrl } } = supabase.storage
+        .from("resume-assets")
+        .getPublicUrl(filePath);
+
+      updatePersonal({ photoUrl: publicUrl });
+      toast.success("Profile photo uploaded to Supabase Storage!");
+    } catch (err: any) {
+      console.error("Supabase upload failed, falling back to base64:", err);
+      try {
+        const compressedBlob = await compressToWebP(file);
         const base64Url = await blobToBase64(compressedBlob);
         updatePersonal({ photoUrl: base64Url });
         toast.success("Profile photo saved locally in document");
+      } catch (fallbackErr) {
+        console.error(fallbackErr);
+        toast.error("Failed to process photo");
       }
-    } catch (err: any) {
-      console.error(err);
-      toast.error("Failed to process photo");
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -126,7 +136,6 @@ export default function PersonalPanel() {
         <p className="text-xs text-zinc-400 mt-0.5">Configure your basic contact details and links</p>
       </div>
 
-      {/* Profile Photo Uploader */}
       <div className="flex items-center gap-5 mt-1 p-4 bg-zinc-900/10 border border-zinc-900 rounded-2xl">
         <div className="relative group h-20 w-20 shrink-0 rounded-full border border-zinc-800 bg-zinc-900/40 overflow-hidden flex items-center justify-center">
           {personal.photoUrl ? (
@@ -136,7 +145,7 @@ export default function PersonalPanel() {
               className="h-full w-full object-cover" 
             />
           ) : (
-            <Camera className="h-6 w-6 text-zinc-455" />
+            <Camera className="h-6 w-6 text-zinc-400" />
           )}
 
           {isUploading && (

@@ -1,4 +1,3 @@
-// app/(auth)/login/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -38,7 +37,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          shouldCreateUser: false, // Login page only allows existing accounts
+          shouldCreateUser: false,
           emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
@@ -132,10 +131,8 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen w-full bg-zinc-950 text-white selection:bg-blue-600/30 font-sans relative overflow-hidden">
       
-      {/* Left Column: Auth Panel (Alignment & spacing matching reference picture) */}
       <div className="w-full lg:w-[45%] flex flex-col justify-between p-8 sm:p-12 relative z-10 bg-zinc-950">
         
-        {/* Top Header Row with Back Button */}
         <div className="flex items-center justify-between w-full mb-12">
           <Link 
             href="/" 
@@ -155,7 +152,6 @@ export default function LoginPage() {
           />
         </div>
 
-        {/* Center: Auth Form Container */}
         <div className="mx-auto w-full max-w-[360px] flex flex-col gap-7 my-auto">
           <div className="flex flex-col gap-1.5">
             <h2 className="text-3xl font-extrabold tracking-tight text-white">Log in to your account</h2>
@@ -167,7 +163,6 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* OAuth block */}
           {!isOtpSent && (
             <button
               onClick={handleGoogleLogin}
@@ -308,20 +303,16 @@ export default function LoginPage() {
           </AnimatePresence>
         </div>
 
-        {/* Bottom footer link */}
         <div className="flex items-center gap-1.5 text-[10px] text-zinc-550 font-semibold justify-center mt-12 border-t border-zinc-900/60 pt-4">
           <ShieldCheck className="h-3.5 w-3.5" />
           <span>Secure authentication via Supabase SSR</span>
         </div>
       </div>
 
-      {/* Right Column: Premium Value Proposition (Collapses on mobile) */}
       <div className="hidden lg:flex lg:w-[55%] bg-zinc-900 border-l border-zinc-900 relative items-center justify-center p-16 select-none overflow-hidden">
-        {/* Glow Orb */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-blue-600/5 blur-[120px] pointer-events-none" />
 
         <div className="max-w-[480px] flex flex-col gap-6 relative z-10">
-          {/* Brackets Graphic */}
           <div className="text-[120px] font-black text-blue-500/10 leading-none absolute -top-16 -left-10 select-none pointer-events-none">
             &#123; &#125;
           </div>

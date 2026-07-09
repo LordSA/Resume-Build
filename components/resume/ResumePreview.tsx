@@ -1,4 +1,3 @@
-// components/resume/ResumePreview.tsx
 "use client";
 
 import { useResumeStore } from "@/store/resumeStore";
@@ -59,14 +58,14 @@ export default function ResumePreview() {
 
       <div className="flex-1 overflow-auto p-8 flex justify-center bg-zinc-900/40 scrollbar-thin print:p-0 print:bg-white print:overflow-visible">
         <div 
-          className="shadow-2xl origin-top transition-transform duration-75 print:shadow-none print:transform-none shrink-0"
+          className="resume-print-container shadow-2xl origin-top transition-transform duration-75 print:shadow-none print:transform-none shrink-0"
           style={{ 
             transform: `scale(${previewZoom})`,
             width: "794px",
             minHeight: "1123px",
           }}
         >
-          <div id="resume-print-area" className="w-full h-full">
+          <div id="resume-print-area" className="w-full h-full bg-white text-zinc-900">
             <TemplateRenderer 
               data={resumeData} 
               template={template} 
@@ -109,8 +108,7 @@ export default function ResumePreview() {
             transform: none !important;
           }
           
-          /* Show print elements */
-          div[style*="width: 794px"] {
+          .resume-print-container {
             visibility: visible !important;
             position: absolute;
             left: 0;
@@ -122,7 +120,7 @@ export default function ResumePreview() {
             margin: 0 !important;
             padding: 0 !important;
           }
-          div[style*="width: 794px"] * {
+          .resume-print-container * {
             visibility: visible !important;
           }
         }

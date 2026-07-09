@@ -1,4 +1,3 @@
-// components/editor/panels/CertificatesPanel.tsx
 "use client";
 
 import { useState } from "react";

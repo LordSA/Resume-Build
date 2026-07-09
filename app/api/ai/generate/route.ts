@@ -1,4 +1,3 @@
-// app/api/ai/generate/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { callAI } from "@/lib/ai/provider";
 import { RESUME_GENERATE_PROMPT } from "@/constants/prompts";

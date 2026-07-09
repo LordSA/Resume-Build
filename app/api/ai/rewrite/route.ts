@@ -1,4 +1,3 @@
-// app/api/ai/rewrite/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { callAI } from "@/lib/ai/provider";
 import { RESUME_REWRITE_PROMPT } from "@/constants/prompts";

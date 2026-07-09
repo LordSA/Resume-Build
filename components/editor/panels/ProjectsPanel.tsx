@@ -1,4 +1,3 @@
-// components/editor/panels/ProjectsPanel.tsx
 "use client";
 
 import { useState } from "react";
