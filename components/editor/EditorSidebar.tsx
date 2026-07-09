@@ -86,7 +86,7 @@ export default function EditorSidebar() {
   };
 
   return (
-    <div className="relative flex h-full shrink-0 select-none z-20">
+    <div className="relative flex h-full shrink-0 select-none z-20 print:hidden">
       <div className={`flex h-full transition-all duration-300 ${sidebarOpen ? "w-[480px]" : "w-0"}`}>
         <div className="flex h-full w-[80px] flex-col items-center gap-1.5 border-r border-zinc-850 bg-zinc-950 py-4 overflow-y-auto overflow-x-hidden shrink-0 scrollbar-none">
           {SIDEBAR_TABS.map((tab) => {

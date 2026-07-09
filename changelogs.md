@@ -9,15 +9,17 @@ All notable changes to the Resume Solutions project will be documented in this f
 ### Added
 - **Check Email Verification Page (`verify-email`)**: Added a new static `/verify-email` page:
   - Displays check-inbox envelope instructions with the registered email.
-  - Automatically handles a 3-second timer and animated countdown if `confirmed=true` is set.
-  - Redirects users to the login screen upon confirmation.
+  - Automatically handles email confirmation query triggers. When `confirmed=true` is set, it displays a success message with an animated 3-second redirect countdown back to `/login` (which redirects to `/dashboard` via middleware).
 - **Magic-Link Signup Flow**: Simplified signup in `signup/page.tsx` to directly send a confirmation link without asking for an OTP code immediately. Users are pushed to `/verify-email` upon click.
-- **Direct jsPDF HTML Rendering**: Replaced browser printing fallback with direct client-side `jsPDF` HTML rendering (`doc.html()`) inside `editor-workspace.tsx`. Configured high-resolution scaling (`scale: 2`), page breaks (`autoPaging: "text"`), and CORS settings.
+- **Direct jsPDF HTML Rendering**: Replaced browser printing fallback with direct client-side `jsPDF` HTML rendering (`doc.html()`) inside `editor-workspace.tsx`.
+- **Modern Color Support in PDF Engine**: Upgraded `html2canvas` to `html2canvas-pro` in root dependencies. Registered `html2canvas-pro` globally for `jsPDF` to parse CSS Color Module Level 4 spaces (like `oklch` and `lab`) without throwing exceptions.
+- **Chrome Hiding during Print**: Added `print:hidden` utility classes to the editor workspace header and sidebar elements.
+- **Fallback Print Styling**: Updated the `@media print` rules in `ResumePreview.tsx` to target `@page { size: A4; margin: 0; }` for removing browser margin headers, and configured `.resume-print-container` with absolute positioning at `0, 0` and standard `210mm` width to prevent right-offset squeezing.
 
 ### Changed
 - **Auth Callback Redirect**: Updated `auth/callback/route.ts` to redirect to `/verify-email?confirmed=true` upon successful session verification, triggering the 3-second redirect countdown.
-- **Production Dependencies**: Installed `jspdf` and `html2canvas` in the project's root `package.json`.
-- Updated `project_memory.md` and `design.md` to record the new verify-email path, simplified signup mechanism, and jsPDF downloader structure.
+- **Production Dependencies**: Swapped `"html2canvas"` for `"html2canvas-pro"` and registered `"jspdf"` in the project's root `package.json`.
+- Updated `project_memory.md` and `design.md` to record the new verify-email path, simplified signup mechanism, html2canvas-pro color engine, and print layout behaviors.
 
 ---
 

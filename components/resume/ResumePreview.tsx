@@ -76,12 +76,18 @@ export default function ResumePreview() {
       </div>
 
       <style jsx global>{`
+        @page {
+          size: A4;
+          margin: 0;
+        }
         @media print {
           body * {
             visibility: hidden;
           }
           header, 
           header *, 
+          aside,
+          .editor-sidebar,
           .print\:hidden,
           .print\:hidden * {
             display: none !important;
@@ -110,10 +116,10 @@ export default function ResumePreview() {
           
           .resume-print-container {
             visibility: visible !important;
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100% !important;
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 210mm !important;
             height: auto !important;
             transform: none !important;
             box-shadow: none !important;

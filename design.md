@@ -88,8 +88,9 @@ The templates are implemented in `components/templates/`. Each component receive
 ---
 
 ## 6. PDF Rendering Engine
-- **Method**: Client-side jsPDF rendering engine (`doc.html()`).
+- **Method**: Client-side jsPDF rendering engine (`doc.html()`) powered by `html2canvas-pro`.
 - **Features**: Generates printable PDF layouts preserving styles, margins, and custom fonts.
+- **Modern Color Support**: Integrates `html2canvas-pro` to support CSS Color Module Level 4 color syntax (such as `oklch`, `lab`, `oklab`, `lch`), avoiding parser crashes on modern Tailwind v4 files.
 - **Page Breaking**: Uses `autoPaging: "text"` configuration to split pages cleanly.
 - **Fallback**: Triggers browser print-to-pdf flow (`window.print()`) if dynamic import or canvas rendering fails.
 
@@ -105,9 +106,8 @@ Defined in `app/globals.css` under `@layer base`:
 
 ---
 
-## 8. Authentication UI Design
-Split-screen layout inspired by MongoDB Atlas console:
-- **Left panel**: Auth form with Google OAuth button, Email input (Magic Link for signup / OTP for login), back navigation.
-- **Right panel**: Branded gradient with floating value proposition text.
-- **Color scheme**: Deep forest slate (`#001e2b`) background with emerald green (`#00ed64`) accent borders.
-- **Email Verification Page**: Beautiful console check-envelope instructions with automated 3-second animated redirect countdown upon confirmation.
+## 8. Print Layout Specifications
+To guarantee a pixel-perfect export via `window.print()` (when used as a fallback):
+- **Page Boundaries**: `@page { size: A4; margin: 0; }` removes default browser print titles, date headers, and URLs.
+- **A4 Scaling**: The container `.resume-print-container` is locked to a width of `210mm` and positioned absolutely at `0, 0` on the page to prevent clipping.
+- **Chrome Removal**: Sibling elements (`header`, `aside`, `.editor-sidebar`, `.print:hidden`) are completely hidden during printing via `display: none !important`. This forces the preview pane to expand to the full width of the document workspace.

@@ -69,6 +69,8 @@ export default function EditorWorkspace({
 
     try {
       const { jsPDF } = await import("jspdf");
+      const html2canvasPro = (await import("html2canvas-pro")).default;
+      (window as any).html2canvas = html2canvasPro;
 
       const doc = new jsPDF({
         orientation: "portrait",
@@ -103,7 +105,7 @@ export default function EditorWorkspace({
 
   return (
     <div className="flex flex-col h-screen bg-zinc-950 text-zinc-100 overflow-hidden font-sans">
-      <header className="flex items-center justify-between px-6 py-3 border-b border-zinc-800/80 bg-zinc-900/50 backdrop-blur-md shrink-0">
+      <header className="flex items-center justify-between px-6 py-3 border-b border-zinc-800/80 bg-zinc-900/50 backdrop-blur-md shrink-0 print:hidden">
         <div className="flex items-center gap-4">
           <Link
             href="/dashboard"
