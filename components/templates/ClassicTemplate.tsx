@@ -251,13 +251,22 @@ export default function ClassicTemplate({ data, theme }: TemplateProps) {
       <style dangerouslySetInnerHTML={{ __html: `${fontImport}` }} />
 
       <header className="flex justify-between items-end border-b-2 pb-6" style={{ borderColor: primaryColor }}>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-900 leading-none">
-            {personal.fullName || "Your Full Name"}
-          </h1>
-          <p className="text-sm font-semibold tracking-wide mt-2" style={{ color: primaryColor }}>
-            {personal.jobTitle || "Job Title"}
-          </p>
+        <div className="flex items-center gap-4">
+          {personal.photoUrl && (
+            <img 
+              src={personal.photoUrl} 
+              alt={personal.fullName}
+              className="h-16 w-16 rounded-full object-cover border border-zinc-200"
+            />
+          )}
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-zinc-900 leading-none">
+              {personal.fullName || "Your Full Name"}
+            </h1>
+            <p className="text-sm font-semibold tracking-wide mt-2" style={{ color: primaryColor }}>
+              {personal.jobTitle || "Job Title"}
+            </p>
+          </div>
         </div>
 
         <div className="flex flex-col items-end gap-1 text-[10.5px] text-zinc-600 font-medium">

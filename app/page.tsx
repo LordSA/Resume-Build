@@ -1,11 +1,12 @@
 // app/page.tsx
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Layout, Award, Zap, ArrowRight, ShieldCheck } from "lucide-react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 
-const MockResumeCanvas = () => {
+const MockResumeCanvas = ({ preset }: { preset: "modern" | "minimal" | "classic" }) => {
   const x = useMotionValue(200);
   const y = useMotionValue(200);
 
@@ -25,29 +26,64 @@ const MockResumeCanvas = () => {
     y.set(200);
   }
 
+  const getPresetStyles = () => {
+    switch (preset) {
+      case "minimal":
+        return {
+          cardBg: "bg-emerald-950/5 border-emerald-950/40",
+          glow: "from-emerald-500/10 to-teal-500/10",
+          accentColor: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+          fontFamily: "font-mono",
+          headerLayout: "flex flex-col items-center text-center gap-1.5 border-b border-zinc-850 pb-5",
+          titleColor: "text-emerald-400 font-extrabold uppercase",
+        };
+      case "classic":
+        return {
+          cardBg: "bg-amber-950/5 border-amber-955/40",
+          glow: "from-amber-500/10 to-orange-500/10",
+          accentColor: "bg-amber-500/20 text-amber-400 border-amber-500/30",
+          fontFamily: "font-serif",
+          headerLayout: "flex justify-between items-start border-b border-zinc-800 pb-5",
+          titleColor: "text-zinc-100 font-bold",
+        };
+      case "modern":
+      default:
+        return {
+          cardBg: "bg-blue-950/5 border-blue-950/40",
+          glow: "from-blue-500/10 to-indigo-500/10",
+          accentColor: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+          fontFamily: "font-sans",
+          headerLayout: "flex justify-between items-end border-b border-zinc-800 pb-5",
+          titleColor: "text-blue-400 font-extrabold",
+        };
+    }
+  };
+
+  const style = getPresetStyles();
+
   return (
-    <div 
-      style={{ perspective: 1000 }} 
+    <div
+      style={{ perspective: 1000 }}
       onMouseMove={handleMouse}
       onMouseLeave={handleMouseLeave}
-      className="w-full max-w-2xl mt-12 mb-4 mx-auto select-none cursor-grab active:cursor-grabbing px-2 sm:px-0"
+      className={`w-full max-w-2xl mt-12 mb-4 mx-auto select-none cursor-grab active:cursor-grabbing px-2 sm:px-0 ${style.fontFamily}`}
     >
       <motion.div
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/10 p-5 sm:p-8 backdrop-blur-md shadow-2xl relative flex flex-col gap-6 text-left overflow-hidden group"
+        className={`w-full rounded-2xl border ${style.cardBg} p-5 sm:p-8 backdrop-blur-md shadow-2xl relative flex flex-col gap-6 text-left overflow-hidden group`}
         whileHover={{ boxShadow: "0 0 35px rgba(59,130,246,0.12)" }}
         transition={{ type: "spring", stiffness: 150, damping: 22 }}
       >
-        <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-blue-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none duration-500" />
+        <div className={`absolute -inset-px rounded-2xl bg-gradient-to-r ${style.glow} opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none duration-500`} />
 
-        <div className="flex justify-between items-end border-b border-zinc-800 pb-5">
+        <div className={style.headerLayout}>
           <div className="flex flex-col gap-2">
-            <div className="h-6 w-32 sm:w-44 bg-zinc-800/80 rounded" />
-            <div className="h-4 w-20 sm:w-28 bg-zinc-850/80 rounded" />
+            <h2 className={`h-6 text-lg tracking-tight ${style.titleColor}`}>Your Name</h2>
+            <div className="h-4 w-28 bg-zinc-850/80 rounded" />
           </div>
-          <div className="flex flex-col gap-1.5 items-end">
-            <div className="h-3 w-24 sm:w-32 bg-zinc-850/80 rounded" />
-            <div className="h-3 w-16 sm:w-24 bg-zinc-850/80 rounded" />
+          <div className="flex flex-col gap-1.5 items-end text-xs text-zinc-500">
+            <div className="h-3 w-32 bg-zinc-850/80 rounded" />
+            <div className="h-3 w-24 bg-zinc-850/80 rounded" />
           </div>
         </div>
 
@@ -86,6 +122,8 @@ const MarqueeNode = ({ text }: { text: string }) => (
 );
 
 export default function Home() {
+  const [activePreset, setActivePreset] = useState<"modern" | "minimal" | "classic">("modern");
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -114,15 +152,15 @@ export default function Home() {
 
       <header className="border-b border-zinc-900 bg-zinc-950/50 backdrop-blur-md sticky top-0 z-50">
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             className="flex items-center gap-2.5"
           >
-            <img 
-              src="/logo.png" 
-              alt="Logo" 
+            <img
+              src="/logo.png"
+              alt="Logo"
               className="h-8 w-auto opacity-95"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
@@ -131,7 +169,7 @@ export default function Home() {
             <span className="font-extrabold tracking-tight text-lg text-white">Resume Solutions</span>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
@@ -145,7 +183,7 @@ export default function Home() {
             </Link>
             <Link
               href="/signup"
-              className="rounded-xl bg-blue-600 hover:bg-blue-500 px-4 py-2.5 text-xs font-bold transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_20px_rgba(37,99,235,0.5)]"
+              className="rounded-full bg-blue-600 hover:bg-blue-500 px-4 py-2.5 text-xs font-bold transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_20px_rgba(37,99,235,0.5)]"
             >
               Get Started
             </Link>
@@ -160,39 +198,61 @@ export default function Home() {
           animate="visible"
           className="text-center flex flex-col items-center max-w-3xl gap-6 mb-12"
         >
-          <motion.h1 
+          <motion.h1
             variants={itemVariants}
             className="text-4xl font-extrabold tracking-tight sm:text-6xl bg-gradient-to-b from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent py-1"
           >
             Build ATS-Optimized Resumes in Minutes
           </motion.h1>
-          
-          <motion.p 
+
+          <motion.p
             variants={itemVariants}
             className="text-zinc-400 text-sm sm:text-base max-w-xl leading-relaxed"
           >
             Paste your experience, profile nodes, or education history. Our structural document editor refines, matches, and aligns it into pixel-perfect PDF resumes.
           </motion.p>
 
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="flex flex-col sm:flex-row gap-4 mt-4 w-full sm:w-auto px-4 sm:px-0"
           >
             <Link
               href="/signup"
-              className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 px-6 py-3.5 text-sm font-semibold transition-all hover:shadow-[0_0_20px_rgba(37,99,235,0.4)]"
+              className="flex items-center justify-center gap-2 rounded-full bg-blue-600 hover:bg-blue-500 px-6 py-3.5 text-sm font-semibold transition-all hover:shadow-[0_0_20px_rgba(37,99,235,0.4)]"
             >
               Build Resume Free
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/login"
-              className="flex items-center justify-center gap-2 rounded-xl border border-zinc-800 hover:bg-zinc-900 px-6 py-3.5 text-sm font-semibold transition-all"
+              className="flex items-center justify-center gap-2 rounded-full   border border-zinc-800 hover:bg-zinc-900 px-6 py-3.5 text-sm font-semibold transition-all"
             >
               Log In
             </Link>
           </motion.div>
         </motion.div>
+
+        {/* Interactive Layout Preset Control Grid */}
+        <div className="flex flex-wrap justify-center gap-3.5 mt-4 z-20">
+          <button
+            onClick={() => setActivePreset("modern")}
+            className={`px-4 py-2 rounded-full text-xs font-bold transition-all border cursor-pointer ${activePreset === "modern" ? "bg-blue-600/10 border-blue-500/50 text-blue-450" : "bg-zinc-900/30 border-zinc-850 text-zinc-400 hover:text-white"}`}
+          >
+            Modern (2-Column)
+          </button>
+          <button
+            onClick={() => setActivePreset("minimal")}
+            className={`px-4 py-2 rounded-full text-xs font-bold transition-all border cursor-pointer ${activePreset === "minimal" ? "bg-emerald-600/10 border-emerald-500/50 text-emerald-450" : "bg-zinc-900/30 border-zinc-850 text-zinc-400 hover:text-white"}`}
+          >
+            Minimal (Centered)
+          </button>
+          <button
+            onClick={() => setActivePreset("classic")}
+            className={`px-4 py-2 rounded-full text-xs font-bold transition-all border cursor-pointer ${activePreset === "classic" ? "bg-amber-600/10 border-amber-500/50 text-amber-450" : "bg-zinc-900/30 border-zinc-850 text-zinc-400 hover:text-white"}`}
+          >
+            Classic (Serif)
+          </button>
+        </div>
 
         {/* 3D Tilting Product Mockup */}
         <motion.div
@@ -201,7 +261,7 @@ export default function Home() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="w-full overflow-hidden"
         >
-          <MockResumeCanvas />
+          <MockResumeCanvas preset={activePreset} />
         </motion.div>
 
         {/* 2D Scrolling Marquee Slider */}
@@ -222,7 +282,7 @@ export default function Home() {
           </motion.div>
         </div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -265,14 +325,14 @@ export default function Home() {
       </main>
 
       {/* Redesigned Multi-Column Premium Footer with strict padding bounds to avoid mobile horizontal scroll */}
-      <footer className="border-t border-zinc-900 bg-zinc-950 py-16 text-zinc-400 z-10 w-full overflow-hidden max-w-full">
-        <div className="mx-auto max-w-7xl px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-left w-full">
-          
+      <footer className="border-t border-zinc-900 bg-zinc-950 pt-12 pb-6 text-zinc-400 z-10 w-full overflow-hidden max-w-full">
+        <div className="mx-auto max-w-7xl px-6 grid grid-cols-1 md:grid-cols-4 gap-10 text-left w-full">
+
           <div className="flex flex-col gap-4 col-span-1 md:col-span-2">
             <div className="flex items-center gap-2.5">
-              <img 
-                src="/logo.png" 
-                alt="Logo" 
+              <img
+                src="/logo.png"
+                alt="Logo"
                 className="h-8 w-auto opacity-95"
                 onError={(e) => {
                   e.currentTarget.style.display = "none";
@@ -310,27 +370,27 @@ export default function Home() {
               If you found this tool useful, feel free to support our work and check out our other projects.
             </p>
             {/* Custom Support button linking to your website */}
-            <a 
-              href="https://www.shibili.tech" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="https://www.shibili.tech"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2.5 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-850 hover:border-zinc-700 px-4 py-2.5 text-xs font-bold text-white transition-all shadow-sm w-fit cursor-pointer group"
             >
               <svg className="h-4.5 w-4.5 text-blue-500 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M2 21h18v-2H2v2zM20 8h-2V5h2v3zm2-5H4v14h14v-4h4V3zm-6 12H6V5h10v10z"/>
+                <path d="M2 21h18v-2H2v2zM20 8h-2V5h2v3zm2-5H4v14h14v-4h4V3zm-6 12H6V5h10v10z" />
               </svg>
-              Support on shibili.tech
+              Support on Shibili
             </a>
           </div>
 
         </div>
 
-        <div className="mx-auto max-w-7xl px-6 border-t border-zinc-900 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-550 text-xs w-full">
+        <div className="mx-auto max-w-7xl px-6 border-t border-zinc-900 mt-6 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-550 text-xs w-full">
           <div className="flex items-center gap-1.5 font-medium">
             <ShieldCheck className="h-4 w-4" />
-            <span>Securely saved in Supabase PostgreSQL</span>
+            <span>Securely ServedL</span>
           </div>
-          <span className="uppercase tracking-wider font-semibold">&copy; {new Date().getFullYear()} SHIBILI AMAN. All rights reserved.</span>
+          <span className="uppercase tracking-wider font-semibold">&copy; {new Date().getFullYear()} SHIBILI AMAN TK. All rights reserved.</span>
         </div>
       </footer>
     </div>

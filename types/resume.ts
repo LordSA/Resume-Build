@@ -10,6 +10,7 @@ export interface ResumeData {
     website?: string;
     github?: string;
     linkedin?: string;
+    photoUrl?: string;
   };
   summary: string;
   education: Array<{

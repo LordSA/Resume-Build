@@ -10,6 +10,8 @@ export interface ThemeConfig {
   borderRadius: "none" | "small" | "medium" | "large";
   fontSize: "sm" | "base" | "lg";
   sectionOrder: string[];
+  customFontName?: string;
+  customFontUrl?: string;
 }
 
 interface ThemeState {
@@ -41,6 +43,8 @@ const defaultTheme: ThemeConfig = {
     "languages",
     "interests",
   ],
+  customFontName: "",
+  customFontUrl: "",
 };
 
 export const useThemeStore = create<ThemeState>((set) => ({

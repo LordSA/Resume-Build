@@ -10,11 +10,11 @@ import { ResumeData } from "@/types/resume";
 import EditorSidebar from "@/components/editor/EditorSidebar";
 import ResumePreview from "@/components/resume/ResumePreview";
 import { useAutosave } from "@/hooks/useAutosave";
+import { toast } from "react-hot-toast";
 import { 
   ArrowLeft, 
   Undo2, 
   Redo2, 
-  Printer, 
   Download, 
   Check, 
   Loader2 
@@ -25,8 +25,8 @@ interface EditorWorkspaceProps {
   resumeId: string;
   initialTitle: string;
   initialTemplate: string;
-  initialResumeData: any;
-  initialThemeConfig: any;
+  initialResumeData: unknown;
+  initialThemeConfig: unknown;
 }
 
 export default function EditorWorkspace({
@@ -37,16 +37,18 @@ export default function EditorWorkspace({
   initialThemeConfig,
 }: EditorWorkspaceProps) {
   const { 
-    setResume, 
     title, 
-    setTitle, 
-    undo, 
-    redo, 
+    resumeData,
+    isSaving, 
+    history, 
     historyIndex, 
-    history,
-    isSaving 
+    setResume, 
+    setTitle,
+    undo, 
+    redo 
   } = useResumeStore();
-  const { setTheme, themeConfig } = useThemeStore();
+
+  const { themeConfig, setTheme } = useThemeStore();
 
   useEffect(() => {
     setResume(resumeId, initialTitle, initialTemplate, initialResumeData as ResumeData);
@@ -57,8 +59,40 @@ export default function EditorWorkspace({
 
   useAutosave();
 
-  const handlePrint = () => {
-    window.print();
+  const handleDownloadPDF = async () => {
+    const element = document.getElementById("resume-print-area");
+    if (!element) {
+      toast.error("Resume content not found");
+      return;
+    }
+
+    try {
+      const html2pdf = (await import("html2pdf.js")).default;
+      
+      const opt = {
+        margin: 0,
+        filename: `${title.trim() || "resume"}.pdf`,
+        image: { type: "jpeg" as const, quality: 0.98 },
+        html2canvas: { 
+          scale: 2, 
+          useCORS: true, 
+          letterRendering: true,
+        },
+        jsPDF: { unit: "mm" as const, format: "a4" as const, orientation: "portrait" as const }
+      };
+
+      toast.promise(
+        html2pdf().from(element).set(opt).save(),
+        {
+          loading: "Generating PDF download...",
+          success: "PDF downloaded successfully!",
+          error: "Failed to generate PDF",
+        }
+      );
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load PDF engine");
+    }
   };
 
   return (
@@ -106,18 +140,18 @@ export default function EditorWorkspace({
             <button
               onClick={redo}
               disabled={historyIndex >= history.length - 1}
-              className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-all"
+              className="p-2 text-zinc-450 hover:text-white hover:bg-zinc-800 rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-all"
             >
               <Redo2 className="h-4 w-4" />
             </button>
           </div>
 
           <button
-            onClick={handlePrint}
-            className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 hover:shadow-[0_0_15px_rgba(37,99,235,0.3)] text-white px-4 py-2.5 text-xs font-semibold tracking-wide transition-all"
+            onClick={handleDownloadPDF}
+            className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 hover:shadow-[0_0_15px_rgba(37,99,235,0.3)] text-white px-4 py-2.5 text-xs font-semibold tracking-wide transition-all cursor-pointer"
           >
-            <Printer className="h-3.5 w-3.5" />
-            Print / PDF
+            <Download className="h-3.5 w-3.5" />
+            Download PDF
           </button>
         </div>
       </header>

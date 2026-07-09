@@ -256,6 +256,13 @@ export default function MinimalTemplate({ data, theme }: TemplateProps) {
       <style dangerouslySetInnerHTML={{ __html: `${fontImport}` }} />
 
       <header className="flex flex-col items-center text-center gap-1.5 border-b pb-6">
+        {personal.photoUrl && (
+          <img 
+            src={personal.photoUrl} 
+            alt={personal.fullName}
+            className="h-20 w-20 rounded-full object-cover border border-zinc-200 mb-3"
+          />
+        )}
         <h1 className="text-3xl font-extrabold tracking-tight uppercase" style={{ color: primaryColor }}>
           {personal.fullName || "Your Full Name"}
         </h1>

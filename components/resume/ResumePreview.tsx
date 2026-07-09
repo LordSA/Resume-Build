@@ -66,11 +66,13 @@ export default function ResumePreview() {
             minHeight: "1123px",
           }}
         >
-          <TemplateRenderer 
-            data={resumeData} 
-            template={template} 
-            theme={themeConfig} 
-          />
+          <div id="resume-print-area" className="w-full h-full">
+            <TemplateRenderer 
+              data={resumeData} 
+              template={template} 
+              theme={themeConfig} 
+            />
+          </div>
         </div>
       </div>
 

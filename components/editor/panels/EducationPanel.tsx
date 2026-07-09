@@ -54,10 +54,17 @@ export default function EducationPanel() {
               key={item.id}
               className="border border-zinc-850 rounded-2xl bg-zinc-900/10 overflow-hidden transition-all"
             >
-              <button
-                type="button"
+              <div
+                role="button"
+                tabIndex={0}
                 onClick={() => setExpandedId(isExpanded ? null : item.id)}
-                className="flex items-center justify-between w-full px-5 py-4 bg-zinc-900/20 hover:bg-zinc-900/40 text-left font-bold text-sm"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setExpandedId(isExpanded ? null : item.id);
+                  }
+                }}
+                className="flex items-center justify-between w-full px-5 py-4 bg-zinc-900/20 hover:bg-zinc-900/30 text-left font-bold text-sm cursor-pointer select-none focus:outline-none focus:bg-zinc-900/30"
               >
                 <div>
                   <span className="text-white">{item.degree || "Degree"}</span>
@@ -72,13 +79,13 @@ export default function EducationPanel() {
                       e.stopPropagation();
                       deleteEducation(item.id);
                     }}
-                    className="p-1 text-zinc-500 hover:text-red-400 transition-all"
+                    className="p-1 text-zinc-500 hover:text-red-400 transition-all cursor-pointer"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
                   {isExpanded ? <ChevronUp className="h-4 w-4 text-zinc-400" /> : <ChevronDown className="h-4 w-4 text-zinc-400" />}
                 </div>
-              </button>
+              </div>
 
               {isExpanded && (
                 <div className="p-5 border-t border-zinc-850/50 grid grid-cols-2 gap-4">

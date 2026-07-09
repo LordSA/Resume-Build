@@ -53,13 +53,22 @@ export default function ModernTemplate({ data, theme }: TemplateProps) {
     >
       <style dangerouslySetInnerHTML={{ __html: `${fontImport}` }} />
 
-      <header className="border-b-2 pb-6 flex flex-col gap-1.5" style={{ borderColor: primaryColor }}>
-        <h1 className="text-3xl font-extrabold tracking-tight" style={{ color: primaryColor }}>
-          {personal.fullName || "Your Full Name"}
-        </h1>
-        <p className="text-lg font-semibold tracking-wide" style={{ color: secondaryColor }}>
-          {personal.jobTitle || "Job Title"}
-        </p>
+      <header className="border-b-2 pb-6 flex justify-between items-center gap-4" style={{ borderColor: primaryColor }}>
+        <div className="flex flex-col gap-1.5">
+          <h1 className="text-3xl font-extrabold tracking-tight" style={{ color: primaryColor }}>
+            {personal.fullName || "Your Full Name"}
+          </h1>
+          <p className="text-lg font-semibold tracking-wide" style={{ color: secondaryColor }}>
+            {personal.jobTitle || "Job Title"}
+          </p>
+        </div>
+        {personal.photoUrl && (
+          <img 
+            src={personal.photoUrl} 
+            alt={personal.fullName}
+            className="h-20 w-20 rounded-full object-cover border border-zinc-200"
+          />
+        )}
       </header>
 
       <div className="grid grid-cols-12 gap-8 mt-6">

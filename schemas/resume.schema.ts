@@ -10,6 +10,7 @@ export const PersonalSchema = z.object({
   website: z.string().url("Invalid URL").optional().or(z.literal("")),
   github: z.string().url("Invalid URL").optional().or(z.literal("")),
   linkedin: z.string().url("Invalid URL").optional().or(z.literal("")),
+  photoUrl: z.string().optional().or(z.literal("")),
 });
 
 export const EducationItemSchema = z.object({
