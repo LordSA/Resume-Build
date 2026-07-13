@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="flex flex-col gap-4 col-span-1 md:col-span-2">
           <div className="flex items-center gap-2.5">
             <img
-              src="/logo.png"
+              src="/nv.svg"
               alt="Logo"
               className="h-8 w-auto opacity-95"
               onError={(e) => {

@@ -3,20 +3,33 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Mail, ShieldCheck, ChevronLeft, CheckCircle } from "lucide-react";
+import { createClient } from "@/lib/client";
+import { Mail, ChevronLeft, CheckCircle } from "lucide-react";
 
 function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
-  const confirmed = searchParams.get("confirmed") === "true";
+  const confirmedParam = searchParams.get("confirmed") === "true";
 
-  const [countdown, setCountdown] = useState(3);
+  const [isConfirmed, setIsConfirmed] = useState(confirmedParam);
+  const [countdown, setCountdown] = useState(5);
+  const supabase = createClient();
 
   useEffect(() => {
-    if (confirmed) {
+    const checkVerification = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user && user.email_confirmed_at) {
+        setIsConfirmed(true);
+      }
+    };
+    checkVerification();
+  }, [supabase]);
+
+  useEffect(() => {
+    if (isConfirmed) {
       if (countdown === 0) {
-        router.push("/login");
+        window.location.href = "/login";
         return;
       }
       const timer = setTimeout(() => {
@@ -24,11 +37,11 @@ function VerifyEmailContent() {
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [confirmed, countdown, router]);
+  }, [isConfirmed, countdown]);
 
   return (
     <div className="mx-auto w-full max-w-[360px] flex flex-col gap-7 my-auto">
-      {confirmed ? (
+      {isConfirmed ? (
         <div className="flex flex-col gap-5 text-center">
           <div className="flex justify-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
@@ -36,7 +49,7 @@ function VerifyEmailContent() {
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <h2 className="text-3xl font-extrabold tracking-tight text-white">Email Verified</h2>
+            <h2 className="text-3xl font-extrabold tracking-tight text-white">Your mail confirmed</h2>
             <p className="text-sm text-zinc-400 mt-1">
               Your email has been confirmed successfully.
             </p>
@@ -91,7 +104,7 @@ export default function VerifyEmailPage() {
             Back
           </Link>
           <img 
-            src="/logo.png" 
+            src="/nv.svg" 
             alt="Logo" 
             className="h-7 w-auto opacity-90"
             onError={(e) => {
@@ -109,22 +122,19 @@ export default function VerifyEmailPage() {
         </Suspense>
 
         <div className="flex items-center gap-1.5 text-[10px] text-zinc-550 font-semibold justify-center mt-12 border-t border-zinc-900/60 pt-4">
-          <ShieldCheck className="h-3.5 w-3.5" />
           <span>Secure authentication via Supabase SSR</span>
         </div>
       </div>
 
       <div className="hidden lg:flex lg:w-[55%] bg-zinc-900 border-l border-zinc-900 relative items-center justify-center p-16 select-none overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-blue-600/5 blur-[120px] pointer-events-none" />
+
         <div className="max-w-[480px] flex flex-col gap-6 relative z-10">
-          <div className="text-[120px] font-black text-blue-500/10 leading-none absolute -top-16 -left-10 select-none pointer-events-none">
-            &#123; &#125;
-          </div>
           <h3 className="text-3xl font-extrabold tracking-tight leading-tight text-white mt-8">
-            Confirm and start building.
+            Confirm your account.
           </h3>
           <p className="text-sm text-zinc-400 leading-relaxed font-medium">
-            Confirming your email ensures your workspace templates and AI-powered operations are saved securely in your private user dashboard.
+            Click the link we emailed to confirm your email verification securely and log in to the resume styling environment.
           </p>
         </div>
       </div>

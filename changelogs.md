@@ -4,12 +4,29 @@ All notable changes to the Resume Solutions project will be documented in this f
 
 ---
 
+## [2026-07-13] - Authentication Redirect Flow & Middleware Fixes
+
+### Added
+- **Authentication Parameter Redirection (`/auth/callback/route.ts`)**: Updated the authentication callback to read and honor the `next` query parameter, forwarding successful logins directly to their planned routes.
+- **Immediate Dashboard Google Authentication**: Changed Google OAuth options in both login and signup screens to include `?next=/dashboard`, letting authenticated users go directly to the work dashboard instead of seeing incorrect email verification screens.
+- **Google OAuth Login Loop Resolution**: Removed the bug where Google OAuth sign-ins were redirected to `/verify-email?confirmed=true` and then looped back to `/login` without ever letting the user view the dashboard.
+- **Direct Magic Link Log In**: Changed email login magic link parameters to redirect straight to the dashboard (`/auth/callback?next=/dashboard`) when the link is clicked, while normal input in the interface still prompts for and verifies the OTP code.
+- **Instant Email Sign Up Redirection**: Configured the `/verify-email` page countdown completion to redirect confirmed signups directly to `/dashboard` (since the verification link already establishes an active logged-in session).
+- **Password Auth & Forgot/Reset Password pages**: Implemented full support for standard Email/Password authentication on login/signup forms, along with recovery links and screens.
+- **Profile Settings Panel in Dashboard**: Added an account profile management tab inside `dashboard-client.tsx` to handle changing candidate names, updating passwords, and viewing account security.
+- **Vector nv.svg Logo Override**: Upgraded the brand icon to use `/nv.svg` vector logo everywhere, and removed the "Resume Solutions" name text from navbar headers.
+
+### Fixed
+- **Middleware Session Detection (`/lib/middleware.ts`)**: Replaced the invalid call `supabase.auth.getClaims()` with the standard `supabase.auth.getUser()`. This correctly resolves cookie sessions and prevents the middleware from kicking authenticated users back to the `/login` page.
+
+---
+
 ## [2026-07-09] - Phase 4: Magic-Link Signup, verify-email check-page & jsPDF Integration
 
 ### Added
 - **Check Email Verification Page (`verify-email`)**: Added a new static `/verify-email` page:
   - Displays check-inbox envelope instructions with the registered email.
-  - Automatically handles email confirmation query triggers. When `confirmed=true` is set, it displays a success message with an animated 3-second redirect countdown back to `/login` (which redirects to `/dashboard` via middleware).
+  - Automatically handles email confirmation query triggers. When `confirmed=true` is set, it displays a success message with an animated 3-second redirect countdown.
 - **Magic-Link Signup Flow**: Simplified signup in `signup/page.tsx` to directly send a confirmation link without asking for an OTP code immediately. Users are pushed to `/verify-email` upon click.
 - **Direct jsPDF HTML Rendering**: Replaced browser printing fallback with direct client-side `jsPDF` HTML rendering (`doc.html()`) inside `editor-workspace.tsx`.
 - **Modern Color Support in PDF Engine**: Upgraded `html2canvas` to `html2canvas-pro` in root dependencies. Registered `html2canvas-pro` globally for `jsPDF` to parse CSS Color Module Level 4 spaces (like `oklch` and `lab`) without throwing exceptions.

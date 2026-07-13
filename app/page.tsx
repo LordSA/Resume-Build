@@ -158,14 +158,13 @@ export default function Home() {
             className="flex items-center gap-2.5"
           >
             <img
-              src="/logo.png"
+              src="/nv.svg"
               alt="Logo"
               className="h-8 w-auto opacity-95"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
               }}
             />
-            <span className="font-extrabold tracking-tight text-lg text-white">Resume Solutions</span>
           </motion.div>
 
           <motion.div

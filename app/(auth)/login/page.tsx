@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/client";
 import { toast } from "react-hot-toast";
-import { Loader2, ArrowRight, ArrowLeft, Mail, ChevronLeft, ShieldCheck } from "lucide-react";
+import { Loader2, ArrowRight, ArrowLeft, Mail, ChevronLeft, ShieldCheck, Lock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function LoginPage() {
@@ -13,6 +13,8 @@ export default function LoginPage() {
   const supabase = createClient();
 
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginMethod, setLoginMethod] = useState<"otp" | "password">("otp");
   const [otpToken, setOtpToken] = useState("");
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,8 +39,8 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          shouldCreateUser: false,
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          shouldCreateUser: true,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
         },
       });
 
@@ -91,6 +93,34 @@ export default function LoginPage() {
     }
   };
 
+  const handlePasswordLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      toast.error("Please enter email and password");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast.error(error.message);
+      } else if (data.session) {
+        toast.success("Successfully logged in!");
+        router.push("/dashboard");
+        router.refresh();
+      }
+    } catch (err: any) {
+      toast.error("Failed to sign in with password");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleResend = async () => {
     if (countdown > 0) return;
     setIsLoading(true);
@@ -98,8 +128,8 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          shouldCreateUser: false,
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          shouldCreateUser: true,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
         },
       });
       if (error) throw error;
@@ -118,7 +148,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
         },
       });
       if (error) throw error;
@@ -130,21 +160,19 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen w-full bg-zinc-950 text-white selection:bg-blue-600/30 font-sans relative overflow-hidden">
-      
       <div className="w-full lg:w-[45%] flex flex-col justify-between p-8 sm:p-12 relative z-10 bg-zinc-950">
-        
         <div className="flex items-center justify-between w-full mb-12">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-900 bg-zinc-900/30 text-xs font-semibold text-zinc-400 hover:text-white hover:border-zinc-800 transition-all cursor-pointer"
           >
             <ChevronLeft className="h-4 w-4" />
             Back
           </Link>
           
-          <img 
-            src="/logo.png" 
-            alt="Logo" 
+          <img
+            src="/nv.svg"
+            alt="Logo"
             className="h-7 w-auto opacity-90"
             onError={(e) => {
               e.currentTarget.style.display = "none";
@@ -180,25 +208,153 @@ export default function LoginPage() {
           )}
 
           {!isOtpSent && (
-            <div className="relative flex items-center justify-center py-1.5">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-zinc-900"></div>
-              </div>
-              <span className="relative bg-zinc-950 px-4 text-[10px] font-bold text-zinc-550 uppercase tracking-widest">
-                Or with email code
-              </span>
+            <div className="flex border border-zinc-900 rounded-xl bg-zinc-950 p-1">
+              <button
+                type="button"
+                onClick={() => setLoginMethod("otp")}
+                className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  loginMethod === "otp"
+                    ? "bg-zinc-900 text-white shadow-sm"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                Email Code
+              </button>
+              <button
+                type="button"
+                onClick={() => setLoginMethod("password")}
+                className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  loginMethod === "password"
+                    ? "bg-zinc-900 text-white shadow-sm"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                Password
+              </button>
             </div>
           )}
 
           <AnimatePresence mode="wait">
-            {!isOtpSent ? (
+            {loginMethod === "otp" ? (
+              <div key="otp-container">
+                {!isOtpSent ? (
+                  <motion.form
+                    key="email-form"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.15 }}
+                    onSubmit={handleSendOTP}
+                    className="flex flex-col gap-4.5"
+                  >
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
+                        Email Address
+                      </label>
+                      <div className="relative">
+                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                        <input
+                          type="email"
+                          placeholder="name@example.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 pl-11 pr-4 py-3 text-sm text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 animate-none"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin text-white" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          Next
+                          <ArrowRight className="h-4 w-4 text-white" />
+                        </>
+                      )}
+                    </button>
+                  </motion.form>
+                ) : (
+                  <motion.form
+                    key="otp-form"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.15 }}
+                    onSubmit={handleVerifyOTP}
+                    className="flex flex-col gap-4.5"
+                  >
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
+                        6-Digit Verification Code
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="123456"
+                        maxLength={6}
+                        value={otpToken}
+                        onChange={(e) => setOtpToken(e.target.value.replace(/\D/g, ""))}
+                        className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 px-4 py-3 text-center text-lg font-bold letter-spacing-lg text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 tracking-[0.25em]"
+                        required
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin text-white" />
+                          Verifying...
+                        </>
+                      ) : (
+                        <>
+                          Verify & Login
+                          <ArrowRight className="h-4 w-4 text-white" />
+                        </>
+                      )}
+                    </button>
+
+                    <div className="flex items-center justify-between text-xs mt-2">
+                      <button
+                        type="button"
+                        onClick={() => setIsOtpSent(false)}
+                        className="flex items-center gap-1 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                      >
+                        <ArrowLeft className="h-3.5 w-3.5" />
+                        Back
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleResend}
+                        disabled={countdown > 0 || isLoading}
+                        className="text-blue-400 hover:underline disabled:text-zinc-500 disabled:no-underline transition-all cursor-pointer font-semibold"
+                      >
+                        {countdown > 0 ? `Resend (${countdown}s)` : "Resend"}
+                      </button>
+                    </div>
+                  </motion.form>
+                )}
+              </div>
+            ) : (
               <motion.form
-                key="email-form"
+                key="password-form"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.15 }}
-                onSubmit={handleSendOTP}
+                onSubmit={handlePasswordLogin}
                 className="flex flex-col gap-4.5"
               >
                 <div className="flex flex-col gap-1.5">
@@ -212,7 +368,32 @@ export default function LoginPage() {
                       placeholder="name@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 pl-11 pr-4 py-3 text-sm text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 animate-none"
+                      className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 pl-11 pr-4 py-3 text-sm text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex justify-between items-center">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
+                      Password
+                    </label>
+                    <Link
+                      href="/forgot-password"
+                      className="text-[10px] font-bold text-blue-400 hover:underline"
+                    >
+                      Forgot Password?
+                    </Link>
+                  </div>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 pl-11 pr-4 py-3 text-sm text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10"
                       required
                     />
                   </div>
@@ -226,78 +407,15 @@ export default function LoginPage() {
                   {isLoading ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin text-white" />
-                      Sending...
+                      Logging in...
                     </>
                   ) : (
                     <>
-                      Next
+                      Log In
                       <ArrowRight className="h-4 w-4 text-white" />
                     </>
                   )}
                 </button>
-              </motion.form>
-            ) : (
-              <motion.form
-                key="otp-form"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.15 }}
-                onSubmit={handleVerifyOTP}
-                className="flex flex-col gap-4.5"
-              >
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
-                    6-Digit Verification Code
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="123456"
-                    maxLength={6}
-                    value={otpToken}
-                    onChange={(e) => setOtpToken(e.target.value.replace(/\D/g, ""))}
-                    className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 px-4 py-3 text-center text-lg font-bold letter-spacing-lg text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 tracking-[0.25em]"
-                    required
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin text-white" />
-                      Verifying...
-                    </>
-                  ) : (
-                    <>
-                      Verify & Login
-                      <ArrowRight className="h-4 w-4 text-white" />
-                    </>
-                  )}
-                </button>
-
-                <div className="flex items-center justify-between text-xs mt-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsOtpSent(false)}
-                    className="flex items-center gap-1 text-zinc-400 hover:text-white transition-colors cursor-pointer"
-                  >
-                    <ArrowLeft className="h-3.5 w-3.5" />
-                    Back
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleResend}
-                    disabled={countdown > 0 || isLoading}
-                    className="text-blue-400 hover:underline disabled:text-zinc-500 disabled:no-underline transition-all cursor-pointer font-semibold"
-                  >
-                    {countdown > 0 ? `Resend (${countdown}s)` : "Resend"}
-                  </button>
-                </div>
               </motion.form>
             )}
           </AnimatePresence>
@@ -313,17 +431,13 @@ export default function LoginPage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-blue-600/5 blur-[120px] pointer-events-none" />
 
         <div className="max-w-[480px] flex flex-col gap-6 relative z-10">
-          <div className="text-[120px] font-black text-blue-500/10 leading-none absolute -top-16 -left-10 select-none pointer-events-none">
-            &#123; &#125;
-          </div>
-          
           <h3 className="text-3xl font-extrabold tracking-tight leading-tight text-white mt-8">
             Build clean, print-perfect resumes in minutes.
           </h3>
           <p className="text-sm text-zinc-400 leading-relaxed font-medium">
             Access your personal workspace, manage sections dynamically, select premium presets, and export verified, ATS-compatible PDFs. Stored securely in PostgreSQL database.
           </p>
-          
+
           <div className="flex flex-col gap-4.5 mt-4 border-t border-zinc-800 pt-6">
             {[
               "Instant document rendering with Zero Layout Drift",
@@ -340,7 +454,6 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-
     </div>
   );
 }

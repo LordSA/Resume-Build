@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/client";
 import { toast } from "react-hot-toast";
-import { FileText, LogOut, Plus, Trash2, Edit3, Clock } from "lucide-react";
+import { FileText, LogOut, Plus, Trash2, Edit3, Clock, User, Shield, AlertTriangle, Key, Loader2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { motion } from "framer-motion";
 
@@ -26,6 +26,23 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
   const supabase = createClient();
   const [resumes, setResumes] = useState<ResumeItem[]>(initialResumes);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"resumes" | "profile">("resumes");
+
+  const [fullName, setFullName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [isSavingPassword, setIsSavingPassword] = useState(false);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.user_metadata?.full_name) {
+        setFullName(user.user_metadata.full_name);
+      }
+    };
+    fetchUserData();
+  }, [supabase]);
 
   const handleLogout = async () => {
     try {
@@ -55,6 +72,60 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
     }
   };
 
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSavingProfile(true);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: { full_name: fullName }
+      });
+      if (error) throw error;
+      toast.success("Profile updated successfully!");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update profile");
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!password || !confirmPassword) {
+      toast.error("Please fill in all password fields");
+      return;
+    }
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    setIsSavingPassword(true);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: password
+      });
+      if (error) throw error;
+      toast.success("Password updated successfully!");
+      setPassword("");
+      setConfirmPassword("");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update password");
+    } finally {
+      setIsSavingPassword(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!confirm("WARNING: Are you sure you want to delete your account? This will permanently delete all your resumes and profile data. This action cannot be undone.")) {
+      return;
+    }
+    toast.error("Account deletion requires admin privileges. Please contact support.");
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -81,10 +152,14 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
       <header className="border-b border-zinc-800/80 bg-zinc-900/10 backdrop-blur-md sticky top-0 z-50">
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,0.4)]">
-              <FileText className="h-4.5 w-4.5 text-white" />
-            </div>
-            <span className="font-bold tracking-tight text-lg">Resume Solutions</span>
+            <img
+              src="/nv.svg"
+              alt="Logo"
+              className="h-8 w-auto opacity-95"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
           </div>
 
           <div className="flex items-center gap-4">
@@ -103,105 +178,264 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
       </header>
 
       <main className="flex-1 mx-auto max-w-7xl w-full px-6 py-12 z-10">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10">
-          <div>
-            <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl bg-gradient-to-r from-white via-zinc-200 to-zinc-455 bg-clip-text text-transparent">
-              My Resumes
-            </h1>
-            <p className="text-zinc-400 text-sm mt-1">
-              Create, edit, and organize your resumes with professional ATS-friendly layouts
-            </p>
+        <div className="flex flex-col gap-6 mb-10">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+                Dashboard
+              </h1>
+              <p className="text-zinc-400 text-sm mt-1">
+                Manage your professional documents and account credentials
+              </p>
+            </div>
+
+            {activeTab === "resumes" && (
+              <button
+                onClick={() => router.push("/create")}
+                className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 hover:shadow-[0_0_20px_rgba(37,99,235,0.35)] px-5 py-3 text-sm font-semibold transition-all w-full sm:w-auto justify-center cursor-pointer"
+              >
+                <Plus className="h-4 w-4" />
+                Create Resume
+              </button>
+            )}
           </div>
 
-          <button
-            onClick={() => router.push("/create")}
-            className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 hover:shadow-[0_0_20px_rgba(37,99,235,0.35)] px-5 py-3 text-sm font-semibold transition-all w-full sm:w-auto justify-center cursor-pointer"
-          >
-            <Plus className="h-4 w-4" />
-            Create Resume
-          </button>
+          <div className="flex border-b border-zinc-800 gap-6 mt-2">
+            <button
+              onClick={() => setActiveTab("resumes")}
+              className={`pb-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
+                activeTab === "resumes"
+                  ? "border-blue-500 text-white"
+                  : "border-transparent text-zinc-450 hover:text-white"
+              }`}
+            >
+              My Resumes
+            </button>
+            <button
+              onClick={() => setActiveTab("profile")}
+              className={`pb-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
+                activeTab === "profile"
+                  ? "border-blue-500 text-white"
+                  : "border-transparent text-zinc-450 hover:text-white"
+              }`}
+            >
+              Profile Settings
+            </button>
+          </div>
         </div>
 
-        {resumes.length === 0 ? (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center border border-dashed border-zinc-800 rounded-3xl py-24 px-6 text-center bg-zinc-900/10"
-          >
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 mb-6">
-              <FileText className="h-8 w-8" />
-            </div>
-            <h3 className="text-xl font-bold mb-2">No resumes created yet</h3>
-            <p className="text-sm text-zinc-400 max-w-sm mb-8 leading-relaxed">
-              Paste your career info, experience, or LinkedIn bio, and our builder will structure a polished, ATS-optimized JSON resume in seconds.
-            </p>
-            <button
-              onClick={() => router.push("/create")}
-              className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 px-5 py-3 text-sm font-semibold transition-all cursor-pointer"
+        {activeTab === "resumes" ? (
+          resumes.length === 0 ? (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center justify-center border border-dashed border-zinc-800 rounded-3xl py-24 px-6 text-center bg-zinc-900/10"
             >
-              <Plus className="h-4 w-4" />
-              Build Your First Resume
-            </button>
-          </motion.div>
-        ) : (
-          <motion.div 
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {resumes.map((resume) => (
-              <motion.div
-                key={resume.id}
-                variants={cardVariants}
-                whileHover={{ y: -4, borderColor: "rgba(59, 130, 246, 0.3)" }}
-                className="group relative flex flex-col justify-between rounded-2xl border border-zinc-900 bg-zinc-900/10 p-6 transition-all duration-300"
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 mb-6">
+                <FileText className="h-8 w-8" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">No resumes created yet</h3>
+              <p className="text-sm text-zinc-400 max-w-sm mb-8 leading-relaxed">
+                Paste your career info, experience, or LinkedIn bio, and our builder will structure a polished, ATS-optimized JSON resume in seconds.
+              </p>
+              <button
+                onClick={() => router.push("/create")}
+                className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 px-5 py-3 text-sm font-semibold transition-all cursor-pointer"
               >
-                <div className="mb-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
-                        <FileText className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-lg group-hover:text-blue-400 transition-colors line-clamp-1">
-                          {resume.title}
-                        </h3>
-                        <span className="inline-block px-2.5 py-0.5 mt-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300">
-                          {resume.template}
-                        </span>
+                <Plus className="h-4 w-4" />
+                Build Your First Resume
+              </button>
+            </motion.div>
+          ) : (
+            <motion.div 
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {resumes.map((resume) => (
+                <motion.div
+                  key={resume.id}
+                  variants={cardVariants}
+                  whileHover={{ y: -4, borderColor: "rgba(59, 130, 246, 0.3)" }}
+                  className="group relative flex flex-col justify-between rounded-2xl border border-zinc-900 bg-zinc-900/10 p-6 transition-all duration-300"
+                >
+                  <div className="mb-6">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                          <FileText className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-lg group-hover:text-blue-400 transition-colors line-clamp-1">
+                            {resume.title}
+                          </h3>
+                          <span className="inline-block px-2.5 py-0.5 mt-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300">
+                            {resume.template}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex flex-col gap-4 border-t border-zinc-800/60 pt-4">
-                  <div className="flex items-center gap-4 text-xs text-zinc-400 font-medium">
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3.5 w-3.5 text-zinc-550" />
-                      Updated {formatDistanceToNow(new Date(resume.updated_at))} ago
-                    </span>
+                  <div className="flex flex-col gap-4 border-t border-zinc-800/60 pt-4">
+                    <div className="flex items-center gap-4 text-xs text-zinc-400 font-medium">
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3.5 w-3.5 text-zinc-550" />
+                        Updated {formatDistanceToNow(new Date(resume.updated_at))} ago
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2.5 w-full">
+                      <button
+                        onClick={() => router.push(`/editor/${resume.id}`)}
+                        className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-zinc-900 border border-zinc-850 hover:bg-zinc-800 hover:border-zinc-700 py-2.5 text-sm font-semibold transition-all text-blue-400 hover:text-blue-300 cursor-pointer"
+                      >
+                        <Edit3 className="h-3.5 w-3.5" />
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(resume.id)}
+                        disabled={isDeleting === resume.id}
+                        className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-900/50 border border-zinc-850 hover:bg-red-500/10 hover:border-red-500/30 text-zinc-400 hover:text-red-400 transition-all disabled:opacity-50 cursor-pointer"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+          >
+            <div className="lg:col-span-2 flex flex-col gap-8">
+              <div className="rounded-2xl border border-zinc-900 bg-zinc-900/10 p-6 flex flex-col gap-6">
+                <div className="flex items-center gap-3 border-b border-zinc-900 pb-4">
+                  <User className="h-5 w-5 text-blue-400" />
+                  <h3 className="text-lg font-bold">Personal Information</h3>
+                </div>
+                
+                <form onSubmit={handleUpdateProfile} className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs text-zinc-450 font-semibold">Email Address</label>
+                    <input
+                      type="text"
+                      value={userEmail}
+                      disabled
+                      className="w-full rounded-xl border border-zinc-900 bg-zinc-950/50 px-4 py-3 text-sm text-zinc-500 cursor-not-allowed"
+                    />
+                    <span className="text-[10px] text-zinc-550">Contact support to change your account email address.</span>
                   </div>
 
-                  <div className="flex items-center gap-2.5 w-full">
-                    <button
-                      onClick={() => router.push(`/editor/${resume.id}`)}
-                      className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-zinc-900 border border-zinc-850 hover:bg-zinc-800 hover:border-zinc-700 py-2.5 text-sm font-semibold transition-all text-blue-400 hover:text-blue-300 cursor-pointer"
-                    >
-                      <Edit3 className="h-3.5 w-3.5" />
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(resume.id)}
-                      disabled={isDeleting === resume.id}
-                      className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-900/50 border border-zinc-850 hover:bg-red-500/10 hover:border-red-500/30 text-zinc-400 hover:text-red-400 transition-all disabled:opacity-50 cursor-pointer"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs text-zinc-450 font-semibold">Full Name</label>
+                    <input
+                      type="text"
+                      placeholder="Your name"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 px-4 py-3 text-sm text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10"
+                    />
                   </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSavingProfile}
+                    className="flex h-10 w-fit px-5 items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-sm disabled:opacity-50 cursor-pointer mt-2"
+                  >
+                    {isSavingProfile ? (
+                      <>
+                        <Loader2 className="h-3.5 w-3.5 animate-spin text-white" />
+                        Saving Profile...
+                      </>
+                    ) : (
+                      "Save Profile"
+                    )}
+                  </button>
+                </form>
+              </div>
+
+              <div className="rounded-2xl border border-zinc-900 bg-zinc-900/10 p-6 flex flex-col gap-6">
+                <div className="flex items-center gap-3 border-b border-zinc-900 pb-4">
+                  <Key className="h-5 w-5 text-blue-400" />
+                  <h3 className="text-lg font-bold">Update Password</h3>
                 </div>
-              </motion.div>
-            ))}
+                
+                <form onSubmit={handleUpdatePassword} className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs text-zinc-450 font-semibold">New Password</label>
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 px-4 py-3 text-sm text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10"
+                      required
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs text-zinc-450 font-semibold">Confirm Password</label>
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 px-4 py-3 text-sm text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10"
+                      required
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSavingPassword}
+                    className="flex h-10 w-fit px-5 items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-sm disabled:opacity-50 cursor-pointer mt-2"
+                  >
+                    {isSavingPassword ? (
+                      <>
+                        <Loader2 className="h-3.5 w-3.5 animate-spin text-white" />
+                        Updating Password...
+                      </>
+                    ) : (
+                      "Update Password"
+                    )}
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-6">
+              <div className="rounded-2xl border border-zinc-900 bg-zinc-900/10 p-6 flex flex-col gap-4">
+                <div className="flex items-center gap-2.5 text-amber-500 font-bold border-b border-zinc-900 pb-3">
+                  <Shield className="h-4.5 w-4.5" />
+                  <h4 className="text-sm uppercase tracking-wider">Account Status</h4>
+                </div>
+                <div className="text-xs text-zinc-400 leading-relaxed font-semibold">
+                  Your email has been confirmed successfully, and the workspace remains fully secured via active SSL cookies.
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-red-950 bg-red-950/5 p-6 flex flex-col gap-4">
+                <div className="flex items-center gap-2.5 text-red-400 font-bold border-b border-red-950 pb-3">
+                  <AlertTriangle className="h-4.5 w-4.5" />
+                  <h4 className="text-sm uppercase tracking-wider">Danger Zone</h4>
+                </div>
+                <p className="text-xs text-zinc-450 leading-relaxed">
+                  Permanently delete your account and all associated resumes. This action is irreversible.
+                </p>
+                <button
+                  onClick={handleDeleteAccount}
+                  className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-red-950/20 border border-red-950/40 hover:bg-red-500/10 hover:border-red-500/30 text-red-400 text-xs font-bold transition-all cursor-pointer"
+                >
+                  Delete Account
+                </button>
+              </div>
+            </div>
           </motion.div>
         )}
       </main>

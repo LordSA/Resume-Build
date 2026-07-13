@@ -22,17 +22,30 @@ The application is built using a modern, scalable web stack:
 
 ---
 
-## 3. Directory Structure
+## 3. Authentication & Callback Redirect Flow
+To ensure correct redirection behavior and avoid login loops or misplaced verification pages:
+- **Google OAuth (Sign In/Sign Up)**: Initiated via `supabase.auth.signInWithOAuth`. The redirect URL is configured as `/auth/callback?next=/dashboard`. This bypasses the email verification screens and takes the user directly to the workspace dashboard.
+- **Magic Link Log In**: Initiated via `signInWithOtp` (with `shouldCreateUser: false`). The link redirect is `/auth/callback?next=/dashboard`, allowing users who click the link to log in and land straight on `/dashboard`.
+- **Magic Link Sign Up**: Initiated via `signInWithOtp` (with `shouldCreateUser: true`). The link redirect is `/auth/callback?next=/verify-email?confirmed=true`. Clicking the link signs the user up, logs them in, and redirects them to the "Email Verified" screen.
+- **Auth Callback (`/auth/callback/route.ts`)**: Exchanges the auth code for a session and redirects to the parsed `next` parameter (defaulting to `/dashboard`).
+- **Redirection after verification (`/verify-email/page.tsx`)**: Once the email is successfully confirmed and the 5-second countdown ends, users are redirected to `/login` (which instantly redirects them to `/dashboard` via middleware).
+- **Session Middleware (`/lib/middleware.ts`)**: Implements session cookie synchronization. It calls `supabase.auth.getUser()` to retrieve and validate the user JWT on every request, routing active sessions away from `/login` and `/signup` directly to `/dashboard`.
+
+---
+
+## 4. Directory Structure
 
 ```text
 resume-build/
-├── public/                 # Static assets (fonts, icons, logo.png, og-image.png)
+├── public/                 # Static assets (fonts, nv.svg, og-image.png)
 ├── app/                    # Next.js App Router folders
 │   ├── (auth)/             # Authentication group
-│   │   ├── login/          # Login page (split-screen with Google OAuth + Email OTP)
-│   │   ├── signup/         # Signup page (split-screen with Google OAuth + Magic Link)
-│   │   └── verify-email/   # Check mail confirmation page with 3s login redirect
-│   ├── dashboard/          # User Dashboard for listing/managing resumes
+│   │   ├── login/          # Login page (split-screen with Google OAuth + OTP + Passwords)
+│   │   ├── signup/         # Signup page (split-screen with Google OAuth + Links + Passwords)
+│   │   ├── forgot-password/# Forgot password request page
+│   │   ├── reset-password/ # Password reset handler page
+│   │   └── verify-email/   # Check mail confirmation page with 5s login redirect
+│   ├── dashboard/          # User Dashboard for listing resumes & profile settings
 │   ├── create/             # Initial prompt paste page for AI resume generation
 │   ├── editor/             # Main workspace editor interface
 │   │   └── [id]/           # Dynamic route for a specific resume
@@ -78,7 +91,7 @@ resume-build/
 
 ---
 
-## 4. Data Models & Schemas
+## 5. Data Models & Schemas
 
 ### Database Schema (Supabase PostgreSQL)
 We store the resume structure as a unified JSON Document. This avoids complex table joins and makes scaling new resume sections or settings simple.
@@ -97,7 +110,7 @@ The SQL setup definitions (tables, constraints, triggers, and Row Level Security
 | `created_at`  | `timestamp with time zone`| Auto-generated creation timestamp |
 | `updated_at`  | `timestamp with time zone`| Timestamp updated on every save |
 
-#### `resume_versions` Table (For Revision History)
+#### `resume_versions` Table (For History & Restore)
 | Column Name   | Type                     | Description |
 |---------------|--------------------------|-------------|
 | `id`          | `uuid` (PK)              | Unique identifier of version entry |
@@ -158,7 +171,7 @@ export interface ThemeConfig {
 
 ---
 
-## 5. Storage Architecture
+## 6. Storage Architecture
 
 ### Supabase Storage (`resume-assets` bucket)
 - **Profile Photos**: Uploaded via `PersonalPanel.tsx`. Files stored under `photos/{userId}/{timestamp}.webp`. Public URLs are obtained via `getPublicUrl()`.
@@ -167,7 +180,7 @@ export interface ThemeConfig {
 
 ---
 
-## 6. AI Integration & Failover Flow
+## 7. AI Integration & Failover Flow
 To prevent hitting free-tier limits, our AI gateway is designed with an automatic failover strategy.
 All client features request AI processing via single abstractions (`generateResume`, `rewriteSection`). Internally, the gateway does:
 
@@ -177,9 +190,9 @@ All client features request AI processing via single abstractions (`generateResu
 
 ---
 
-## 7. PDF Generation
+## 8. PDF Generation
 The download system targets the `.resume-print-container` element inside `ResumePreview.tsx`:
-- **Engine**: Dynamic client-side `jsPDF` HTML renderer (`doc.html()`) registered with custom global `html2canvas-pro` resolver.
+- **Engine**: Dynamic client-side `jsPDF` HTML rendering (`doc.html()`) registered with custom global `html2canvas-pro` resolver.
 - **Transforms & Scaling Sandbox**: Integrates an `onclone` sandbox callback to isolate the target element (placing it in an unscaled, absolute wrapper at `0, 0` of width `794px` and height `auto`). This removes parent scale matrices and overflow clips that cause blank output pages.
 - **Height Auto Override**: Dynamically resets the height and min-height styles of `#resume-print-area` inside `onclone` to `"auto"`. Also resets the html/body elements inside the cloned document sandbox to `overflow: visible; height: auto`. This allows multi-page resumes to grow naturally beyond one page in the render sandbox, enabling full multi-page PDF generation.
 - **Outer border/Shadow Removal**: Overrides the cloned element and outer sandbox wrapper styles to `border: none; outline: none; boxShadow: none;` inside `onclone`. This completely prevents grey borders, page outlines, or blurry page-break shadows from rendering on the PDF.
@@ -189,7 +202,7 @@ The download system targets the `.resume-print-container` element inside `Resume
 
 ---
 
-## 8. Key Component Map
+## 9. Key Component Map
 
 | Component | Path | Responsibility |
 |-----------|------|----------------|
