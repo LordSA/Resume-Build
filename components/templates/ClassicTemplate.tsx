@@ -246,9 +246,9 @@ export default function ClassicTemplate({ data, theme }: TemplateProps) {
   };
 
   return (
-    <div 
-      className="p-12 w-full min-h-[1123px] text-zinc-900 bg-white flex flex-col gap-6"
-      style={{ 
+    <div
+      className="px-12 pt-10 pb-10 print:pt-2 print:pb-0 w-full min-h-[1123px] text-zinc-900 bg-white flex flex-col gap-6"
+      style={{
         fontFamily: `'${activeFont}', serif`,
         color: textColor || "#0f172a",
         backgroundColor: backgroundColor || "#ffffff"
@@ -259,8 +259,8 @@ export default function ClassicTemplate({ data, theme }: TemplateProps) {
       <header className="flex justify-between items-end border-b-2 pb-6" style={{ borderColor: primaryColor }}>
         <div className="flex items-center gap-4">
           {personal.photoUrl && (
-            <img 
-              src={personal.photoUrl} 
+            <img
+              src={personal.photoUrl}
               alt={personal.fullName}
               className="h-16 w-16 rounded-full object-cover border border-zinc-200"
             />

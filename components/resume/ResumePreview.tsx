@@ -1,6 +1,7 @@
 "use client";
 
 import { useResumeStore } from "@/store/resumeStore";
+import { useEffect, useRef, useState } from "react";
 import { useThemeStore } from "@/store/themeStore";
 import { useEditorStore } from "@/store/editorStore";
 import TemplateRenderer from "./TemplateRenderer";
@@ -10,6 +11,22 @@ export default function ResumePreview() {
   const { resumeData, template } = useResumeStore();
   const { themeConfig } = useThemeStore();
   const { previewZoom, setPreviewZoom } = useEditorStore();
+  const [totalPages, setTotalPages] = useState(1);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!contentRef.current) return;
+
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const height = entry.contentRect.height;
+        setTotalPages(Math.max(1, Math.ceil(height / 1123)));
+      }
+    });
+
+    observer.observe(contentRef.current);
+    return () => observer.disconnect();
+  }, [resumeData]);
 
   if (!resumeData) {
     return (
@@ -62,10 +79,23 @@ export default function ResumePreview() {
           style={{
             transform: `scale(${previewZoom})`,
             width: "794px",
-            minHeight: "1123px",
+            // minHeight: "1123px",
           }}
         >
-          <div id="resume-print-area" className="w-full h-full bg-white text-zinc-900">
+          <div id="resume-print-area" ref={contentRef} className="w-full h-full bg-white text-zinc-900" style={{ minHeight: `${totalPages * 1123}px` }}>
+            <div className="absolute inset-0 pointer-events-none print:hidden z-50">
+              {Array.from({ length: totalPages - 1 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-full border-b-2 border-dashed border-blue-500/60 flex items-center justify-center"
+                  style={{ top: `${(i + 1) * 1123}px` }}
+                >
+                  <span className="bg-blue-500 text-white text-[10px] px-3 py-1 rounded-full font-bold -translate-y-1/2 shadow-md uppercase tracking-widest">
+                    Page {i + 2}
+                  </span>
+                </div>
+              ))}
+            </div>
             <TemplateRenderer
               data={resumeData}
               template={template}
@@ -78,7 +108,7 @@ export default function ResumePreview() {
       <style jsx global>{`
         @page {
           size: A4 potrait;
-          margin: 0;
+          margin: 15mm 0;
         }
         @media print {
           html,

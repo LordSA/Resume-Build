@@ -188,7 +188,7 @@ export default function AtsTemplate({ data, theme }: TemplateProps) {
       case "interests":
         if (languages.length === 0 && interests.length === 0) return null;
         if (sectionId === "interests" && sectionOrder.includes("languages")) return null;
-        
+
         return (
           <div key="personal-details" className={`flex flex-col gap-2 break-inside-avoid ${spacingClass}`}>
             <h3 className="text-xs font-bold uppercase tracking-wider border-b pb-0.5" style={{ color: primaryColor, borderColor: primaryColor }}>
@@ -248,9 +248,9 @@ export default function AtsTemplate({ data, theme }: TemplateProps) {
   ].filter(Boolean);
 
   return (
-    <div 
-      className="p-12 w-full min-h-[1123px] text-zinc-900 bg-white flex flex-col gap-4"
-      style={{ 
+    <div
+      className="px-12 pt-10 pb-10 print:pt-2 print:pb-0 w-full min-h-[1123px] text-zinc-900 bg-white flex flex-col gap-4"
+      style={{
         fontFamily: `'${activeFont}', sans-serif`,
         color: textColor || "#0f172a",
         backgroundColor: backgroundColor || "#ffffff"

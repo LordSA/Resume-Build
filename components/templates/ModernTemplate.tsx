@@ -50,7 +50,7 @@ export default function ModernTemplate({ data, theme }: TemplateProps) {
 
   return (
     <div
-      className="p-8 w-full min-h-[1123px] text-zinc-900 bg-white"
+      className="px-8 pt-10 pb-10 print:pt-0 print:pb-0 w-full min-h-[1123px] text-zinc-900 bg-white"
       style={{
         fontFamily: `'${activeFont}', sans-serif`,
         color: textColor || "#0f172a",

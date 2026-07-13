@@ -59,72 +59,79 @@ export default function EditorWorkspace({
   useAutosave();
 
   const handleDownloadPDF = async () => {
-    const element = document.getElementById("resume-print-area");
-    if (!element) {
-      toast.error("Resume content not found");
-      return;
-    }
-
-    const loadToast = toast.loading("Generating PDF download...");
-    try {
-      const { jsPDF } = await import("jspdf");
-      const html2canvasPro = (await import("html2canvas-pro")).default;
-      (window as any).html2canvas = html2canvasPro;
-
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "pt",
-        format: "a4",
-      });
-
-      const a4WidthPx = 794;
-      const a4HeightPx = 1123;
-
-      const canvas = await html2canvasPro(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-
-
-        ignoreElements: (node) => {
-          return node.nodeName === 'STYLE' || node.nodeName === 'LINK';
-        },
-        onclone: (clonedDoc) => {
-          const el = clonedDoc.getElementById("resume-print-area");
-          if (el) {
-            el.style.width = `${a4WidthPx}px`;
-            el.style.height = 'auto';
-          }
-        }
-      });
-
-      const imgData = canvas.toDataURL("image/jpeg", 1.0);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-
-      const imgProps = pdf.getImageProperties(imgData);
-      const imgHeightInPdf = (imgProps.height * pdfWidth) / imgProps.width;
-
-      let heightLeft = imgHeightInPdf;
-      let position = 0;
-
-      pdf.addImage(imgData, "JPEG", 0, position, pdfWidth, imgHeightInPdf);
-      heightLeft -= pdfHeight;
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeightInPdf;
-        pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, position, pdfWidth, imgHeightInPdf);
-        heightLeft -= pdfHeight;
-      }
-
-      pdf.save(`${title.trim() || "resume"}.pdf`);
-      toast.success("PDF downloaded successfully!", { id: loadToast });
-
-    } catch (err) {
-      console.error(err);
-      toast.error("Direct PDF download failed, opening print dialog...", { id: loadToast });
+    toast.success("Tip: Uncheck 'Headers and footers' in the print window(More settings)!", {
+      duration: 6000, // Keep it on screen long enough to read
+      icon: '💡',
+    });
+    setTimeout(() => {
       window.print();
-    }
+    }, 1000);
+    // const element = document.getElementById("resume-print-area");
+    // if (!element) {
+    //   toast.error("Resume content not found");
+    //   return;
+    // }
+
+    // const loadToast = toast.loading("Generating PDF download...");
+    // try {
+    //   const { jsPDF } = await import("jspdf");
+    //   const html2canvasPro = (await import("html2canvas-pro")).default;
+    //   (window as any).html2canvas = html2canvasPro;
+
+    //   const pdf = new jsPDF({
+    //     orientation: "portrait",
+    //     unit: "pt",
+    //     format: "a4",
+    //   });
+
+    //   const a4WidthPx = 794;
+    //   const a4HeightPx = 1123;
+
+    //   const canvas = await html2canvasPro(element, {
+    //     scale: 2,
+    //     useCORS: true,
+    //     logging: false,
+
+
+    //     ignoreElements: (node) => {
+    //       return node.nodeName === 'STYLE' || node.nodeName === 'LINK';
+    //     },
+    //     onclone: (clonedDoc) => {
+    //       const el = clonedDoc.getElementById("resume-print-area");
+    //       if (el) {
+    //         el.style.width = `${a4WidthPx}px`;
+    //         el.style.height = 'auto';
+    //       }
+    //     }
+    //   });
+
+    //   const imgData = canvas.toDataURL("image/jpeg", 1.0);
+    //   const pdfWidth = pdf.internal.pageSize.getWidth();
+    //   const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    //   const imgProps = pdf.getImageProperties(imgData);
+    //   const imgHeightInPdf = (imgProps.height * pdfWidth) / imgProps.width;
+
+    //   let heightLeft = imgHeightInPdf;
+    //   let position = 0;
+
+    //   pdf.addImage(imgData, "JPEG", 0, position, pdfWidth, imgHeightInPdf);
+    //   heightLeft -= pdfHeight;
+    //   while (heightLeft > 0) {
+    //     position = heightLeft - imgHeightInPdf;
+    //     pdf.addPage();
+    //     pdf.addImage(imgData, "JPEG", 0, position, pdfWidth, imgHeightInPdf);
+    //     heightLeft -= pdfHeight;
+    //   }
+
+    //   pdf.save(`${title.trim() || "resume"}.pdf`);
+    //   toast.success("PDF downloaded successfully!", { id: loadToast });
+
+    // } catch (err) {
+    //   console.error(err);
+    //   toast.error("Direct PDF download failed, opening print dialog...", { id: loadToast });
+    //   window.print();
+    // }
   };
 
   return (
