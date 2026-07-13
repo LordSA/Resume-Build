@@ -39,14 +39,14 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          shouldCreateUser: true,
+          shouldCreateUser: false,
           emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
         },
       });
 
       if (error) {
-        if (error.message.includes("Signups are not allowed")) {
-          toast.error("Account not found. Please sign up first.");
+        if (error.message.toLowerCase().includes("signup") || error.message.toLowerCase().includes("not allowed")) {
+          toast.error("You don't have an account. Please sign up first.");
         } else {
           toast.error(error.message);
         }
@@ -71,15 +71,31 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.auth.verifyOtp({
+      let result = await supabase.auth.verifyOtp({
         email,
         token: otpToken,
         type: "email",
       });
 
-      if (error) {
-        toast.error(error.message);
-      } else if (data.session) {
+      if (result.error && (result.error.message.toLowerCase().includes("expired") || result.error.message.toLowerCase().includes("invalid"))) {
+        result = await supabase.auth.verifyOtp({
+          email,
+          token: otpToken,
+          type: "signup",
+        });
+      }
+
+      if (result.error && (result.error.message.toLowerCase().includes("expired") || result.error.message.toLowerCase().includes("invalid"))) {
+        result = await supabase.auth.verifyOtp({
+          email,
+          token: otpToken,
+          type: "magiclink",
+        });
+      }
+
+      if (result.error) {
+        toast.error(result.error.message);
+      } else if (result.data.session) {
         toast.success("Successfully logged in!");
         router.push("/dashboard");
         router.refresh();
@@ -93,7 +109,7 @@ export default function LoginPage() {
     }
   };
 
-  const handlePasswordLogin = async (e: React.FormEvent) => {
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       toast.error("Please enter email and password");
@@ -102,17 +118,35 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error: pwdError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) {
-        toast.error(error.message);
-      } else if (data.session) {
-        toast.success("Successfully logged in!");
-        router.push("/dashboard");
-        router.refresh();
+      if (pwdError) {
+        if (pwdError.message.toLowerCase().includes("invalid") || pwdError.message.toLowerCase().includes("not found")) {
+          toast.error("Invalid credentials. If you don't have an account, please sign up.");
+        } else {
+          toast.error(pwdError.message);
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: false,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+        },
+      });
+
+      if (otpError) {
+        toast.error("Verified password, but failed to send OTP code.");
+      } else {
+        setIsOtpSent(true);
+        setCountdown(60);
+        toast.success("Password correct! Verification code sent to your email.");
       }
     } catch (err: any) {
       toast.error("Failed to sign in with password");
@@ -128,7 +162,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          shouldCreateUser: true,
+          shouldCreateUser: false,
           emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
         },
       });
@@ -169,7 +203,7 @@ export default function LoginPage() {
             <ChevronLeft className="h-4 w-4" />
             Back
           </Link>
-          
+
           <img
             src="/nv.svg"
             alt="Logo"
@@ -212,22 +246,20 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setLoginMethod("otp")}
-                className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                  loginMethod === "otp"
-                    ? "bg-zinc-900 text-white shadow-sm"
-                    : "text-zinc-400 hover:text-white"
-                }`}
+                className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${loginMethod === "otp"
+                  ? "bg-zinc-900 text-white shadow-sm"
+                  : "text-zinc-400 hover:text-white"
+                  }`}
               >
                 Email Code
               </button>
               <button
                 type="button"
                 onClick={() => setLoginMethod("password")}
-                className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                  loginMethod === "password"
-                    ? "bg-zinc-900 text-white shadow-sm"
-                    : "text-zinc-400 hover:text-white"
-                }`}
+                className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${loginMethod === "password"
+                  ? "bg-zinc-900 text-white shadow-sm"
+                  : "text-zinc-400 hover:text-white"
+                  }`}
               >
                 Password
               </button>
@@ -235,118 +267,114 @@ export default function LoginPage() {
           )}
 
           <AnimatePresence mode="wait">
-            {loginMethod === "otp" ? (
-              <div key="otp-container">
-                {!isOtpSent ? (
-                  <motion.form
-                    key="email-form"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.15 }}
-                    onSubmit={handleSendOTP}
-                    className="flex flex-col gap-4.5"
+            {isOtpSent ? (
+              <motion.form
+                key="otp-form"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.15 }}
+                onSubmit={handleVerifyOTP}
+                className="flex flex-col gap-4.5"
+              >
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
+                    6-Digit Verification Code
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="123456"
+                    maxLength={6}
+                    value={otpToken}
+                    onChange={(e) => setOtpToken(e.target.value.replace(/\D/g, ""))}
+                    className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 px-4 py-3 text-center text-lg font-bold letter-spacing-lg text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 tracking-[0.25em]"
+                    required
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin text-white" />
+                      Verifying...
+                    </>
+                  ) : (
+                    <>
+                      Verify & Login
+                      <ArrowRight className="h-4 w-4 text-white" />
+                    </>
+                  )}
+                </button>
+
+                <div className="flex items-center justify-between text-xs mt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsOtpSent(false)}
+                    className="flex items-center gap-1 text-zinc-400 hover:text-white transition-colors cursor-pointer"
                   >
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
-                        Email Address
-                      </label>
-                      <div className="relative">
-                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                        <input
-                          type="email"
-                          placeholder="name@example.com"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 pl-11 pr-4 py-3 text-sm text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 animate-none"
-                          required
-                        />
-                      </div>
-                    </div>
+                    <ArrowLeft className="h-3.5 w-3.5" />
+                    Back
+                  </button>
 
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
-                    >
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin text-white" />
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          Next
-                          <ArrowRight className="h-4 w-4 text-white" />
-                        </>
-                      )}
-                    </button>
-                  </motion.form>
-                ) : (
-                  <motion.form
-                    key="otp-form"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.15 }}
-                    onSubmit={handleVerifyOTP}
-                    className="flex flex-col gap-4.5"
+                  <button
+                    type="button"
+                    onClick={handleResend}
+                    disabled={countdown > 0 || isLoading}
+                    className="text-blue-400 hover:underline disabled:text-zinc-500 disabled:no-underline transition-all cursor-pointer font-semibold"
                   >
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
-                        6-Digit Verification Code
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="123456"
-                        maxLength={6}
-                        value={otpToken}
-                        onChange={(e) => setOtpToken(e.target.value.replace(/\D/g, ""))}
-                        className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 px-4 py-3 text-center text-lg font-bold letter-spacing-lg text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 tracking-[0.25em]"
-                        required
-                      />
-                    </div>
+                    {countdown > 0 ? `Resend (${countdown}s)` : "Resend"}
+                  </button>
+                </div>
+              </motion.form>
+            ) : loginMethod === "otp" ? (
+              <motion.form
+                key="email-form"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.15 }}
+                onSubmit={handleSendOTP}
+                className="flex flex-col gap-4.5"
+              >
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                    <input
+                      type="email"
+                      placeholder="name@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 pl-11 pr-4 py-3 text-sm text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 animate-none"
+                      required
+                    />
+                  </div>
+                </div>
 
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
-                    >
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin text-white" />
-                          Verifying...
-                        </>
-                      ) : (
-                        <>
-                          Verify & Login
-                          <ArrowRight className="h-4 w-4 text-white" />
-                        </>
-                      )}
-                    </button>
-
-                    <div className="flex items-center justify-between text-xs mt-2">
-                      <button
-                        type="button"
-                        onClick={() => setIsOtpSent(false)}
-                        className="flex items-center gap-1 text-zinc-400 hover:text-white transition-colors cursor-pointer"
-                      >
-                        <ArrowLeft className="h-3.5 w-3.5" />
-                        Back
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={handleResend}
-                        disabled={countdown > 0 || isLoading}
-                        className="text-blue-400 hover:underline disabled:text-zinc-500 disabled:no-underline transition-all cursor-pointer font-semibold"
-                      >
-                        {countdown > 0 ? `Resend (${countdown}s)` : "Resend"}
-                      </button>
-                    </div>
-                  </motion.form>
-                )}
-              </div>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin text-white" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      Next
+                      <ArrowRight className="h-4 w-4 text-white" />
+                    </>
+                  )}
+                </button>
+              </motion.form>
             ) : (
               <motion.form
                 key="password-form"
@@ -354,7 +382,7 @@ export default function LoginPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.15 }}
-                onSubmit={handlePasswordLogin}
+                onSubmit={handlePasswordSubmit}
                 className="flex flex-col gap-4.5"
               >
                 <div className="flex flex-col gap-1.5">
@@ -407,11 +435,11 @@ export default function LoginPage() {
                   {isLoading ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin text-white" />
-                      Logging in...
+                      Verifying...
                     </>
                   ) : (
                     <>
-                      Log In
+                      Next
                       <ArrowRight className="h-4 w-4 text-white" />
                     </>
                   )}
@@ -444,7 +472,7 @@ export default function LoginPage() {
               "Interchangeable templates (Modern, Minimal, Classic)",
               "Strict local autosave back-ups",
             ].map((text, idx) => (
-              <div key={idx} className="flex items-center gap-3 text-xs text-zinc-450 font-semibold">
+              <div key={idx} className="flex items-center gap-3 text-xs text-zinc-455 font-semibold">
                 <div className="flex h-5 w-5 items-center justify-center rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20">
                   <ArrowRight className="h-3 w-3" />
                 </div>

@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/client";
+import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { Loader2, ArrowRight, ChevronLeft, Mail, ShieldCheck } from "lucide-react";
 
 export default function ForgotPasswordPage() {
-  const supabase = createClient();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleResetRequest = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,17 +20,24 @@ export default function ForgotPasswordPage() {
 
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
       });
 
-      if (error) {
-        toast.error(error.message);
-      } else {
-        toast.success("Password reset link sent to your email!");
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to request password reset link.");
       }
+
+      toast.success("Password reset link sent to your email!");
+      router.push(`/forgot-password/verify?email=${encodeURIComponent(email)}`);
     } catch (err: any) {
-      toast.error("An unexpected error occurred");
+      toast.error(err.message || "Failed to request password reset link.");
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +56,7 @@ export default function ForgotPasswordPage() {
           </Link>
 
           <img
-            src="/logo.svg"
+            src="/nv.svg"
             alt="Logo"
             className="h-7 w-auto opacity-90"
             onError={(e) => {
@@ -61,7 +68,7 @@ export default function ForgotPasswordPage() {
         <div className="mx-auto w-full max-w-[360px] flex flex-col gap-7 my-auto">
           <div className="flex flex-col gap-1.5">
             <h2 className="text-3xl font-extrabold tracking-tight text-white">Reset Password</h2>
-            <p className="text-xs text-zinc-450 font-medium mt-1">
+            <p className="text-xs text-zinc-455 font-medium mt-1">
               Enter your email and we will send you a link to reset your password.
             </p>
           </div>
@@ -120,21 +127,6 @@ export default function ForgotPasswordPage() {
           <p className="text-sm text-zinc-400 leading-relaxed font-medium">
             Once you submit, we will verify your account and email a secure link. Keep your credentials private and activate multi-factor settings.
           </p>
-
-          <div className="flex flex-col gap-4.5 mt-4 border-t border-zinc-800 pt-6">
-            {[
-              "Instant document rendering with Zero Layout Drift",
-              "Interchangeable templates (Modern, Minimal, Classic)",
-              "Strict local autosave back-ups",
-            ].map((text, idx) => (
-              <div key={idx} className="flex items-center gap-3 text-xs text-zinc-450 font-semibold">
-                <div className="flex h-5 w-5 items-center justify-center rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                  <ArrowRight className="h-3 w-3" />
-                </div>
-                {text}
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </div>

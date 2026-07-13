@@ -5,77 +5,52 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/client";
 import { toast } from "react-hot-toast";
-import { Loader2, ArrowRight, Mail, ChevronLeft, ShieldCheck, Lock } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Loader2, ArrowRight, Mail, ChevronLeft, ShieldCheck, Lock, User } from "lucide-react";
 
 export default function SignupPage() {
   const router = useRouter();
   const supabase = createClient();
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [signupMethod, setSignupMethod] = useState<"otp" | "password">("otp");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleSignupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) {
-      toast.error("Please enter your email");
+    if (!name || !email) {
+      toast.error("Please enter your name and email address");
       return;
     }
 
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          shouldCreateUser: true,
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=/verify-email?confirmed=true`,
-        },
-      });
-
-      if (error) {
-        toast.error(error.message);
-      } else {
-        toast.success("Verification link sent!");
-        router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+      const passwordToUse = password || Math.random().toString(36).slice(-10) + "A1!";
+      if (password && password.length < 6) {
+        toast.error("Password must be at least 6 characters");
+        setIsLoading(false);
+        return;
       }
-    } catch (err: any) {
-      toast.error("An unexpected error occurred");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  const handlePasswordSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) {
-      toast.error("Please enter email and password");
-      return;
-    }
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
-      return;
-    }
-
-    setIsLoading(true);
-    try {
       const { data, error } = await supabase.auth.signUp({
         email,
-        password,
+        password: passwordToUse,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=/verify-email?confirmed=true`,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/verified`,
+          data: {
+            full_name: name,
+          },
         },
       });
 
       if (error) {
         toast.error(error.message);
       } else if (data.user) {
-        toast.success("Registration successful! Please confirm your email.");
-        router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+        toast.success("Confirmation link sent to your email!");
+        router.push(`/verify?email=${encodeURIComponent(email)}&id=${data.user.id}`);
       }
     } catch (err: any) {
-      toast.error("An unexpected error occurred during signup");
+      toast.error("An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -108,7 +83,7 @@ export default function SignupPage() {
             <ChevronLeft className="h-4 w-4" />
             Back
           </Link>
-          
+
           <img
             src="/nv.svg"
             alt="Logo"
@@ -144,141 +119,85 @@ export default function SignupPage() {
             Google
           </button>
 
-          <div className="flex border border-zinc-900 rounded-xl bg-zinc-950 p-1">
-            <button
-              type="button"
-              onClick={() => setSignupMethod("otp")}
-              className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                signupMethod === "otp"
-                  ? "bg-zinc-900 text-white shadow-sm"
-                  : "text-zinc-400 hover:text-white"
-              }`}
-            >
-              Email Link
-            </button>
-            <button
-              type="button"
-              onClick={() => setSignupMethod("password")}
-              className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                signupMethod === "password"
-                  ? "bg-zinc-900 text-white shadow-sm"
-                  : "text-zinc-400 hover:text-white"
-              }`}
-            >
-              Password
-            </button>
+          <div className="relative flex items-center justify-center py-1.5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-zinc-900"></div>
+            </div>
+            <span className="relative bg-zinc-950 px-4 text-[10px] font-bold text-zinc-550 uppercase tracking-widest">
+              Or with email
+            </span>
           </div>
 
-          <AnimatePresence mode="wait">
-            {signupMethod === "otp" ? (
-              <motion.form
-                key="email-form"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.15 }}
-                onSubmit={handleSignup}
-                className="flex flex-col gap-4.5"
-              >
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                    <input
-                      type="email"
-                      placeholder="name@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 pl-11 pr-4 py-3 text-sm text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 animate-none"
-                      required
-                    />
-                  </div>
-                </div>
+          <form onSubmit={handleSignupSubmit} className="flex flex-col gap-4.5">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
+                Full Name
+              </label>
+              <div className="relative">
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                <input
+                  type="text"
+                  placeholder="Your Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 pl-11 pr-4 py-3 text-sm text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10"
+                  required
+                />
+              </div>
+            </div>
 
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin text-white" />
-                      Sending Link...
-                    </>
-                  ) : (
-                    <>
-                      Get Sign Up Link
-                      <ArrowRight className="h-4 w-4 text-white" />
-                    </>
-                  )}
-                </button>
-              </motion.form>
-            ) : (
-              <motion.form
-                key="password-form"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.15 }}
-                onSubmit={handlePasswordSignup}
-                className="flex flex-col gap-4.5"
-              >
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                    <input
-                      type="email"
-                      placeholder="name@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 pl-11 pr-4 py-3 text-sm text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10"
-                      required
-                    />
-                  </div>
-                </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                <input
+                  type="email"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 pl-11 pr-4 py-3 text-sm text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 animate-none"
+                  required
+                />
+              </div>
+            </div>
 
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
-                    Create Password
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-                    <input
-                      type="password"
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 pl-11 pr-4 py-3 text-sm text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10"
-                      required
-                    />
-                  </div>
-                </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
+                Create Password (Optional)
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 pl-11 pr-4 py-3 text-sm text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10"
+                />
+              </div>
+              <span className="text-[9px] text-zinc-550 font-medium">Leave blank to use passwordless magic link signup instead.</span>
+            </div>
 
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin text-white" />
-                      Signing up...
-                    </>
-                  ) : (
-                    <>
-                      Sign Up
-                      <ArrowRight className="h-4 w-4 text-white" />
-                    </>
-                  )}
-                </button>
-              </motion.form>
-            )}
-          </AnimatePresence>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-all shadow-sm disabled:opacity-50 cursor-pointer mt-2"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin text-white" />
+                  Creating account...
+                </>
+              ) : (
+                <>
+                  Sign Up
+                  <ArrowRight className="h-4 w-4 text-white" />
+                </>
+              )}
+            </button>
+          </form>
         </div>
 
         <div className="flex items-center gap-1.5 text-[10px] text-zinc-550 font-semibold justify-center mt-12 border-t border-zinc-900/60 pt-4">

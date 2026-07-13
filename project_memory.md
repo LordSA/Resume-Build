@@ -24,11 +24,19 @@ The application is built using a modern, scalable web stack:
 
 ## 3. Authentication & Callback Redirect Flow
 To ensure correct redirection behavior and avoid login loops or misplaced verification pages:
-- **Google OAuth (Sign In/Sign Up)**: Initiated via `supabase.auth.signInWithOAuth`. The redirect URL is configured as `/auth/callback?next=/dashboard`. This bypasses the email verification screens and takes the user directly to the workspace dashboard.
-- **Magic Link Log In**: Initiated via `signInWithOtp` (with `shouldCreateUser: false`). The link redirect is `/auth/callback?next=/dashboard`, allowing users who click the link to log in and land straight on `/dashboard`.
-- **Magic Link Sign Up**: Initiated via `signInWithOtp` (with `shouldCreateUser: true`). The link redirect is `/auth/callback?next=/verify-email?confirmed=true`. Clicking the link signs the user up, logs them in, and redirects them to the "Email Verified" screen.
-- **Auth Callback (`/auth/callback/route.ts`)**: Exchanges the auth code for a session and redirects to the parsed `next` parameter (defaulting to `/dashboard`).
-- **Redirection after verification (`/verify-email/page.tsx`)**: Once the email is successfully confirmed and the 5-second countdown ends, users are redirected to `/login` (which instantly redirects them to `/dashboard` via middleware).
+- **Google OAuth (Sign In/Sign Up)**: Fully intact and functional. The redirect URL is `/auth/callback?next=/dashboard`, allowing users who sign in with Google to land directly on `/dashboard` and bypass confirmation screens.
+- **Email Signup Flow**: Supports unified Name, Email, and Optional Password registration.
+  - If a password is provided, `signUp()` registers the credentials.
+  - If no password is provided, `signUp()` is executed with an auto-generated credentials package. This always generates a user record and returns the target user ID for the status polling tracker.
+  - Senders receive a confirmation link directing them to `/auth/callback?next=/verified`.
+  - While waiting on the `/verify` page, a background polling mechanism continuously queries `/api/auth/status?id=...`. Once verified, it displays **"Account Verified!"** and redirects to `/login` after 30 seconds.
+  - In case the confirmation template sends a 6-digit verification code, the `/verify` page also provides a code input field, using `type: "signup"` for validation.
+- **Email Login Flow**: Supports Email Code (OTP) and Email & Password.
+  - In both login methods, a 6-digit verification OTP code is generated and sent to the user's email.
+  - Password logins undergo a first-pass credentials check (`signInWithPassword`), and upon success, automatically fire `signInWithOtp` to send the code.
+  - Users must enter the 6-digit code to successfully verify and access the dashboard.
+  - The client-side OTP validation implements a robust fallback chain (trying `type: "email"` -> `type: "signup"` -> `type: "magiclink"`). This guarantees compatibility regardless of account confirmation status, dashboard templates, or SDK type differences, completely bypassing the "Token has expired or is invalid" error.
+  - Unregistered emails attempting to log in are blocked (`shouldCreateUser: false`) and shown a warning asking them to sign up first.
 - **Session Middleware (`/lib/middleware.ts`)**: Implements session cookie synchronization. It calls `supabase.auth.getUser()` to retrieve and validate the user JWT on every request, routing active sessions away from `/login` and `/signup` directly to `/dashboard`.
 
 ---
@@ -41,16 +49,21 @@ resume-build/
 ├── app/                    # Next.js App Router folders
 │   ├── (auth)/             # Authentication group
 │   │   ├── login/          # Login page (split-screen with Google OAuth + OTP + Passwords)
-│   │   ├── signup/         # Signup page (split-screen with Google OAuth + Links + Passwords)
+│   │   ├── signup/         # Signup page (split-screen with Google OAuth + unified Email/Password signup)
 │   │   ├── forgot-password/# Forgot password request page
+│   │   │   └── verify/     # Check recovery instructions page
 │   │   ├── reset-password/ # Password reset handler page
-│   │   └── verify-email/   # Check mail confirmation page with 5s login redirect
+│   │   ├── verify/         # Check mail confirmation page with 30s login redirect & status polling
+│   │   └── verified/       # Email confirmed landing page
+│   ├── auth/               # Callback handler folder
+│   │   └── callback/       # OAuth & confirmation redirects callback
 │   ├── dashboard/          # User Dashboard for listing resumes & profile settings
 │   ├── create/             # Initial prompt paste page for AI resume generation
 │   ├── editor/             # Main workspace editor interface
 │   │   └── [id]/           # Dynamic route for a specific resume
 │   ├── api/                # API routes
 │   │   ├── ai/             # AI endpoints (generate, rewrite, ats)
+│   │   ├── auth/           # Authentication endpoints (me, signout, forgot-password, status)
 │   │   └── resume/         # Backend actions (save, export)
 │   ├── globals.css         # Global tailwind styles + custom scrollbar
 │   ├── layout.tsx          # Root layout with metadata & OG tags
@@ -66,6 +79,7 @@ resume-build/
 │   ├── client.ts           # Supabase browser client
 │   ├── server.ts           # Supabase server client
 │   ├── middleware.ts       # Supabase session refresher & route protection
+│   ├── proxy.ts            # Proxy absolute origin parser helper
 │   └── utils.ts            # Tailwind class merger helper (cn)
 ├── store/                  # Zustand global state stores
 │   ├── resumeStore.ts      # Active resume content state & history
@@ -193,12 +207,12 @@ All client features request AI processing via single abstractions (`generateResu
 ## 8. PDF Generation
 The download system targets the `.resume-print-container` element inside `ResumePreview.tsx`:
 - **Engine**: Dynamic client-side `jsPDF` HTML rendering (`doc.html()`) registered with custom global `html2canvas-pro` resolver.
-- **Transforms & Scaling Sandbox**: Integrates an `onclone` sandbox callback to isolate the target element (placing it in an unscaled, absolute wrapper at `0, 0` of width `794px` and height `auto`). This removes parent scale matrices and overflow clips that cause blank output pages.
+- **Transforms & Scaling Sandbox**: Integrates an `onclone` callback to isolate the target element (placing it in an unscaled, absolute wrapper at `0, 0` of width `794px` and height `auto`). This removes parent scale matrices and overflow clips that cause blank output pages.
 - **Height Auto Override**: Dynamically resets the height and min-height styles of `#resume-print-area` inside `onclone` to `"auto"`. Also resets the html/body elements inside the cloned document sandbox to `overflow: visible; height: auto`. This allows multi-page resumes to grow naturally beyond one page in the render sandbox, enabling full multi-page PDF generation.
 - **Outer border/Shadow Removal**: Overrides the cloned element and outer sandbox wrapper styles to `border: none; outline: none; boxShadow: none;` inside `onclone`. This completely prevents grey borders, page outlines, or blurry page-break shadows from rendering on the PDF.
 - **Stylesheet Safety**: The `onclone` handler iterates over all stylesheets inside `clonedDoc` and sets `disabled = true` on any sheet that throws an error when accessing `cssRules` (common in hot-reload dev cycles with Turbopack or cross-origin stylesheets). This completely eliminates `unexpected EOF` parsing crashes.
 - **Dimensions & Format**: Configured in points (`pt` unit) with a width of `595.28` and windowWidth `794` to match standard A4 paper dimensions (`595.28 x 841.89` pt) cleanly.
-- **Fallback**: Native browser print dialog (`window.print()`). Expanded print styles ensure sidebars and headers are hidden via `display: none !important` and margins are removed via `@page { margin: 0; }` for a clean full-width print canvas. Also forces `html`, `body`, and all ancestor wrapper `div` containers to `overflow: visible` and `height: auto` to allow browser page splitting. Outer margins and boundaries are cleaned via `border: none !important; outline: none !important; box-shadow: none !important;` on `.resume-print-container` and `#resume-print-area`.
+- **Fallback**: Native browser print dialog (`window.print()`). Expanded print styles ensure sidebars and headers are hidden via `display: none !important;` and margins are removed via `@page { margin: 0; }` for a clean full-width print canvas. Also forces `html`, `body`, and all ancestor wrapper `div` containers to `overflow: visible` and `height: auto` to allow browser page splitting. Outer margins and boundaries are cleaned via `border: none !important; outline: none !important; box-shadow: none !important;` on `.resume-print-container` and `#resume-print-area`.
 
 ---
 
@@ -209,7 +223,7 @@ The download system targets the `.resume-print-container` element inside `Resume
 | `Footer` | `components/Footer.tsx` | Shared footer with copyright, project links, contact, support button |
 | `EditorWorkspace` | `app/editor/[id]/editor-workspace.tsx` | Main editor shell with toolbar, sidebar, preview, and PDF download |
 | `EditorSidebar` | `components/editor/EditorSidebar.tsx` | Collapsible sidebar with section panels |
-| `PersonalPanel` | `components/editor/panels/PersonalPanel.tsx` | Personal info editor with Supabase photo upload |
+| `PersonalPanel` | `components/editor/panels/PersonalPanel.tsx` | Personal info editor with Supabase photo uploader |
 | `ThemePanel` | `components/editor/panels/ThemePanel.tsx` | Theme controls, color pickers, font selector, custom font uploader |
 | `ResumePreview` | `components/resume/ResumePreview.tsx` | Renders A4 preview with zoom controls |
 | `TemplateRenderer` | `components/resume/TemplateRenderer.tsx` | Selects and renders the active template |

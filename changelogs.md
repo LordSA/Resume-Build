@@ -4,17 +4,39 @@ All notable changes to the Resume Solutions project will be documented in this f
 
 ---
 
-## [2026-07-13] - Authentication Redirect Flow & Middleware Fixes
+## [2026-07-13] - Auth Overhaul & Verification Routing Overhaul
 
 ### Added
-- **Authentication Parameter Redirection (`/auth/callback/route.ts`)**: Updated the authentication callback to read and honor the `next` query parameter, forwarding successful logins directly to their planned routes.
-- **Immediate Dashboard Google Authentication**: Changed Google OAuth options in both login and signup screens to include `?next=/dashboard`, letting authenticated users go directly to the work dashboard instead of seeing incorrect email verification screens.
-- **Google OAuth Login Loop Resolution**: Removed the bug where Google OAuth sign-ins were redirected to `/verify-email?confirmed=true` and then looped back to `/login` without ever letting the user view the dashboard.
-- **Direct Magic Link Log In**: Changed email login magic link parameters to redirect straight to the dashboard (`/auth/callback?next=/dashboard`) when the link is clicked, while normal input in the interface still prompts for and verifies the OTP code.
-- **Instant Email Sign Up Redirection**: Configured the `/verify-email` page countdown completion to redirect confirmed signups directly to `/dashboard` (since the verification link already establishes an active logged-in session).
-- **Password Auth & Forgot/Reset Password pages**: Implemented full support for standard Email/Password authentication on login/signup forms, along with recovery links and screens.
-- **Profile Settings Panel in Dashboard**: Added an account profile management tab inside `dashboard-client.tsx` to handle changing candidate names, updating passwords, and viewing account security.
-- **Vector nv.svg Logo Override**: Upgraded the brand icon to use `/nv.svg` vector logo everywhere, and removed the "Resume Solutions" name text from navbar headers.
+- **API Auth Endpoints (`app/api/auth/`)**:
+  - `me/route.ts`: Session information lookup.
+  - `signout/route.ts`: Session log out request.
+  - `status/route.ts`: Programmatic email confirmation state verification polling.
+  - `forgot-password/route.ts`: Generates recovery action links, utilizing Supabase's native SMTP uploader configuration.
+- **Verification Pages Redesign**:
+  - `/verify`: Replaces the legacy `/verify-email`. Performs verification checks in the background against `/api/auth/status?id=...`, displaying **"Account Verified!"** and counts down to redirect. Includes a manual 6-digit OTP confirmation input box validating under `type: "signup"`.
+  - `/verified`: Confirm landing page when clicking the verification email link.
+- **Proxy absolute origin parser (`lib/proxy.ts`)**: Created a dynamic helper to resolve custom reverse proxies and host domains correctly.
+
+### Changed
+- **Sign Up credentials**: Modified [signup/page.tsx](file:///c:/Users/shibi/Desktop/Work/resume/resume-build/app/%28auth%29/signup/page.tsx) to always execute credentials `signUp` (generating fallback security passwords if left blank) to obtain the user's ID for live status polling, routing them to `/verify?email=...&id=${data.user.id}`.
+- **Middleware Whitelist**: Whitelisted `/verify`, `/verified`, `/forgot-password`, `/reset-password`, and `/api/auth/*` inside [middleware.ts](file:///c:/Users/shibi/Desktop/Work/resume/resume-build/lib/middleware.ts).
+- **Callback Path**: Swapped the redirect parameter endpoints from `/api/auth/callback` back to `/auth/callback` to match the whitelisted redirection links in your Supabase Authentication dashboard.
+- **OTP Verification Type Fallbacks**: Implemented a robust fallback verification chain (`email` -> `signup` -> `magiclink`) inside [login/page.tsx](file:///c:/Users/shibi/Desktop/Work/resume/resume-build/app/%28auth%29/login/page.tsx) to resolve token expiration/invalid token errors caused by SDK discrepancies or account confirmation states.
+
+### Removed
+- **Nodemailer/SMTP Backend configuration**: Removed custom SMTP credentials parsing from `/api/auth/forgot-password` in favor of Supabase's native custom SMTP email delivery.
+- Legacy `/verify-email` routing folder.
+
+---
+
+## [2026-07-13] - Normal Email Authentication Flow Refinements
+
+### Added
+- **Name + Email + Optional Password Unified Signup (`signup/page.tsx`)**: Created a single unified signup form supporting Name, Email, and Optional Password. When submitted, passwordless magic links are triggered if no password is set, and standard password signups are fired if a password is set.
+- **Background Email Verification Polling (`verify-email/page.tsx`)**: Configured verify-email to continuously poll `supabase.auth.getUser()` in the background (every 3 seconds). If the user clicks the confirmation link in their email on another tab/device, the verify page automatically detects this state update, displays **"Your mail confirmed"**, and redirects the user to `/login` after a 5-second countdown.
+- **Unified Password + OTP Login (`login/page.tsx`)**: Added password login support that triggers a mandatory secondary OTP code to the user's email upon correct password submission. This ensures both Email Code and Password login methods undergo OTP verification before letting users access the dashboard.
+- **Google Auth Intact**: Restored Google OAuth login and signup buttons and flows to their fully functional state.
+- **Blocked Unregistered Login Attempts (`login/page.tsx`)**: Set `shouldCreateUser: false` inside the login page's OTP and password authentication flows. If an unregistered user attempts to log in, the system blocks the request and prompts them with a custom toast: `"You don't have an account. Please sign up first."`
 
 ### Fixed
 - **Middleware Session Detection (`/lib/middleware.ts`)**: Replaced the invalid call `supabase.auth.getClaims()` with the standard `supabase.auth.getUser()`. This correctly resolves cookie sessions and prevents the middleware from kicking authenticated users back to the `/login` page.
@@ -84,7 +106,7 @@ All notable changes to the Resume Solutions project will be documented in this f
 
 ### Changed
 - **Supabase Storage Migration**: Replaced Cloudflare R2 (`@aws-sdk/client-s3`) with Supabase Storage for profile photo uploads in `PersonalPanel.tsx`. Bucket: `resume-assets`, path: `photos/{userId}/`.
-- **PDF Download Engine**: Switched from `react-to-print` to `html2pdf.js` with `window.print()` fallback in `editor-workspace.tsx`.
+- **PDF Download Engine**: Switched from `react-to-print` to `html2pdf.js` with `window.print()[*] fallback in `editor-workspace.tsx`.
 - **Scrollbar Fix**: Single scrollbar on `html` element (`overflow-y: auto`), `body` set to `overflow-y: visible` to eliminate double scrollbar issue.
 - **Footer Decoupling**: Moved inline footer from `app/page.tsx` to reusable `components/Footer.tsx`.
 - Updated `project_memory.md`, `design.md`, and `README.md` to reflect all architecture changes.
