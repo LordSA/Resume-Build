@@ -4,9 +4,17 @@ All notable changes to the Resume Solutions project will be documented in this f
 
 ---
 
-## [2026-07-14] - Signup Verification Simplification
+## [2026-07-14] - Loading Overhaul & Signup Simplification
+
+### Added
+- **Global Entrance Loader (`components/InitialLoader.tsx`)**: Integrated a GSAP-driven loading screen running on initial mount with a pulsing logo, scale transitions, and a progress line before revealing the app.
+- **Root Page Loader (`app/loading.tsx`)**: Added a Next.js App Router page loader with a top progress bar and pulsing logo for navigation transitions.
+- **Editor Skeleton Loader (`app/editor/[id]/loading.tsx`)**: Added a route-level skeleton loader matching the editor workspace layout, displaying sidebar tabs, form fields, and A4 page preview shimmer blocks.
+- **GSAP Animation Library**: Installed `gsap` dependency for animating initial load screens.
 
 ### Changed
+- **Root Layout (`app/layout.tsx`)**: Wrapped children in the `InitialLoader` component for entry transitions.
+- **Tailwind Animations (`app/globals.css`)**: Registered custom `loading-bar` and `shimmer` keyframes in the Tailwind CSS v4 `@theme` configuration.
 - **Email Signup Verify Page (`app/(auth)/verify/page.tsx`)**: Removed the manual 6-digit OTP code verification form, states, and handlers. The signup verification flow now relies purely on the email confirmation link and background status polling to verify and redirect the user automatically.
 
 ### Removed

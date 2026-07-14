@@ -230,3 +230,6 @@ The download system targets the `.resume-print-container` element inside `Resume
 | `MinimalTemplate` | `components/templates/MinimalTemplate.tsx` | Single-column minimal resume layout |
 | `ClassicTemplate` | `components/templates/ClassicTemplate.tsx` | Traditional corporate resume layout |
 | `AtsTemplate` | `components/templates/AtsTemplate.tsx` | Centered, single/multi-page, ATS-optimized layout with grids |
+| `InitialLoader` | `components/InitialLoader.tsx` | Global entrance loader wrapping the layout and executing a GSAP animation |
+| `Loading` | `app/loading.tsx` | Next.js page loader for route changes and page transitions with a top-bar progress line |
+| `EditorLoading` | `app/editor/[id]/loading.tsx` | Custom Next.js loader for the editor path, rendering a pulsing skeleton layout |

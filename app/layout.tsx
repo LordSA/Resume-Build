@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Noto_Sans, Playfair_Display } from "next/font/google
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "react-hot-toast";
+import InitialLoader from "@/components/InitialLoader";
 
 const playfairDisplayHeading = Playfair_Display({ subsets: ['latin'], variable: '--font-heading' });
 
@@ -75,14 +76,16 @@ export default function RootLayout({
       className={cn("antialiased", geistSans.variable, geistMono.variable, "font-sans", notoSans.variable, playfairDisplayHeading.variable)}
     >
       <body className="min-h-full flex flex-col">
-        {children}
+        <InitialLoader>
+          {children}
+        </InitialLoader>
         <Toaster
           position="bottom-right"
           toastOptions={{
             style: {
-              background: '#18181b', // zinc-900 to match your theme
+              background: '#18181b',
               color: '#fff',
-              border: '1px solid #27272a', // zinc-800
+              border: '1px solid #27272a',
             }
           }}
         />
