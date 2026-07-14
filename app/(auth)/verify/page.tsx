@@ -1,23 +1,18 @@
 "use client";
 
 import { Suspense, useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Mail, CheckCircle, ArrowRight, Loader2, ChevronLeft } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { createClient } from "@/lib/client";
 
 function VerifyPageContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const email = searchParams.get("email") || "";
   const id = searchParams.get("id") || "";
 
   const [verified, setVerified] = useState(false);
-  const [countdown, setCountdown] = useState(30);
-  const [otp, setOtp] = useState("");
-  const [isVerifying, setIsVerifying] = useState(false);
-  const supabase = createClient();
+  const [countdown, setCountdown] = useState(5);
 
   useEffect(() => {
     if (!id || verified) return;
@@ -56,34 +51,6 @@ function VerifyPageContent() {
     return () => clearTimeout(timer);
   }, [verified, countdown]);
 
-  const handleManualVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!otp) {
-      toast.error("Please enter the verification code");
-      return;
-    }
-
-    setIsVerifying(true);
-    try {
-      const { data, error } = await supabase.auth.verifyOtp({
-        email,
-        token: otp,
-        type: "signup",
-      });
-
-      if (error) {
-        toast.error(error.message);
-      } else {
-        setVerified(true);
-        toast.success("Email verified successfully!");
-      }
-    } catch (err: any) {
-      toast.error("Failed to verify code");
-    } finally {
-      setIsVerifying(false);
-    }
-  };
-
   return (
     <div className="mx-auto w-full max-w-[360px] flex flex-col gap-7 my-auto">
       {!verified ? (
@@ -105,44 +72,9 @@ function VerifyPageContent() {
               {email}
             </strong>
             <p className="text-xs text-zinc-400 font-medium leading-relaxed mt-2">
-              Please click the link in the email or enter the 6-digit verification code below.
+              Please click the confirmation link in the email to activate your account.
             </p>
           </div>
-
-          <form onSubmit={handleManualVerify} className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
-                6-Digit Verification Code
-              </label>
-              <input
-                type="text"
-                placeholder="123456"
-                maxLength={6}
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-900/20 px-4 py-3 text-center text-lg font-bold text-white transition-all focus:border-blue-500 focus:bg-zinc-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500/10 tracking-[0.25em]"
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={isVerifying}
-              className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
-            >
-              {isVerifying ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin text-white" />
-                  Verifying...
-                </>
-              ) : (
-                <>
-                  Verify Code
-                  <ArrowRight className="h-4 w-4 text-white" />
-                </>
-              )}
-            </button>
-          </form>
 
           <div className="flex items-center justify-center gap-2 text-xs text-blue-400 font-bold bg-blue-500/5 border border-blue-500/10 py-3 px-4 rounded-xl">
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -150,7 +82,7 @@ function VerifyPageContent() {
           </div>
 
           <p className="text-[10px] text-zinc-550 text-center font-medium">
-            Once you click the link or enter the code, this page will automatically update.
+            Once you click the confirmation link, this page will automatically update.
           </p>
 
           <Link
@@ -200,16 +132,16 @@ export default function VerifyPage() {
     <div className="flex min-h-screen w-full bg-zinc-950 text-white selection:bg-blue-600/30 font-sans relative overflow-hidden">
       <div className="w-full lg:w-[45%] flex flex-col justify-between p-8 sm:p-12 relative z-10 bg-zinc-950">
         <div className="flex items-center justify-between w-full mb-12">
-          <Link 
-            href="/signup" 
+          <Link
+            href="/signup"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-900 bg-zinc-900/30 text-xs font-semibold text-zinc-400 hover:text-white hover:border-zinc-800 transition-all cursor-pointer"
           >
             <ChevronLeft className="h-4 w-4" />
             Back
           </Link>
-          <img 
-            src="/nv.svg" 
-            alt="Logo" 
+          <img
+            src="/nv.svg"
+            alt="Logo"
             className="h-7 w-auto opacity-90"
             onError={(e) => {
               e.currentTarget.style.display = "none";
@@ -239,7 +171,7 @@ export default function VerifyPage() {
             Confirm your account.
           </h3>
           <p className="text-sm text-zinc-400 leading-relaxed font-medium">
-            Use the verification link or the 6-digit token we sent to your email to verify and log in securely.
+            Use the confirmation link we sent to your email to verify and log in securely.
           </p>
         </div>
       </div>

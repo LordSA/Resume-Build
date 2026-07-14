@@ -4,6 +4,16 @@ All notable changes to the Resume Solutions project will be documented in this f
 
 ---
 
+## [2026-07-14] - Signup Verification Simplification
+
+### Changed
+- **Email Signup Verify Page (`app/(auth)/verify/page.tsx`)**: Removed the manual 6-digit OTP code verification form, states, and handlers. The signup verification flow now relies purely on the email confirmation link and background status polling to verify and redirect the user automatically.
+
+### Removed
+- Manual OTP input form and code verification handlers on the `/verify` route.
+
+---
+
 ## [2026-07-13] - Auth Overhaul & Verification Routing Overhaul
 
 ### Added

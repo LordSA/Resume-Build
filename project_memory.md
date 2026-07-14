@@ -30,7 +30,6 @@ To ensure correct redirection behavior and avoid login loops or misplaced verifi
   - If no password is provided, `signUp()` is executed with an auto-generated credentials package. This always generates a user record and returns the target user ID for the status polling tracker.
   - Senders receive a confirmation link directing them to `/auth/callback?next=/verified`.
   - While waiting on the `/verify` page, a background polling mechanism continuously queries `/api/auth/status?id=...`. Once verified, it displays **"Account Verified!"** and redirects to `/login` after 30 seconds.
-  - In case the confirmation template sends a 6-digit verification code, the `/verify` page also provides a code input field, using `type: "signup"` for validation.
 - **Email Login Flow**: Supports Email Code (OTP) and Email & Password.
   - In both login methods, a 6-digit verification OTP code is generated and sent to the user's email.
   - Password logins undergo a first-pass credentials check (`signInWithPassword`), and upon success, automatically fire `signInWithOtp` to send the code.
