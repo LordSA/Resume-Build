@@ -29,11 +29,11 @@ export const metadata: Metadata = {
   authors: [{ name: "Shibili Aman TK", url: "https://github.com/LordSA" }],
   creator: "Shibili Aman TK",
   publisher: "Resume Solutions",
-  metadataBase: new URL("https://resumesolutions.shibili.tech"),
+  metadataBase: new URL("https://resumesolutions.shibili.xyz"),
   openGraph: {
     title: "Resume Solutions | Professional ATS Resume Builder",
     description: "Build clean, professional, and ATS-compatible resumes instantly.",
-    url: "https://resumesolutions.shibili.tech",
+    url: "https://resumesolutions.shibili.xyz",
     siteName: "Resume Solutions",
     images: [
       {

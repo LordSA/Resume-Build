@@ -22,8 +22,8 @@ export default function Footer() {
             The high-performance resume styling environment. Build, format, and structure clean, print-perfect, ATS-compatible resumes with zero visual drift.
           </p>
           <div className="mt-2 text-zinc-550 text-[11px] flex flex-col gap-1 font-medium">
-            <span>Contact: <a href="mailto:admin@resumesolutions.shibili.tech" className="text-zinc-400 hover:text-white transition-colors">admin@resumesolutions.shibili.tech</a></span>
-            <span>Site URL: <a href="https://resumesolutions.shibili.tech" className="text-zinc-400 hover:text-white transition-colors">resumesolutions.shibili.tech</a></span>
+            <span>Contact: <a href="mailto:admin@resumesolutions.shibili.xyz" className="text-zinc-400 hover:text-white transition-colors">admin@resumesolutions.shibili.xyz</a></span>
+            <span>Site URL: <a href="https://resumesolutions.shibili.xyz" className="text-zinc-400 hover:text-white transition-colors">resumesolutions.shibili.xyz</a></span>
           </div>
         </div>
 
@@ -36,7 +36,7 @@ export default function Footer() {
             <a href="https://github.com/LordSA" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
               GitHub Repository
             </a>
-            <a href="https://www.shibili.tech" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+            <a href="https://www.shibili.xyz" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
               Personal Website
             </a>
           </div>
@@ -48,7 +48,7 @@ export default function Footer() {
             If you found this tool useful, feel free to support our work and check out our other projects.
           </p>
           <a
-            href="https://www.shibili.tech"
+            href="https://www.shibili.xyz"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2.5 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-850 hover:border-zinc-700 px-4 py-2.5 text-xs font-bold text-white transition-all shadow-sm w-fit cursor-pointer group"

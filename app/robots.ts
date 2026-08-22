@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/dashboard", "/create", "/editor/", "/api/"],
     },
-    sitemap: "https://resumesolutions.shibili.tech/sitemap.xml",
+    sitemap: "https://resumesolutions.shibili.xyz/sitemap.xml",
   };
 }

@@ -2,7 +2,7 @@
 
 Resume Solutions is a high-fidelity, state-driven web application built with **Next.js 16**, **React 19**, and **Supabase (PostgreSQL)**. It is designed to let users create, edit, reorder, and export print-ready resumes with zero visual drift.
 
-**Live URL**: [resumesolutions.shibili.tech](https://resumesolutions.shibili.tech)  
+**Live URL**: [resumesolutions.shibili.xyz](https://resumesolutions.shibili.xyz)  
 **Created by**: [Shibili Aman TK](https://github.com/LordSA)
 
 ---

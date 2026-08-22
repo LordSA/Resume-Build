@@ -2,6 +2,11 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
+## [2026-08-22] - Domain URL Migration
+
+### Changed
+- **Domain URLs**: Updated domain references from `shibili.tech` to `shibili.xyz` across `components/Footer.tsx`, `app/sitemap.ts`, `app/robots.ts`, `app/layout.tsx`, `README.md`, and `LICENSE`.
+
 ---
 
 ## [2026-07-14] - Loading Overhaul & Signup Simplification
