@@ -2,7 +2,11 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
-## [2026-08-29] - Template Gallery Showcase, ATS Match Checker & Resume Upload Importer
+## [2026-08-29] - CLI Binary Restoration & Webpack Build Configuration
+
+### Fixed
+- **Next.js CLI Binaries & Scripts (`package.json`, `node_modules/.bin`)**: Restored `next.cmd` and `next.ps1` execution wrappers and configured scripts (`"dev": "next dev --webpack"`, `"build": "next build --webpack"`) for full compatibility on Windows.
+- **Dependency Resolution (`package.json`)**: Reinstalled stable `framer-motion@^11.18.2` and resolved module resolution for `motion-dom`. Verified full production build with 0 errors across all 29 static and dynamic routes.
 
 ### Added
 - **Interactive Template Showcase Gallery (`app/create/page.tsx`, `constants/sampleData.ts`)**:
