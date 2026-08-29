@@ -236,13 +236,13 @@ The download system targets the `.resume-print-container` element inside `Resume
 | `ClassicTemplate` | `components/templates/ClassicTemplate.tsx` | Traditional corporate resume layout |
 | `AtsTemplate` | `components/templates/AtsTemplate.tsx` | Centered, single/multi-page, ATS-optimized layout with grids |
 | `InitialLoader` | `components/InitialLoader.tsx` | Global entrance loader wrapping the layout and executing a GSAP animation |
-| `Navbar` | `components/Navbar.tsx` | Reference-based floating dark pill navigation header with smooth scroll transitions, auth state actions, and full-screen mobile menu |
+| `Navbar` | `components/Navbar.tsx` | Clean floating dark pill navigation header with ordered links (`Home`, `About Us`, `Contact Us`), logo-only branding, and full-screen mobile menu |
 | `Footer` | `components/Footer.tsx` | Reference-based dark footer with solution columns, newsletter input, developer credits for Shibili Aman TK, and smooth scroll-to-top action |
-| `AboutPage` | `app/about/page.tsx` | Studio manifesto highlighting precision typography, zero layout drift, ATS calibration, and stats |
+| `AboutPage` | `app/about/page.tsx` | Informative About Us page with 3-step site workflow, mission, and developer portfolio bio from www.shibili.xyz |
 | `ContactPage` | `app/contact/page.tsx` | Reference-based 'Lets Have a Chat' contact interface with two-column input fields, social links, and clean dark canvas styling |
 | `OfflinePage` | `app/offline/page.tsx` | Offline state with animated mascot, reconnection retry mechanism, and dashboard links |
 | `NotFound` | `app/not-found.tsx` | 404 page featuring animated eye-tracking paper sheet mascot and navigation actions |
-| `Home` | `app/page.tsx` | A-Balance inspired Content Hub home page with bg.gif animated video background, sticker tags cloud, and interactive template sandbox |
+| `Home` | `app/page.tsx` | High-converting home page with ambient bg.gif overlay, sticker tags cloud, and interactive template sandbox |
 | `LenisScrollProvider` | `components/LenisScrollProvider.tsx` | Smooth inertia scrolling provider using Lenis for desktop and standard native scroll for mobile |
 | `AtsMatchCheckerModal` | `components/modals/AtsMatchCheckerModal.tsx` | Interactive modal to evaluate resume match against target job descriptions with keyword gap detection |
 | `UploadResumeModal` | `components/modals/UploadResumeModal.tsx` | Modal allowing users to upload existing resumes (PDF/Word/TXT) and edit them directly in the workspace editor |

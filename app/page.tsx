@@ -6,9 +6,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { 
   ArrowRight, 
-  Layers, 
-  ScanSearch, 
-  Palette, 
   Upload, 
   CheckCircle2, 
   FileText,
@@ -50,24 +47,16 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#07090e]/60 via-[#07090e]/40 to-[#07090e] pointer-events-none" />
 
         <div className="relative max-w-6xl mx-auto px-6 sm:px-10 pt-36 sm:pt-48 pb-20 sm:pb-28 text-center flex flex-col items-center gap-6 z-10">
-          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-zinc-300 backdrop-blur-md">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Precision Document Studio</span>
-          </div>
-
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white leading-[1.08] max-w-4xl">
-            Content Hub For <br className="hidden sm:inline" />
+            Build Resumes That <br className="hidden sm:inline" />
             <span className="inline-block px-4 py-1 mx-1.5 rounded-2xl bg-white text-black font-black">
-              Resumes
+              Land Interviews
             </span>
-            Based On{" "}
-            <span className="inline-block px-4 py-1 mx-1.5 rounded-2xl bg-emerald-400 text-black font-black">
-              Precision
-            </span>
+            Every Single Time.
           </h1>
 
           <p className="text-zinc-300 text-sm sm:text-base md:text-lg max-w-2xl leading-relaxed font-medium">
-            An extraordinary document design service built for professionals. Craft, format, and structure clean, print-perfect, ATS-compatible resumes with zero visual drift.
+            An extraordinary document design platform built for professionals. Craft, format, and structure clean, print-perfect, ATS-compatible resumes with zero visual drift.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-3.5 mt-2 w-full sm:w-auto">

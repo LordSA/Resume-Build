@@ -80,18 +80,14 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Templates", href: "/create?mode=template" },
-    { name: "ATS Match", href: "/dashboard?action=ats" },
-    { name: "Contact", href: "/contact" },
-    { name: "About us", href: "/about" },
+    { name: "About Us", href: "/about" },
+    { name: "Contact Us", href: "/contact" },
   ];
 
   const mobileNavLinks = [
     { name: "Home", href: "/" },
-    { name: "Templates", href: "/create?mode=template" },
-    { name: "ATS Match", href: "/dashboard?action=ats" },
-    { name: "Contact", href: "/contact" },
-    { name: "About us", href: "/about" },
+    { name: "About Us", href: "/about" },
+    { name: "Contact Us", href: "/contact" },
   ];
 
   const isInitial = !scrolled;
@@ -159,7 +155,7 @@ export default function Navbar() {
                 key={link.name}
                 href={link.href}
                 className={`
-                  rounded-full px-4 py-1.5 text-xs font-bold
+                  rounded-full px-4.5 py-1.5 text-xs font-bold
                   transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]
                   ${isActive
                     ? "bg-white/15 text-white shadow-inner border border-white/10"

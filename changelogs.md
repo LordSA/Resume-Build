@@ -2,7 +2,12 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
-## [2026-08-29] - Navbar Logo Refinement & Clean Minimal Header
+## [2026-08-29] - Navbar Simplification, Hero Headline & About Us Creator Portfolio
+
+### Updated
+- **Navbar Links Order (`components/Navbar.tsx`)**: Streamlined navigation to strictly `Home`, `About Us`, and `Contact Us`.
+- **Home Hero Headline (`app/page.tsx`)**: Removed the top badge pill and updated the hero headline to *"Build Resumes That Land Interviews Every Single Time"*.
+- **About Us Page (`app/about/page.tsx`)**: Simplified into a clear 3-step guide detailing how the website works (Choose Layout -> Edit in Studio -> ATS Score & PDF Export), combined with developer background, mission story, and portfolio links from `www.shibili.xyz`.
 
 ### Updated
 - **Navbar (`components/Navbar.tsx`)**: Removed the brand text name from the navbar header on both desktop and mobile views, displaying only the clean `/nv.svg` logo icon.
