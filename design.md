@@ -5,8 +5,9 @@ This document outlines the UI/UX architecture, visual aesthetics, theme properti
 ---
 
 ## 1. Visual Identity & Aesthetics
-The application workspace features a premium, modern design following these core principles:
-- **Clean Contrast**: A dark-mode workspace editor dashboard contrasts with a clean, high-fidelity light-mode resume preview. This ensures ease of editing and accurate print visualization.
+- **Figma-Style Fixed 3-Pane Architecture**: A fixed 3-pane desktop workspace with the Section Accordion list (`EditorSidebar`) on the left, live auto-scaling document canvas in the center (`ResumePreview`), and the Design & Theme formatting inspector (`EditorRightPanel`) fixed and open by default on the right.
+- **Layered Midnight Palette**: Replaced harsh pitch-black contrast with a rich, harmonious midnight slate palette (`#0d0f17` canvas backdrop, `#12141f` panel containers, `#161824` card backgrounds, `#181b28` elevated buttons/pills, `#212435` subtle borders, `#3b82f6` glowing accents).
+- **High-Fidelity Document Presentation**: The A4 resume canvas features a smooth 3D elevation (`shadow-[0_20px_50px_rgba(0,0,0,0.7)]`) over an ambient radial glow backdrop.
 - **Glassmorphism**: Subtle backdrops, thin borders, and soft shadows for sidebar panels.
 - **Micro-Animations**: Framer Motion handles section dragging, active button states, live update indicators, and WPS drawer transitions.
 - **Typography Hierarchy**: Clear font scale adjustments between heading and body fonts.

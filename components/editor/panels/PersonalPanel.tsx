@@ -106,14 +106,14 @@ export default function PersonalPanel() {
         .getPublicUrl(filePath);
 
       updatePersonal({ photoUrl: publicUrl });
-      toast.success("Profile photo uploaded to Supabase Storage!");
+      toast.success("Profile photo uploaded!");
     } catch (err: any) {
       console.error("Supabase upload failed, falling back to base64:", err);
       try {
         const compressedBlob = await compressToWebP(file);
         const base64Url = await blobToBase64(compressedBlob);
         updatePersonal({ photoUrl: base64Url });
-        toast.success("Profile photo saved locally in document");
+        toast.success("Profile photo saved locally");
       } catch (fallbackErr) {
         console.error(fallbackErr);
         toast.error("Failed to process photo");
@@ -132,12 +132,12 @@ export default function PersonalPanel() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h3 className="text-lg font-bold">Personal Information</h3>
-        <p className="text-xs text-zinc-400 mt-0.5">Configure your basic contact details and links</p>
+        <h3 className="text-sm font-bold text-white">Personal Information</h3>
+        <p className="text-[11px] text-zinc-400 mt-0.5">Basic contact details, role, and online links</p>
       </div>
 
-      <div className="flex items-center gap-5 mt-1 p-4 bg-zinc-900/10 border border-zinc-900 rounded-2xl">
-        <div className="relative group h-20 w-20 shrink-0 rounded-full border border-zinc-800 bg-zinc-900/40 overflow-hidden flex items-center justify-center">
+      <div className="flex items-center gap-4 p-3.5 bg-[#161824] border border-[#23273a] rounded-2xl shadow-sm">
+        <div className="relative group h-16 w-16 shrink-0 rounded-full border border-[#2d3249] bg-[#12141f] overflow-hidden flex items-center justify-center">
           {personal.photoUrl ? (
             <img 
               src={personal.photoUrl} 
@@ -145,26 +145,26 @@ export default function PersonalPanel() {
               className="h-full w-full object-cover" 
             />
           ) : (
-            <Camera className="h-6 w-6 text-zinc-400" />
+            <Camera className="h-5 w-5 text-zinc-400" />
           )}
 
           {isUploading && (
-            <div className="absolute inset-0 bg-zinc-950/70 flex items-center justify-center">
-              <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+            <div className="absolute inset-0 bg-[#0f111a]/80 flex items-center justify-center">
+              <Loader2 className="h-4 w-4 animate-spin text-blue-400" />
             </div>
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1.5 flex-1 min-w-0">
           <span className="text-xs font-bold text-white">Profile Photo</span>
-          <p className="text-[10px] text-zinc-500 max-w-[200px]">Compressed to optimized WebP format.</p>
+          <p className="text-[10px] text-zinc-400">Optimized WebP image format</p>
           
-          <div className="flex gap-2">
+          <div className="flex gap-2 mt-0.5">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
-              className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-[10px] font-bold text-zinc-300 hover:text-white hover:border-zinc-700 transition-all cursor-pointer"
+              className="px-3 py-1.5 rounded-lg bg-[#1e2233] border border-[#2b3047] hover:bg-[#262b3f] hover:border-[#3c4363] text-[10px] font-bold text-zinc-200 hover:text-white transition-all cursor-pointer shadow-sm"
             >
               Upload Photo
             </button>
@@ -172,7 +172,7 @@ export default function PersonalPanel() {
               <button
                 type="button"
                 onClick={handleRemovePhoto}
-                className="px-3 py-1.5 rounded-lg border border-red-950 hover:bg-red-950/20 text-[10px] font-bold text-red-400 transition-all cursor-pointer flex items-center gap-1"
+                className="px-2.5 py-1.5 rounded-lg border border-red-500/20 bg-red-500/10 hover:bg-red-500/20 text-[10px] font-bold text-red-400 transition-all cursor-pointer flex items-center gap-1"
               >
                 <Trash2 className="h-3 w-3" />
                 Remove
@@ -189,7 +189,7 @@ export default function PersonalPanel() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mt-2">
+      <div className="grid grid-cols-2 gap-3 mt-1">
         <div className="flex flex-col gap-1.5 col-span-2">
           <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Full Name</label>
           <input
@@ -198,7 +198,7 @@ export default function PersonalPanel() {
             value={personal.fullName || ""}
             onChange={handleChange}
             placeholder="John Doe"
-            className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+            className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
           />
         </div>
 
@@ -209,8 +209,8 @@ export default function PersonalPanel() {
             name="jobTitle"
             value={personal.jobTitle || ""}
             onChange={handleChange}
-            placeholder="Senior Frontend Developer"
-            className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+            placeholder="Senior Software Engineer"
+            className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
           />
         </div>
 
@@ -222,7 +222,7 @@ export default function PersonalPanel() {
             value={personal.email || ""}
             onChange={handleChange}
             placeholder="john@example.com"
-            className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+            className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
           />
         </div>
 
@@ -234,7 +234,7 @@ export default function PersonalPanel() {
             value={personal.phone || ""}
             onChange={handleChange}
             placeholder="+1 555-0199"
-            className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+            className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
           />
         </div>
 
@@ -246,7 +246,7 @@ export default function PersonalPanel() {
             value={personal.location || ""}
             onChange={handleChange}
             placeholder="San Francisco, CA"
-            className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+            className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
           />
         </div>
 
@@ -258,7 +258,7 @@ export default function PersonalPanel() {
             value={personal.website || ""}
             onChange={handleChange}
             placeholder="https://johndoe.com"
-            className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+            className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
           />
         </div>
 
@@ -270,7 +270,7 @@ export default function PersonalPanel() {
             value={personal.github || ""}
             onChange={handleChange}
             placeholder="https://github.com/johndoe"
-            className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+            className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
           />
         </div>
 
@@ -282,7 +282,7 @@ export default function PersonalPanel() {
             value={personal.linkedin || ""}
             onChange={handleChange}
             placeholder="https://linkedin.com/in/johndoe"
-            className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+            className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
           />
         </div>
       </div>

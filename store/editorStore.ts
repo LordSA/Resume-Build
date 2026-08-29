@@ -6,6 +6,9 @@ interface EditorState {
   isAILoading: boolean;
   aiSuggestions: string[];
   sidebarOpen: boolean;
+  rightSidebarOpen: boolean;
+  activeLeftTab: "content" | "templates";
+  activeRightTab: "theme" | "ats";
 
   setActiveSection: (section: string) => void;
   setPreviewZoom: (zoom: number) => void;
@@ -13,6 +16,10 @@ interface EditorState {
   setAISuggestions: (suggestions: string[]) => void;
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
+  toggleRightSidebar: () => void;
+  setRightSidebarOpen: (open: boolean) => void;
+  setActiveLeftTab: (tab: "content" | "templates") => void;
+  setActiveRightTab: (tab: "theme" | "ats") => void;
 }
 
 export const useEditorStore = create<EditorState>((set) => ({
@@ -21,6 +28,9 @@ export const useEditorStore = create<EditorState>((set) => ({
   isAILoading: false,
   aiSuggestions: [],
   sidebarOpen: true,
+  rightSidebarOpen: true,
+  activeLeftTab: "content",
+  activeRightTab: "theme",
 
   setActiveSection: (activeSection) => set({ activeSection }),
   setPreviewZoom: (previewZoom) => set({ previewZoom }),
@@ -28,4 +38,8 @@ export const useEditorStore = create<EditorState>((set) => ({
   setAISuggestions: (aiSuggestions) => set({ aiSuggestions }),
   toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
   setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
+  toggleRightSidebar: () => set((state) => ({ rightSidebarOpen: !state.rightSidebarOpen })),
+  setRightSidebarOpen: (rightSidebarOpen) => set({ rightSidebarOpen }),
+  setActiveLeftTab: (activeLeftTab) => set({ activeLeftTab }),
+  setActiveRightTab: (activeRightTab) => set({ activeRightTab }),
 }));

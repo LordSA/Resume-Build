@@ -47,40 +47,40 @@ export default function SummaryPanel() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3.5">
       <div>
-        <h3 className="text-lg font-bold">Professional Summary</h3>
-        <p className="text-xs text-zinc-400 mt-0.5">Write a brief overview of your skills and career highlights</p>
+        <h3 className="text-sm font-bold text-white">Professional Summary</h3>
+        <p className="text-[11px] text-zinc-400 mt-0.5">Brief overview of your core skills and career impact</p>
       </div>
 
-      <div className="flex flex-col gap-2 mt-2">
+      <div className="flex flex-col gap-1.5 mt-1">
         <textarea
           value={resumeData.summary}
           onChange={(e) => updateSummary(e.target.value)}
-          placeholder="Results-driven software engineer with 5+ years of experience..."
-          rows={10}
-          className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/40 px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-all font-sans leading-relaxed resize-none"
+          placeholder="Results-driven software engineer with 5+ years of experience in modern full-stack development..."
+          rows={6}
+          className="w-full rounded-2xl border border-[#262a3e] bg-[#10121c] px-4 py-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all font-sans leading-relaxed resize-none shadow-inner"
         />
       </div>
 
-      <div className="border border-zinc-850 bg-zinc-900/10 rounded-2xl p-4 flex flex-col gap-4 mt-1">
+      <div className="border border-[#23273a] bg-[#161824] rounded-2xl p-3.5 flex flex-col gap-3 shadow-sm">
         <div className="flex flex-col gap-1.5">
-          <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Optimization Mode</label>
-          <div className="grid grid-cols-2 gap-2">
+          <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">AI Optimization Mode</label>
+          <div className="grid grid-cols-2 gap-1.5">
             {[
               { id: "improve", label: "Professionalize" },
-              { id: "ats", label: "Make ATS Friendly" },
-              { id: "shorten", label: "Shorten" },
-              { id: "expand", label: "Expand" },
+              { id: "ats", label: "ATS Friendly" },
+              { id: "shorten", label: "Concise" },
+              { id: "expand", label: "Expand Impact" },
             ].map((opt) => (
               <button
                 key={opt.id}
                 type="button"
                 onClick={() => setRewriteType(opt.id as any)}
-                className={`py-2 px-3 text-xs font-semibold rounded-xl border text-center transition-all cursor-pointer ${
+                className={`py-1.5 px-2.5 text-xs font-semibold rounded-xl border text-center transition-all cursor-pointer ${
                   rewriteType === opt.id
-                    ? "bg-blue-600/15 border-blue-500/40 text-blue-400"
-                    : "bg-zinc-900/40 border-zinc-800 hover:bg-zinc-800 text-zinc-400"
+                    ? "bg-blue-600/20 border-blue-500/40 text-blue-400 shadow-sm"
+                    : "bg-[#12141f] border-[#262a3e] hover:bg-[#1a1c2b] text-zinc-400"
                 }`}
               >
                 {opt.label}
@@ -93,16 +93,17 @@ export default function SummaryPanel() {
           type="button"
           onClick={handleAIRewrite}
           disabled={isAILoading}
-          className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-sm font-semibold transition-all disabled:opacity-50 cursor-pointer"
+          className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-all disabled:opacity-50 cursor-pointer shadow-md shadow-blue-600/20"
         >
           {isAILoading ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Optimizing Summary...
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <span>Optimizing with AI...</span>
             </>
           ) : (
             <>
-              Optimize Summary
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>Optimize Summary</span>
             </>
           )}
         </button>

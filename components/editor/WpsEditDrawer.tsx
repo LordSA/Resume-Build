@@ -16,8 +16,7 @@ import {
   Palette,
   LayoutGrid,
   Sparkles,
-  X,
-  ChevronDown
+  X
 } from "lucide-react";
 
 import PersonalPanel from "./panels/PersonalPanel";
@@ -102,7 +101,7 @@ export default function WpsEditDrawer({ isOpen, onClose }: WpsEditDrawerProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 md:hidden"
           />
 
           <motion.div
@@ -110,26 +109,26 @@ export default function WpsEditDrawer({ isOpen, onClose }: WpsEditDrawerProps) {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 flex flex-col max-h-[82vh] h-[82vh] bg-zinc-950 border-t border-zinc-800 rounded-t-[28px] shadow-2xl md:hidden overflow-hidden"
+            className="fixed bottom-0 left-0 right-0 z-50 flex flex-col max-h-[82vh] h-[82vh] bg-[#12141f] border-t border-[#1f2333] rounded-t-[28px] shadow-2xl md:hidden overflow-hidden"
           >
-            <div className="flex flex-col items-center pt-2.5 pb-1 cursor-grab shrink-0">
-              <div className="w-12 h-1.5 rounded-full bg-zinc-700/80" />
+            <div className="flex flex-col items-center pt-2.5 pb-1 cursor-grab shrink-0 bg-[#12141f]">
+              <div className="w-12 h-1.5 rounded-full bg-zinc-600/80" />
             </div>
 
-            <div className="flex items-center justify-between px-5 py-2.5 border-b border-zinc-850/80 shrink-0">
+            <div className="flex items-center justify-between px-5 py-2.5 border-b border-[#1f2333] shrink-0 bg-[#12141f]">
               <div className="flex items-center gap-2">
                 <currentTab.icon className="h-4 w-4 text-blue-400" />
                 <span className="font-bold text-sm text-white">{currentTab.label}</span>
               </div>
               <button
                 onClick={onClose}
-                className="flex items-center justify-center h-7 w-7 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white"
+                className="flex items-center justify-center h-7 w-7 rounded-full bg-[#181b28] border border-[#262a3d] text-zinc-400 hover:text-white"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
             </div>
 
-            <div className="flex items-center gap-1.5 px-4 py-2 border-b border-zinc-850/60 overflow-x-auto scrollbar-none shrink-0 bg-zinc-900/30">
+            <div className="flex items-center gap-1.5 px-4 py-2 border-b border-[#1f2333] overflow-x-auto scrollbar-none shrink-0 bg-[#151724]">
               {SECTIONS.map((tab) => {
                 const isActive = activeSection === tab.id;
                 const Icon = tab.icon;
@@ -140,7 +139,7 @@ export default function WpsEditDrawer({ isOpen, onClose }: WpsEditDrawerProps) {
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all shrink-0 cursor-pointer ${
                       isActive
                         ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
-                        : "bg-zinc-900/80 text-zinc-400 border border-zinc-800 hover:text-white"
+                        : "bg-[#181b28] text-zinc-400 border border-[#262a3d] hover:text-white"
                     }`}
                   >
                     <Icon className="h-3.5 w-3.5" />
@@ -150,7 +149,7 @@ export default function WpsEditDrawer({ isOpen, onClose }: WpsEditDrawerProps) {
               })}
             </div>
 
-            <div className="flex-1 overflow-y-auto px-5 py-5 pb-20 scrollbar-thin">
+            <div className="flex-1 overflow-y-auto px-5 py-5 pb-20 scrollbar-thin bg-[#12141f]">
               {renderActivePanel()}
             </div>
           </motion.div>

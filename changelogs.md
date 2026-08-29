@@ -2,7 +2,24 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
-## [2026-08-29] - Mobile Canvas Overflow Fix, 404 & Legal Pages
+## [2026-08-29] - Figma-Style Fixed Dual-Sidebar Layout & Dark Workspace
+
+### Changed
+- **Figma-Style Fixed Dual-Sidebar Workspace**: Configured both the Left Section & Content Editor (`EditorSidebar`) and Right Design & Theme Inspector (`EditorRightPanel`) to remain fixed, open, and accessible on desktop screens (`lg+`) with the auto-scaling A4 resume canvas centered between them.
+- **Streamlined Navigation Header**: Cleaned up the top workspace navbar by removing redundant popover trigger buttons, focusing on document breadcrumbs, live title editing, cloud autosave status, undo/redo, and direct PDF downloads.
+
+### Changed
+- **Harmonious Midnight Color System**: Replaced flat harsh pitch-black contrast across the workspace with a refined, layered midnight slate palette (`#0d0f17` canvas backdrop with radial gradients, `#12141f` panel containers, `#161824` cards, `#181b28` elevated pills/controls, and `#212435` subtle borders).
+- **Refined Form Inputs & Panels**: Redesigned inputs with soft dark backgrounds (`#10121c`), focused blue glow borders (`#3b82f6`), crisp typography, and elevated card containers across `PersonalPanel`, `ExperiencePanel`, and `SummaryPanel`.
+- **WPS Mobile Dock & Drawer Theme**: Upgraded mobile frosted glass dock (`bg-[#12141f]/95`) and bottom edit drawer to match the refined midnight aesthetic.
+
+### Added
+- **Accordion Section Sidebar (`components/editor/EditorSidebar.tsx`)**: Redesigned left sidebar with a `Content` vs `Templates` segmented tab switcher and smooth accordion expandable section cards for all resume fields.
+- **Theme & ATS Inspector Panel (`components/editor/EditorRightPanel.tsx`)**: Created a dedicated right-side formatting inspector for Theme styling, Typography presets, Curated Color Palettes, Density/Spacing, and ATS Match scoring.
+- **Auto-Fit Mobile Scaling (`components/resume/ResumePreview.tsx`)**: Integrated immediate client-width measurement on mount and resize to ensure the A4 canvas scale is dynamically calculated (`0.35`–`0.85`) to fit mobile viewports with zero horizontal overflow or clipping.
+
+### Changed
+- **Editor Workspace (`app/editor/[id]/editor-workspace.tsx`)**: Upgraded top navigation bar with breadcrumbs (`Dashboard > [Title]`), cloud autosave indicator (`Saved`), undo/redo, and inspector toggle button.
 
 ### Fixed
 - **Mobile Paper Canvas Sizing (`components/resume/ResumePreview.tsx`)**: Replaced unconstrained scale layout with an exact-dimension bounding container (`scaledWidth` x `scaledHeight`) and `transformOrigin: "top left"`, eliminating horizontal overflow and automatically sizing the A4 preview canvas to fit any mobile device screen without clipping.

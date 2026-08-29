@@ -224,8 +224,9 @@ The download system targets the `.resume-print-container` element inside `Resume
 | `WpsMobileDock` | `components/editor/WpsMobileDock.tsx` | Pinned mobile bottom dock for quick access to Edit, Theme, Templates, ATS Match, and Export |
 | `WpsEditDrawer` | `components/editor/WpsEditDrawer.tsx` | WPS Office-inspired bottom drawer with drag handle, horizontal category pills, and responsive panel editors |
 | `Footer` | `components/Footer.tsx` | Shared footer with copyright, project links, contact, support button |
-| `EditorWorkspace` | `app/editor/[id]/editor-workspace.tsx` | Main editor shell with responsive toolbar, desktop sidebar, WPS mobile dock/drawer, preview, and PDF download |
-| `EditorSidebar` | `components/editor/EditorSidebar.tsx` | Collapsible sidebar with section panels (desktop only via `hidden md:flex`) |
+| `EditorWorkspace` | `app/editor/[id]/editor-workspace.tsx` | Main editor shell with responsive toolbar, desktop 3-pane layout, WPS mobile dock/drawer, preview, and PDF download |
+| `EditorSidebar` | `components/editor/EditorSidebar.tsx` | Accordion-based left editing panel with Content/Templates switcher (desktop only via `hidden md:flex`) |
+| `EditorRightPanel` | `components/editor/EditorRightPanel.tsx` | Right-side formatting inspector for Theme styling, Typography, Palettes, and ATS matching |
 | `PersonalPanel` | `components/editor/panels/PersonalPanel.tsx` | Personal info editor with Supabase photo uploader |
 | `ThemePanel` | `components/editor/panels/ThemePanel.tsx` | Theme controls, color pickers, font selector, custom font uploader |
 | `ResumePreview` | `components/resume/ResumePreview.tsx` | Renders A4 preview with responsive auto-fit scaling and zoom controls |

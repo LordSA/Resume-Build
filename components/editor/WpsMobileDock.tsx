@@ -28,7 +28,7 @@ export default function WpsMobileDock({
   const isAiActive = activeDrawerSection === "ai";
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/90 backdrop-blur-xl border-t border-zinc-800/80 px-3 py-2 flex items-center justify-around md:hidden shadow-2xl safe-area-pb">
+    <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#12141f]/95 backdrop-blur-xl border-t border-[#1f2333] px-3 py-2 flex items-center justify-around md:hidden shadow-2xl safe-area-pb">
       <button
         onClick={() => onOpenDrawer(isContentActive ? undefined : (["theme", "templates", "ai"].includes(activeSection) ? "personal" : activeSection))}
         className={`flex flex-col items-center justify-center gap-1 py-1 px-2.5 rounded-xl transition-all cursor-pointer ${

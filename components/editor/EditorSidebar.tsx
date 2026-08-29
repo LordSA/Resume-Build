@@ -12,12 +12,13 @@ import {
   Award, 
   Globe, 
   Heart, 
-  Palette, 
-  LayoutGrid, 
-  Gauge,
-  ChevronLeft,
-  ChevronRight
+  ChevronLeft, 
+  ChevronRight, 
+  Plus, 
+  Minus, 
+  LayoutGrid
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import PersonalPanel from "./panels/PersonalPanel";
 import SummaryPanel from "./panels/SummaryPanel";
@@ -29,97 +30,133 @@ import AchievementsPanel from "./panels/AchievementsPanel";
 import CertificatesPanel from "./panels/CertificatesPanel";
 import LanguagesPanel from "./panels/LanguagesPanel";
 import InterestsPanel from "./panels/InterestsPanel";
-import ThemePanel from "./panels/ThemePanel";
 import TemplatesPanel from "./panels/TemplatesPanel";
-import AIPanel from "./panels/AIPanel";
 
-const SIDEBAR_TABS = [
-  { id: "personal", icon: User, label: "Personal" },
-  { id: "summary", icon: FileText, label: "Summary" },
-  { id: "experience", icon: Briefcase, label: "Experience" },
-  { id: "education", icon: GraduationCap, label: "Education" },
-  { id: "projects", icon: FolderGit, label: "Projects" },
-  { id: "skills", icon: Layers, label: "Skills" },
-  { id: "achievements", icon: Trophy, label: "Awards" },
-  { id: "certificates", icon: Award, label: "Certificates" },
-  { id: "languages", icon: Globe, label: "Languages" },
-  { id: "interests", icon: Heart, label: "Interests" },
-  { id: "theme", icon: Palette, label: "Theme" },
-  { id: "templates", icon: LayoutGrid, label: "Templates" },
-  { id: "ai", icon: Gauge, label: "ATS Match" },
+const ACCORDION_SECTIONS = [
+  { id: "personal", icon: User, title: "Personal Information", component: PersonalPanel },
+  { id: "summary", icon: FileText, title: "Professional Summary", component: SummaryPanel },
+  { id: "experience", icon: Briefcase, title: "Employment History", component: ExperiencePanel },
+  { id: "education", icon: GraduationCap, title: "Education", component: EducationPanel },
+  { id: "projects", icon: FolderGit, title: "Projects & Portfolio", component: ProjectsPanel },
+  { id: "skills", icon: Layers, title: "Skills & Expertise", component: SkillsPanel },
+  { id: "certificates", icon: Award, title: "Certifications", component: CertificatesPanel },
+  { id: "achievements", icon: Trophy, title: "Awards & Honours", component: AchievementsPanel },
+  { id: "languages", icon: Globe, title: "Languages", component: LanguagesPanel },
+  { id: "interests", icon: Heart, title: "Hobbies & Interests", component: InterestsPanel },
 ];
 
 export default function EditorSidebar() {
-  const { activeSection, setActiveSection, sidebarOpen, toggleSidebar } = useEditorStore();
+  const { 
+    activeSection, 
+    setActiveSection, 
+    sidebarOpen, 
+    toggleSidebar,
+    activeLeftTab,
+    setActiveLeftTab
+  } = useEditorStore();
 
-  const renderPanel = () => {
-    switch (activeSection) {
-      case "personal":
-        return <PersonalPanel />;
-      case "summary":
-        return <SummaryPanel />;
-      case "experience":
-        return <ExperiencePanel />;
-      case "education":
-        return <EducationPanel />;
-      case "projects":
-        return <ProjectsPanel />;
-      case "skills":
-        return <SkillsPanel />;
-      case "achievements":
-        return <AchievementsPanel />;
-      case "certificates":
-        return <CertificatesPanel />;
-      case "languages":
-        return <LanguagesPanel />;
-      case "interests":
-        return <InterestsPanel />;
-      case "theme":
-        return <ThemePanel />;
-      case "templates":
-        return <TemplatesPanel />;
-      case "ai":
-        return <AIPanel />;
-      default:
-        return <PersonalPanel />;
-    }
+  const handleToggleSection = (sectionId: string) => {
+    setActiveSection(activeSection === sectionId ? "" : sectionId);
   };
 
   return (
     <div className="relative hidden md:flex h-full shrink-0 select-none z-20 print:hidden">
-      <div className={`flex h-full transition-all duration-300 ${sidebarOpen ? "w-[420px] lg:w-[460px]" : "w-0"}`}>
-        <div className="flex h-full w-[70px] lg:w-[76px] flex-col items-center gap-1.5 border-r border-zinc-850 bg-zinc-950 py-4 overflow-y-auto overflow-x-hidden shrink-0 scrollbar-none">
-          {SIDEBAR_TABS.map((tab) => {
-            const isActive = activeSection === tab.id;
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveSection(tab.id)}
-                className={`group relative flex h-11 w-11 lg:h-12 lg:w-12 items-center justify-center rounded-xl transition-all cursor-pointer ${
-                  isActive
-                    ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-                    : "text-zinc-500 hover:bg-zinc-900 hover:text-white"
-                }`}
-                title={tab.label}
-              >
-                <Icon className="h-5 w-5 shrink-0" />
-                <span className="absolute left-[64px] rounded-lg bg-zinc-900 border border-zinc-800 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-200 shadow-md whitespace-nowrap z-50">
-                  {tab.label}
-                </span>
-              </button>
-            );
-          })}
+      <div className={`flex flex-col h-full bg-[#12141f] border-r border-[#1f2333] transition-all duration-300 ${sidebarOpen ? "w-[330px] xl:w-[380px]" : "w-0 overflow-hidden"}`}>
+        
+        <div className="p-3 border-b border-[#1f2333] shrink-0 bg-[#12141f]">
+          <div className="grid grid-cols-2 p-1 bg-[#181b28] border border-[#262a3d] rounded-xl shadow-inner">
+            <button
+              onClick={() => setActiveLeftTab("content")}
+              className={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                activeLeftTab === "content"
+                  ? "bg-[#25293d] text-white shadow-sm"
+                  : "text-zinc-400 hover:text-zinc-200"
+              }`}
+            >
+              <FileText className="h-3.5 w-3.5 text-blue-400" />
+              <span>Content</span>
+            </button>
+            <button
+              onClick={() => setActiveLeftTab("templates")}
+              className={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                activeLeftTab === "templates"
+                  ? "bg-[#25293d] text-white shadow-sm"
+                  : "text-zinc-400 hover:text-zinc-200"
+              }`}
+            >
+              <LayoutGrid className="h-3.5 w-3.5 text-indigo-400" />
+              <span>Templates</span>
+            </button>
+          </div>
         </div>
 
-        <div className="flex-1 h-full border-r border-zinc-850 bg-zinc-900/30 overflow-y-auto px-5 lg:px-6 py-6 scrollbar-none">
-          {renderPanel()}
+        <div className="flex-1 overflow-y-auto px-4 py-4 scrollbar-thin flex flex-col gap-2.5 bg-[#12141f]">
+          {activeLeftTab === "templates" ? (
+            <TemplatesPanel />
+          ) : (
+            ACCORDION_SECTIONS.map((section) => {
+              const isOpen = activeSection === section.id;
+              const Icon = section.icon;
+              const PanelComponent = section.component;
+
+              return (
+                <div 
+                  key={section.id}
+                  className={`rounded-2xl border transition-all duration-200 overflow-hidden shadow-sm ${
+                    isOpen 
+                      ? "border-blue-500/30 bg-[#181b28] shadow-lg shadow-black/30" 
+                      : "border-[#212435] bg-[#161824] hover:border-[#2d3247] hover:bg-[#1a1c2b]"
+                  }`}
+                >
+                  <button
+                    onClick={() => handleToggleSection(section.id)}
+                    className="flex items-center justify-between w-full px-3.5 py-2.5 text-left transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className={`flex h-7 w-7 items-center justify-center rounded-lg transition-all ${
+                        isOpen 
+                          ? "bg-blue-600/20 border border-blue-500/30 text-blue-400" 
+                          : "bg-[#1f2334] border border-[#2a2f45] text-zinc-400"
+                      }`}>
+                        <Icon className="h-3.5 w-3.5" />
+                      </div>
+                      <span className={`text-xs font-bold tracking-tight ${
+                        isOpen ? "text-white" : "text-zinc-300"
+                      }`}>
+                        {section.title}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-center h-5 w-5 rounded text-zinc-500 hover:text-white">
+                      {isOpen ? <Minus className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+                    </div>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: "easeInOut" }}
+                      >
+                        <div className="p-3.5 pt-1 border-t border-[#23273a] bg-[#141622]/90">
+                          <PanelComponent />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
 
       <button
         onClick={toggleSidebar}
-        className="absolute top-1/2 -translate-y-1/2 -right-3.5 flex h-7 w-7 items-center justify-center rounded-full border border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-white transition-all shadow-md z-30 cursor-pointer"
+        className="absolute top-1/2 -translate-y-1/2 -right-3.5 flex h-7 w-7 items-center justify-center rounded-full border border-[#262a3d] bg-[#181b28] text-zinc-400 hover:text-white hover:border-[#353b54] transition-all shadow-md z-30 cursor-pointer"
+        title={sidebarOpen ? "Collapse Panel" : "Expand Panel"}
       >
         {sidebarOpen ? <ChevronLeft className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
       </button>
