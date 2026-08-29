@@ -2,7 +2,11 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
-## [2026-08-29] - Navbar Simplification, Hero Headline & About Us Creator Portfolio
+## [2026-08-29] - Home Page & Navbar CTA Redirection to Sign Up
+
+### Updated
+- **Home Page Hero & CTAs (`app/page.tsx`)**: Updated "Create Resume", "Upload Existing CV", and bottom "Get Started" buttons to redirect directly to `/signup`.
+- **Navbar CTA (`components/Navbar.tsx`)**: Updated the "Get started" button for unauthenticated users to route to `/signup`.
 
 ### Updated
 - **Navbar Links Order (`components/Navbar.tsx`)**: Streamlined navigation to strictly `Home`, `About Us`, and `Contact Us`.

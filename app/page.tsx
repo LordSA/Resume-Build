@@ -61,7 +61,7 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row items-center gap-3.5 mt-2 w-full sm:w-auto">
             <Link
-              href="/create"
+              href="/signup"
               className="flex items-center justify-center gap-2 rounded-full bg-white hover:bg-zinc-200 text-black px-8 py-3.5 text-xs sm:text-sm font-bold transition-all shadow-xl shadow-white/10 hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto cursor-pointer"
             >
               <span>Create Resume</span>
@@ -69,7 +69,7 @@ export default function Home() {
             </Link>
 
             <Link
-              href="/create?mode=upload"
+              href="/signup"
               className="flex items-center justify-center gap-2 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 text-white px-7 py-3.5 text-xs sm:text-sm font-bold transition-all w-full sm:w-auto cursor-pointer backdrop-blur-md"
             >
               <Upload className="h-4 w-4 text-emerald-300" />
@@ -358,7 +358,7 @@ export default function Home() {
               Sign In
             </Link>
             <Link
-              href="/create"
+              href="/signup"
               className="px-8 py-3.5 rounded-full bg-white hover:bg-zinc-200 text-black font-bold text-xs sm:text-sm transition-all shadow-lg shadow-white/10 w-full sm:w-auto text-center flex items-center justify-center gap-1.5"
             >
               <span>Get Started</span>

@@ -181,7 +181,7 @@ export default function Navbar() {
                 </Link>
               )}
               <Link
-                href={user ? "/dashboard" : "/create"}
+                href={user ? "/dashboard" : "/signup"}
                 className={`
                   flex items-center gap-1.5 rounded-full font-bold
                   transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]
