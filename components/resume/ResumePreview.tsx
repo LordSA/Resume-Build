@@ -1,11 +1,11 @@
 "use client";
 
 import { useResumeStore } from "@/store/resumeStore";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useThemeStore } from "@/store/themeStore";
 import { useEditorStore } from "@/store/editorStore";
 import TemplateRenderer from "./TemplateRenderer";
-import { ZoomIn, ZoomOut, RotateCcw, Maximize2 } from "lucide-react";
+import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 
 export default function ResumePreview() {
   const { resumeData, template } = useResumeStore();
@@ -30,6 +30,16 @@ export default function ResumePreview() {
     return () => observer.disconnect();
   }, [resumeData]);
 
+  const calculateFitScale = useCallback((width: number) => {
+    if (width <= 0) return 1.0;
+    if (width < 768) {
+      const padding = width < 400 ? 16 : 28;
+      const targetWidth = width - padding;
+      return Math.max(0.3, Math.min(0.95, Number((targetWidth / 794).toFixed(3))));
+    }
+    return 1.0;
+  }, []);
+
   useEffect(() => {
     if (!wrapperRef.current) return;
 
@@ -38,8 +48,8 @@ export default function ResumePreview() {
         const w = wrapperRef.current.clientWidth;
         setContainerWidth(w);
         if (w < 768 && w > 0) {
-          const fitScale = Math.max(0.38, Math.min(0.9, (w - 24) / 794));
-          setPreviewZoom(Number(fitScale.toFixed(2)));
+          const optimalScale = calculateFitScale(w);
+          setPreviewZoom(optimalScale);
         }
       }
     };
@@ -48,7 +58,7 @@ export default function ResumePreview() {
     const observer = new ResizeObserver(updateDimensions);
     observer.observe(wrapperRef.current);
     return () => observer.disconnect();
-  }, [setPreviewZoom]);
+  }, [calculateFitScale, setPreviewZoom]);
 
   if (!resumeData) {
     return (
@@ -58,20 +68,22 @@ export default function ResumePreview() {
     );
   }
 
-  const handleZoomIn = () => setPreviewZoom(Math.min(previewZoom + 0.05, 1.4));
-  const handleZoomOut = () => setPreviewZoom(Math.max(previewZoom - 0.05, 0.35));
+  const handleZoomIn = () => setPreviewZoom(Number(Math.min(previewZoom + 0.05, 1.4).toFixed(2)));
+  const handleZoomOut = () => setPreviewZoom(Number(Math.max(previewZoom - 0.05, 0.3).toFixed(2)));
   const handleZoomReset = () => {
     if (containerWidth > 0 && containerWidth < 768) {
-      const fitScale = Math.max(0.38, Math.min(0.9, (containerWidth - 24) / 794));
-      setPreviewZoom(Number(fitScale.toFixed(2)));
+      setPreviewZoom(calculateFitScale(containerWidth));
     } else {
       setPreviewZoom(1.0);
     }
   };
 
+  const scaledWidth = Math.round(794 * previewZoom);
+  const scaledHeight = Math.round(totalPages * 1123 * previewZoom);
+
   return (
     <div className="flex-1 flex flex-col min-w-0 bg-zinc-900 overflow-hidden relative print:p-0 print:bg-white print:overflow-visible">
-      <div className="flex items-center justify-between px-4 sm:px-6 py-2 sm:py-2.5 bg-zinc-950 border-b border-zinc-850 shrink-0 print:hidden z-10">
+      <div className="flex items-center justify-between px-3 sm:px-6 py-2 sm:py-2.5 bg-zinc-950 border-b border-zinc-850 shrink-0 print:hidden z-10">
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider hidden sm:inline">Live Preview</span>
           <span className="text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full">
@@ -109,35 +121,44 @@ export default function ResumePreview() {
 
       <div 
         ref={wrapperRef}
-        className="flex-1 overflow-auto p-3 sm:p-8 pb-20 md:pb-8 flex justify-center bg-zinc-900/40 scrollbar-thin print:p-0 print:bg-white print:overflow-visible"
+        className="flex-1 overflow-x-hidden overflow-y-auto p-2 sm:p-6 pb-24 md:pb-8 flex justify-center items-start bg-zinc-900/40 scrollbar-thin print:p-0 print:bg-white print:overflow-visible"
       >
         <div
-          className="resume-print-container shadow-2xl origin-top transition-transform duration-75 print:shadow-none print:transform-none shrink-0"
+          className="relative transition-all duration-75 print:w-auto print:h-auto shrink-0 flex justify-center"
           style={{
-            transform: `scale(${previewZoom})`,
-            width: "794px",
-            marginBottom: `${(totalPages * 1123 * (previewZoom - 1))}px`,
+            width: `${scaledWidth}px`,
+            height: `${scaledHeight}px`,
+            maxWidth: "100%",
           }}
         >
-          <div id="resume-print-area" ref={contentRef} className="w-full h-full bg-white text-zinc-900" style={{ minHeight: `${totalPages * 1123}px` }}>
-            <div className="absolute inset-0 pointer-events-none print:hidden z-50">
-              {Array.from({ length: totalPages - 1 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute w-full border-b-2 border-dashed border-blue-500/60 flex items-center justify-center"
-                  style={{ top: `${(i + 1) * 1123}px` }}
-                >
-                  <span className="bg-blue-500 text-white text-[10px] px-3 py-1 rounded-full font-bold -translate-y-1/2 shadow-md uppercase tracking-widest">
-                    Page {i + 2}
-                  </span>
-                </div>
-              ))}
+          <div
+            className="resume-print-container shadow-2xl transition-transform duration-75 print:shadow-none print:transform-none absolute top-0 left-0"
+            style={{
+              transform: `scale(${previewZoom})`,
+              transformOrigin: "top left",
+              width: "794px",
+            }}
+          >
+            <div id="resume-print-area" ref={contentRef} className="w-full h-full bg-white text-zinc-900" style={{ minHeight: `${totalPages * 1123}px` }}>
+              <div className="absolute inset-0 pointer-events-none print:hidden z-50">
+                {Array.from({ length: totalPages - 1 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-full border-b-2 border-dashed border-blue-500/60 flex items-center justify-center"
+                    style={{ top: `${(i + 1) * 1123}px` }}
+                  >
+                    <span className="bg-blue-500 text-white text-[10px] px-3 py-1 rounded-full font-bold -translate-y-1/2 shadow-md uppercase tracking-widest">
+                      Page {i + 2}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <TemplateRenderer
+                data={resumeData}
+                template={template}
+                theme={themeConfig}
+              />
             </div>
-            <TemplateRenderer
-              data={resumeData}
-              template={template}
-              theme={themeConfig}
-            />
           </div>
         </div>
       </div>
