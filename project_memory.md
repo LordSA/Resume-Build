@@ -236,6 +236,12 @@ The download system targets the `.resume-print-container` element inside `Resume
 | `ClassicTemplate` | `components/templates/ClassicTemplate.tsx` | Traditional corporate resume layout |
 | `AtsTemplate` | `components/templates/AtsTemplate.tsx` | Centered, single/multi-page, ATS-optimized layout with grids |
 | `InitialLoader` | `components/InitialLoader.tsx` | Global entrance loader wrapping the layout and executing a GSAP animation |
+| `Navbar` | `components/Navbar.tsx` | Sticky glassmorphic navigation header with logo, product routes, dynamic scroll styling, and mobile menu |
+| `Footer` | `components/Footer.tsx` | Modern dark footer with product links, legal policies, company information, and developer credits |
+| `AboutPage` | `app/about/page.tsx` | About Us company story, core values, metric stats, and recruiter trust highlights |
+| `ContactPage` | `app/contact/page.tsx` | Contact Us interface with category selector, support channels, FAQ accordions, and message submissions |
+| `OfflinePage` | `app/offline/page.tsx` | Offline state with animated mascot, reconnection retry mechanism, and dashboard links |
+| `NotFound` | `app/not-found.tsx` | 404 page featuring animated eye-tracking paper sheet mascot and navigation actions |
 | `LenisScrollProvider` | `components/LenisScrollProvider.tsx` | Smooth inertia scrolling provider using Lenis for desktop and standard native scroll for mobile |
 | `AtsMatchCheckerModal` | `components/modals/AtsMatchCheckerModal.tsx` | Interactive modal to evaluate resume match against target job descriptions with keyword gap detection |
 | `UploadResumeModal` | `components/modals/UploadResumeModal.tsx` | Modal allowing users to upload existing resumes (PDF/Word/TXT) and edit them directly in the workspace editor |

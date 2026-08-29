@@ -2,7 +2,16 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
-## [2026-08-29] - Distinct Template Showcase Previews & Lenis Smooth Scrolling
+## [2026-08-29] - Comprehensive Site Redesign, About Us, Contact Us, Offline & 404 Pages
+
+### Added
+- **About Us Page (`app/about/page.tsx`)**: High-energy story, stats counter (250K+ resumes, 99.4% ATS pass rate), core engineering pillars (Zero Layout Drift, 100% ATS Compliance, Instant AI Parsing), and CTA cards.
+- **Contact Us Page (`app/contact/page.tsx`)**: Interactive support interface with category selectors (Help, Feedback, Business), instant submission state, FAQ accordions, and direct communication channels.
+- **Offline Page (`app/offline/page.tsx`)**: Playful offline state with animated mascot, retry connection action, and dashboard navigation.
+- **Cute Animated 404 Page (`app/not-found.tsx`)**: Interactive 404 design based on user reference with a cute animated resume sheet mascot, eye-tracking pupils, automatic blinking, and quick return actions.
+- **Navbar & Header (`components/Navbar.tsx`)**: Sticky glassmorphic navigation bar with `/nv.svg` brand logo, smooth scroll blur, responsive mobile drawer, and direct links to Templates, ATS Match, About Us, and Contact Us.
+- **Footer (`components/Footer.tsx`)**: Complete dark footer with categorized product, company, and legal links.
+- **Redesigned Home Page (`app/page.tsx`)**: Interactive SaaS homepage with live template preview sandbox, ATS match score simulation, Bento feature cards, and high-impact CTA section.
 
 ### Added
 - **Lenis Smooth Inertia Scrolling (`components/LenisScrollProvider.tsx`, `app/layout.tsx`, `app/globals.css`)**: Implemented global Lenis smooth scrolling for desktop experiences while gracefully preserving standard native scrolling on mobile and touch devices.
