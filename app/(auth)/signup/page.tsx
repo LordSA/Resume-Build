@@ -213,7 +213,7 @@ export default function SignupPage() {
                 <Link 
                   href="/terms" 
                   target="_blank"
-                  onClick={(e) => e.stopPropagation()} 
+                  onClick={(e: React.MouseEvent) => e.stopPropagation()} 
                   className="text-blue-400 hover:text-blue-300 font-semibold underline underline-offset-2"
                 >
                   Terms of Service
@@ -222,7 +222,7 @@ export default function SignupPage() {
                 <Link 
                   href="/privacy" 
                   target="_blank"
-                  onClick={(e) => e.stopPropagation()} 
+                  onClick={(e: React.MouseEvent) => e.stopPropagation()} 
                   className="text-blue-400 hover:text-blue-300 font-semibold underline underline-offset-2"
                 >
                   Privacy Policy

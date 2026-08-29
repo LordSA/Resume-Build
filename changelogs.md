@@ -2,7 +2,19 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
-## [2026-08-29] - Distinct Dashboard Action Redirections & Query Param Integration
+## [2026-08-29] - Template Gallery Showcase, ATS Match Checker & Resume Upload Importer
+
+### Added
+- **Interactive Template Showcase Gallery (`app/create/page.tsx`, `constants/sampleData.ts`)**:
+  - Displays our 4 core templates (**Modern Studio**, **Minimalist Executive**, **Classic Academic**, and **Standard ATS Bot-Ready**) with live mock candidate data and layout previews.
+  - 1-click **"Use This Template"** button creates a pre-populated resume in Supabase and navigates straight to `/editor/[id]`.
+- **ATS Match Checker (`components/modals/AtsMatchCheckerModal.tsx`, `app/api/ai/ats-check/route.ts`)**:
+  - Lets users test any saved resume, uploaded file, or pasted text against target job descriptions.
+  - Generates comprehensive ATS match scoring (0-100%), keyword gap breakdowns (Matched vs Missing), action verb metrics, and recommendations to optimize.
+  - Includes direct **"Optimize in Studio Editor"** action to load into the workspace editor.
+- **Upload & Edit Existing Resume / CV (`components/modals/UploadResumeModal.tsx`, `lib/documentParser.ts`, `app/api/resume/import/route.ts`)**:
+  - Allows users to upload old or current resumes in PDF, DOCX, or TXT format.
+  - AI parses unformatted documents into structured JSON and creates a new editable resume without modifying existing editor mechanics.
 
 ### Fixed
 - **Dashboard Action Card Redirections (`app/dashboard/dashboard-client.tsx`)**: Replaced generic fallback paths with dedicated deep links for each creation option:

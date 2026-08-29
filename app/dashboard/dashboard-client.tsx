@@ -24,12 +24,14 @@ import {
   MoreVertical,
   Sparkles,
   Copy,
-  Sparkle,
   Wand2,
-  CheckCircle2
+  Upload,
+  Target
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
+import AtsMatchCheckerModal from "@/components/modals/AtsMatchCheckerModal";
+import UploadResumeModal from "@/components/modals/UploadResumeModal";
 
 interface ResumeItem {
   id: string;
@@ -60,6 +62,9 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
   const [activeNav, setActiveNav] = useState<"resumes" | "settings">("resumes");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
+
+  const [isAtsModalOpen, setIsAtsModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
@@ -224,11 +229,35 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
             </button>
 
             <button
-              onClick={() => router.push("/create")}
+              onClick={() => router.push("/create?mode=ai")}
               className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28] transition-all cursor-pointer"
             >
-              <Wand2 className="h-4 w-4 text-purple-400" />
+              <Wand2 className="h-4 w-4 text-blue-400" />
               <span>AI Resume Creator</span>
+            </button>
+
+            <button
+              onClick={() => setIsUploadModalOpen(true)}
+              className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28] transition-all cursor-pointer"
+            >
+              <Upload className="h-4 w-4 text-cyan-400" />
+              <span>Upload & Edit CV</span>
+            </button>
+
+            <button
+              onClick={() => setIsAtsModalOpen(true)}
+              className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28] transition-all cursor-pointer"
+            >
+              <Target className="h-4 w-4 text-purple-400" />
+              <span>ATS Match Checker</span>
+            </button>
+
+            <button
+              onClick={() => router.push("/create?mode=template")}
+              className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28] transition-all cursor-pointer"
+            >
+              <Layers className="h-4 w-4 text-emerald-400" />
+              <span>Template Library</span>
             </button>
 
             <button
@@ -309,7 +338,7 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
             )}
 
             <button
-              onClick={() => router.push("/create")}
+              onClick={() => router.push("/create?mode=ai")}
               className="flex items-center gap-1.5 sm:gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white px-3.5 sm:px-4 py-2 text-xs font-bold tracking-wide transition-all shadow-md shadow-blue-600/30 cursor-pointer"
             >
               <Plus className="h-4 w-4" />
@@ -422,54 +451,60 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
                     Hey, {displayName}!
                   </h2>
                   <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-                    Manage, edit, or create professional resumes
+                    Manage, edit, upload, or generate professional resumes
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full lg:w-auto">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full lg:w-auto">
                   <button
                     onClick={() => router.push("/create?mode=ai")}
-                    className="flex items-center gap-3 p-3.5 rounded-2xl border border-[#23273a] bg-[#12141f] hover:bg-[#181b28] hover:border-blue-500/40 transition-all cursor-pointer shadow-sm"
+                    className="flex items-center gap-3 p-3 rounded-2xl border border-[#23273a] bg-[#12141f] hover:bg-[#181b28] hover:border-blue-500/40 transition-all cursor-pointer shadow-sm"
                   >
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-400 shrink-0">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-400 shrink-0">
                       <Wand2 className="h-4 w-4" />
                     </div>
                     <div className="flex flex-col text-left min-w-0">
-                      <span className="text-xs font-bold text-white truncate">AI Resume Builder</span>
-                      <span className="text-[10px] text-zinc-400">Generate from bio or text</span>
+                      <span className="text-xs font-bold text-white truncate">AI Builder</span>
+                      <span className="text-[10px] text-zinc-400">Generate from bio</span>
                     </div>
                   </button>
 
                   <button
-                    onClick={() => {
-                      if (resumes.length > 0) {
-                        router.push(`/editor/${resumes[0].id}`);
-                        toast.success("Opening resume editor for ATS analysis");
-                      } else {
-                        router.push("/create?mode=ai&template=ats");
-                      }
-                    }}
-                    className="flex items-center gap-3 p-3.5 rounded-2xl border border-[#23273a] bg-[#12141f] hover:bg-[#181b28] hover:border-purple-500/40 transition-all cursor-pointer shadow-sm"
+                    onClick={() => setIsUploadModalOpen(true)}
+                    className="flex items-center gap-3 p-3 rounded-2xl border border-[#23273a] bg-[#12141f] hover:bg-[#181b28] hover:border-cyan-500/40 transition-all cursor-pointer shadow-sm"
                   >
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-400 shrink-0">
-                      <Sparkles className="h-4 w-4" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 shrink-0">
+                      <Upload className="h-4 w-4" />
                     </div>
                     <div className="flex flex-col text-left min-w-0">
-                      <span className="text-xs font-bold text-white truncate">ATS Optimization</span>
-                      <span className="text-[10px] text-zinc-400">Match score & keywords</span>
+                      <span className="text-xs font-bold text-white truncate">Upload & Edit</span>
+                      <span className="text-[10px] text-zinc-400">Import PDF/Doc</span>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => setIsAtsModalOpen(true)}
+                    className="flex items-center gap-3 p-3 rounded-2xl border border-[#23273a] bg-[#12141f] hover:bg-[#181b28] hover:border-purple-500/40 transition-all cursor-pointer shadow-sm"
+                  >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-400 shrink-0">
+                      <Target className="h-4 w-4" />
+                    </div>
+                    <div className="flex flex-col text-left min-w-0">
+                      <span className="text-xs font-bold text-white truncate">ATS Match</span>
+                      <span className="text-[10px] text-zinc-400">Check match score</span>
                     </div>
                   </button>
 
                   <button
                     onClick={() => router.push("/create?mode=template")}
-                    className="flex items-center gap-3 p-3.5 rounded-2xl border border-[#23273a] bg-[#12141f] hover:bg-[#181b28] hover:border-emerald-500/40 transition-all cursor-pointer shadow-sm"
+                    className="flex items-center gap-3 p-3 rounded-2xl border border-[#23273a] bg-[#12141f] hover:bg-[#181b28] hover:border-emerald-500/40 transition-all cursor-pointer shadow-sm"
                   >
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shrink-0">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shrink-0">
                       <Layers className="h-4 w-4" />
                     </div>
                     <div className="flex flex-col text-left min-w-0">
-                      <span className="text-xs font-bold text-white truncate">Template Library</span>
-                      <span className="text-[10px] text-zinc-400">Modern, Minimal, ATS</span>
+                      <span className="text-xs font-bold text-white truncate">Templates</span>
+                      <span className="text-[10px] text-zinc-400">4 Pro Layouts</span>
                     </div>
                   </button>
                 </div>
@@ -494,15 +529,24 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
                     </div>
                     <h3 className="text-base font-bold text-white mb-1">No resumes created yet</h3>
                     <p className="text-xs text-zinc-400 max-w-sm mb-6">
-                      Paste your career history or job title and let our AI create a formatted resume in seconds.
+                      Paste your career history, upload an existing PDF, or choose from our designer templates.
                     </p>
-                    <button
-                      onClick={() => router.push("/create")}
-                      className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 px-4 py-2.5 text-xs font-bold text-white transition-all shadow-md shadow-blue-600/30 cursor-pointer"
-                    >
-                      <Plus className="h-4 w-4" />
-                      Build Your First Resume
-                    </button>
+                    <div className="flex flex-wrap items-center justify-center gap-3">
+                      <button
+                        onClick={() => router.push("/create?mode=ai")}
+                        className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 px-4 py-2.5 text-xs font-bold text-white transition-all shadow-md shadow-blue-600/30 cursor-pointer"
+                      >
+                        <Plus className="h-4 w-4" />
+                        AI Generator
+                      </button>
+                      <button
+                        onClick={() => setIsUploadModalOpen(true)}
+                        className="flex items-center gap-2 rounded-xl border border-[#262a3d] bg-[#181b28] hover:bg-[#202436] px-4 py-2.5 text-xs font-bold text-zinc-200 transition-all cursor-pointer"
+                      >
+                        <Upload className="h-4 w-4 text-cyan-400" />
+                        Upload Old PDF
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -602,6 +646,17 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
           )}
         </main>
       </div>
+
+      <AtsMatchCheckerModal
+        isOpen={isAtsModalOpen}
+        onClose={() => setIsAtsModalOpen(false)}
+        resumes={resumes}
+      />
+
+      <UploadResumeModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+      />
     </div>
   );
 }

@@ -13,6 +13,7 @@ export default async function EditorPage({ params }: EditorPageProps) {
 
   if (!user) {
     redirect("/login");
+    return null;
   }
 
   const { data: resume, error } = await supabase
@@ -24,6 +25,7 @@ export default async function EditorPage({ params }: EditorPageProps) {
   if (error || !resume) {
     console.error("Error loading resume:", error);
     redirect("/dashboard");
+    return null;
   }
 
   return (

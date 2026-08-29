@@ -236,6 +236,8 @@ The download system targets the `.resume-print-container` element inside `Resume
 | `ClassicTemplate` | `components/templates/ClassicTemplate.tsx` | Traditional corporate resume layout |
 | `AtsTemplate` | `components/templates/AtsTemplate.tsx` | Centered, single/multi-page, ATS-optimized layout with grids |
 | `InitialLoader` | `components/InitialLoader.tsx` | Global entrance loader wrapping the layout and executing a GSAP animation |
+| `AtsMatchCheckerModal` | `components/modals/AtsMatchCheckerModal.tsx` | Interactive modal to evaluate resume match against target job descriptions with keyword gap detection |
+| `UploadResumeModal` | `components/modals/UploadResumeModal.tsx` | Modal allowing users to upload existing resumes (PDF/Word/TXT) and edit them directly in the workspace editor |
 | `DashboardClient` | `app/dashboard/dashboard-client.tsx` | Main dashboard interface with functional resume management (edit, delete, clone/duplicate, search), AI creation quick-actions, template badges, and account profile/password security in midnight dark theme |
 | `EditorLoading` | `app/editor/[id]/loading.tsx` | Custom Next.js loader for the editor path, rendering a pulsing skeleton layout |
 | `NotFound` | `app/not-found.tsx` | Creative, resume-themed 404 error page with ATS gap analysis and navigation actions |

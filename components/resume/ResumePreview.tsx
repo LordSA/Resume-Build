@@ -175,7 +175,7 @@ export default function ResumePreview() {
         </div>
       </div>
 
-      <style jsx global>{`
+      <style>{`
         @page {
           size: A4 portrait;
           margin: 15mm 0;

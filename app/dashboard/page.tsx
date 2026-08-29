@@ -8,6 +8,7 @@ export default async function DashboardPage() {
 
   if (!user) {
     redirect("/login");
+    return null;
   }
 
   const { data: resumes, error } = await supabase
