@@ -2,7 +2,17 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
-## [2026-08-29] - Comprehensive Site Redesign, About Us, Contact Us, Offline & 404 Pages
+## [2026-08-29] - Navbar Logo Refinement & Clean Minimal Header
+
+### Updated
+- **Navbar (`components/Navbar.tsx`)**: Removed the brand text name from the navbar header on both desktop and mobile views, displaying only the clean `/nv.svg` logo icon.
+
+### Added & Redesigned
+- **Reference 1 Navbar (`components/Navbar.tsx`)**: Replaced with floating dark pill navigation header with smooth padding/scroll transition, center pill links (`Home`, `Templates`, `ATS Match`, `Contact`, `About us`), and full-screen mobile slide-over.
+- **Reference 2 Contact Us Page (`app/contact/page.tsx`)**: Replaced with "Lets Have a Chat 👋" interface featuring clean two-column input fields, message area, full-width send action, and centered social icons row.
+- **Reference 3 Footer (`components/Footer.tsx`)**: Redesigned clean footer with Solutions and Resources link columns, Stay Connected newsletter input with submit arrow, scroll-to-top button, and clear developer credits (`Built with precision by Shibili Aman TK • https://www.shibili.xyz`). Removed all database mentions.
+- **Reference 4 Home Page (`app/page.tsx`)**: Implemented A-Balance inspired Content Hub design system featuring `@/public/bg.gif` animated background, high-contrast typography, interactive sticker tags cloud, and real-time template preview sandbox.
+- **Studio About Us Page (`app/about/page.tsx`)**: Clean manifesto on typography precision, 0px layout drift, ATS calibration, and stats. Removed robotic AI terminology.
 
 ### Added
 - **About Us Page (`app/about/page.tsx`)**: High-energy story, stats counter (250K+ resumes, 99.4% ATS pass rate), core engineering pillars (Zero Layout Drift, 100% ATS Compliance, Instant AI Parsing), and CTA cards.

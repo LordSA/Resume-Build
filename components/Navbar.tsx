@@ -112,8 +112,8 @@ export default function Navbar() {
         <div className="flex-1 flex justify-start">
           <Link
             href="/"
-            aria-label="Resume Solutions Home"
-            className="flex items-center gap-2.5 transition-transform duration-300 hover:scale-105"
+            aria-label="Home"
+            className="flex items-center transition-transform duration-300 hover:scale-105"
           >
             <img
               src="/nv.svg"
@@ -123,9 +123,6 @@ export default function Navbar() {
                 ${isInitial ? "h-8 sm:h-9" : "h-7 sm:h-8"}
               `}
             />
-            <span className="font-black tracking-tight text-base sm:text-lg text-white">
-              Resume Solutions
-            </span>
           </Link>
         </div>
 
@@ -239,9 +236,8 @@ export default function Navbar() {
         `}
       >
         <div className="flex items-center justify-between border-b border-white/10 pb-6">
-          <Link href="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2.5">
+          <Link href="/" onClick={() => setIsOpen(false)} className="flex items-center">
             <img src="/nv.svg" alt="Logo" className="h-8 w-auto" />
-            <span className="font-black text-lg text-white">Resume Solutions</span>
           </Link>
 
           <button

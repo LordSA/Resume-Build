@@ -3,95 +3,85 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { motion } from "framer-motion";
-import { 
-  Sparkles, 
-  Layers, 
-  ScanSearch, 
-  ShieldCheck, 
-  Zap, 
-  ArrowRight, 
-  Users, 
-  CheckCircle2,
-  FileText,
-  Target
-} from "lucide-react";
+import { ArrowRight, Target, ScanSearch, Layers, Sparkles, CheckCircle2 } from "lucide-react";
 
 export default function AboutPage() {
   const stats = [
-    { label: "Resumes Built", value: "250K+" },
-    { label: "ATS Pass Rate", value: "99.4%" },
-    { label: "Designer Layouts", value: "4 Distinct" },
-    { label: "Recruiter Score", value: "9.8/10" },
+    { label: "Resumes Crafted", value: "250K+" },
+    { label: "ATS Parser Score", value: "99.4%" },
+    { label: "Designer Layouts", value: "4 Core" },
+    { label: "Export Print Fidelity", value: "100%" },
   ];
 
-  const coreValues = [
+  const pillars = [
     {
       icon: Target,
       title: "Zero Layout Drift",
-      description: "What you see on the screen matches the exported PDF to the exact millimeter. No broken page breaks, missing fonts, or misaligned columns.",
-      color: "from-blue-600/20 to-cyan-600/10 border-blue-500/30 text-blue-400"
+      description: "Our canvas engine guarantees exact 1:1 pixel matching between the on-screen preview and downloaded vector PDF. No rogue line breaks, font clipping, or column distortion.",
+      badge: "Print Engine"
     },
     {
       icon: ScanSearch,
-      title: "100% ATS Compliant",
-      description: "Engineered specifically to pass Workday, Greenhouse, Lever, and Taleo bots. Structured semantic tags and clean parsing without table glitches.",
-      color: "from-purple-600/20 to-pink-600/10 border-purple-500/30 text-purple-400"
+      title: "Recruiter & ATS Calibrated",
+      description: "Carefully structured semantic hierarchies built for Workday, Greenhouse, Lever, and human hiring managers. Clean linear text layers that pass compliance gates without layout compromises.",
+      badge: "Compliance"
     },
     {
-      icon: Zap,
-      title: "Instant AI Extraction",
-      description: "Paste unstructured notes, bios, or raw career history. Our AI formats duties, extracts action verbs, and generates standardized resume entities.",
-      color: "from-emerald-600/20 to-teal-600/10 border-emerald-500/30 text-emerald-400"
+      icon: Layers,
+      title: "Modular Layout Switching",
+      description: "Switch seamlessly between Modern two-column, Minimalist centered, Classic corporate, and High-Density ATS templates without retyping or losing a single piece of career data.",
+      badge: "Versatility"
     }
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0c14] text-zinc-100 font-sans flex flex-col selection:bg-blue-600/30 overflow-x-hidden relative">
-      <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-blue-600/5 blur-[160px] pointer-events-none" />
-      <div className="absolute top-[30%] right-[-10%] w-[500px] h-[500px] rounded-full bg-purple-600/5 blur-[160px] pointer-events-none" />
+    <div className="min-h-screen bg-[#07090e] text-zinc-100 font-sans flex flex-col selection:bg-white/20 relative overflow-x-hidden">
+      <div 
+        className="absolute top-0 inset-x-0 h-[600px] opacity-25 pointer-events-none mix-blend-screen bg-cover bg-top"
+        style={{ backgroundImage: "url('/bg.gif')" }}
+      />
+      <div className="absolute top-0 inset-x-0 h-[600px] bg-gradient-to-b from-[#07090e]/50 via-[#07090e]/85 to-[#07090e] pointer-events-none" />
 
       <Navbar />
 
-      <main className="flex-1 mx-auto max-w-6xl w-full px-6 py-16 flex flex-col gap-20 z-10">
+      <main className="flex-1 mx-auto max-w-6xl w-full px-6 sm:px-10 pt-32 sm:pt-40 pb-24 flex flex-col gap-24 z-10">
         <section className="text-center flex flex-col items-center max-w-3xl mx-auto gap-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs font-bold shadow-inner">
-            <Sparkles className="h-3.5 w-3.5 text-amber-300 animate-pulse" />
-            <span>Our Mission & Story</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/15 bg-white/5 text-zinc-300 text-xs font-semibold backdrop-blur-md">
+            <span>Studio Manifesto</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight">
-            We make job applications effortless & ATS-proof.
+          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-[1.1]">
+            Document precision for modern professionals.
           </h1>
 
-          <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
-            Resume Solutions was created to eliminate the frustration of resume builders that break formatting, hide features behind paywalls, or fail automated applicant tracking systems.
+          <p className="text-zinc-400 text-sm sm:text-base leading-relaxed font-medium">
+            We built Resume Solutions to solve the common issues with online resume builders: broken PDF exports, chaotic layout shifts, and templates that fail automated applicant tracking systems.
           </p>
 
-          <div className="flex items-center gap-4 mt-2">
+          <div className="flex items-center gap-3.5 mt-2">
             <Link
               href="/create"
-              className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white px-6 py-3.5 text-xs font-bold transition-all shadow-lg shadow-blue-600/25 hover:scale-[1.02]"
+              className="flex items-center gap-2 rounded-full bg-white hover:bg-zinc-200 text-black px-7 py-3.5 text-xs font-bold transition-all shadow-xl shadow-white/10"
             >
-              <span>Build Your Resume</span>
+              <span>Explore Templates</span>
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/contact"
-              className="flex items-center gap-2 rounded-xl bg-[#141724] border border-[#262a3d] hover:bg-[#1a1e2e] text-zinc-300 hover:text-white px-6 py-3.5 text-xs font-bold transition-all"
+              className="flex items-center gap-2 rounded-full bg-white/10 border border-white/15 hover:bg-white/20 text-white px-7 py-3.5 text-xs font-bold transition-all"
             >
-              <span>Get in Touch</span>
+              <span>Contact Us</span>
             </Link>
           </div>
         </section>
 
-        <section className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <section className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
           {stats.map((stat, idx) => (
             <div
               key={idx}
-              className="p-6 rounded-2xl border border-[#23273a] bg-[#11131e]/70 backdrop-blur-md flex flex-col items-center justify-center text-center gap-1 shadow-lg"
+              className="p-6 rounded-3xl border border-white/10 bg-[#0d0f17]/80 backdrop-blur-xl flex flex-col items-center justify-center text-center gap-1.5 shadow-xl"
             >
-              <span className="text-3xl sm:text-4xl font-black tracking-tight bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">
+              <span className="text-3xl sm:text-5xl font-black text-white">
                 {stat.value}
               </span>
               <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider mt-1">
@@ -103,45 +93,50 @@ export default function AboutPage() {
 
         <section className="flex flex-col gap-10">
           <div className="text-center max-w-2xl mx-auto flex flex-col gap-2">
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-              Why Candidates Choose Resume Solutions
+            <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-white">
+              Engineered with Craftsmanship
             </h2>
             <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed">
-              Every pixel, spacing rule, and typography pairing is tested against real corporate ATS parsers and human recruiters.
+              Every spacing unit, baseline grid, and font pairing has been optimized for visual appeal and automated readability.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {coreValues.map((val, idx) => (
+            {pillars.map((item, idx) => (
               <div
                 key={idx}
-                className={`p-6 rounded-3xl border bg-gradient-to-br ${val.color} flex flex-col gap-4 shadow-xl`}
+                className="p-8 rounded-3xl border border-white/10 bg-[#0d0f17]/90 backdrop-blur-xl flex flex-col gap-4 text-left shadow-xl hover:border-white/20 transition-all"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 border border-white/15">
-                  <val.icon className="h-6 w-6" />
+                <div className="flex items-center justify-between">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-white border border-white/15">
+                    <item.icon className="h-6 w-6" />
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-zinc-400">
+                    {item.badge}
+                  </span>
                 </div>
-                <h3 className="text-lg font-black text-white">{val.title}</h3>
-                <p className="text-xs text-zinc-300 leading-relaxed">{val.description}</p>
+                <h3 className="text-lg font-black text-white">{item.title}</h3>
+                <p className="text-xs text-zinc-400 leading-relaxed font-medium">{item.description}</p>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="p-8 sm:p-12 rounded-3xl border border-[#23273a] bg-gradient-to-br from-[#121522] to-[#0d0f18] flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl">
+        <section className="p-8 sm:p-14 rounded-3xl border border-white/10 bg-gradient-to-br from-[#121522] via-[#0d0f17] to-[#07090e] flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl">
           <div className="flex flex-col gap-3 max-w-xl text-left">
-            <h3 className="text-2xl sm:text-3xl font-black text-white">
-              Ready to create your winning resume?
+            <h3 className="text-2xl sm:text-4xl font-black text-white">
+              Ready to craft your resume?
             </h3>
-            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
-              Choose from our 4 designer templates or paste your LinkedIn bio. Export in high-resolution PDF with 100% ATS score compliance.
+            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-medium">
+              Choose from our 4 designer templates or upload your current PDF to start editing with complete creative control.
             </p>
           </div>
           <Link
             href="/create"
-            className="flex items-center gap-2 px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm transition-all shadow-xl shadow-blue-600/30 shrink-0"
+            className="flex items-center gap-2 px-8 py-4 rounded-full bg-white hover:bg-zinc-200 text-black font-bold text-xs sm:text-sm transition-all shadow-xl shadow-white/10 shrink-0"
           >
-            <Sparkles className="h-4 w-4 text-amber-300" />
-            <span>Get Started Now</span>
+            <span>Start Building Now</span>
+            <ArrowRight className="h-4 w-4" />
           </Link>
         </section>
       </main>
