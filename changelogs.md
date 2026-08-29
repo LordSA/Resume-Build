@@ -2,7 +2,11 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
-## [2026-08-29] - Figma-Style Fixed Dual-Sidebar Layout & Dark Workspace
+## [2026-08-29] - Accordion Flex Item Shrink Fix & Compact Panels
+
+### Fixed
+- **Accordion Item Squishing Bug (`components/editor/EditorSidebar.tsx`)**: Added `shrink-0` and explicit minimum header heights (`min-h-[46px]`) to all accordion card items, preventing collapsed section items from being compressed or cut off when any section expands.
+- **Panel Header Deduplication**: Removed redundant duplicate section titles inside `PersonalPanel`, `SummaryPanel`, and `ExperiencePanel` for a more compact and elegant accordion view.
 
 ### Changed
 - **Figma-Style Fixed Dual-Sidebar Workspace**: Configured both the Left Section & Content Editor (`EditorSidebar`) and Right Design & Theme Inspector (`EditorRightPanel`) to remain fixed, open, and accessible on desktop screens (`lg+`) with the auto-scaling A4 resume canvas centered between them.

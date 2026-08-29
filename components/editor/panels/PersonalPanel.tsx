@@ -130,13 +130,8 @@ export default function PersonalPanel() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <h3 className="text-sm font-bold text-white">Personal Information</h3>
-        <p className="text-[11px] text-zinc-400 mt-0.5">Basic contact details, role, and online links</p>
-      </div>
-
-      <div className="flex items-center gap-4 p-3.5 bg-[#161824] border border-[#23273a] rounded-2xl shadow-sm">
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-3.5 p-3 bg-[#161824] border border-[#23273a] rounded-2xl shadow-sm">
         <div className="relative group h-16 w-16 shrink-0 rounded-full border border-[#2d3249] bg-[#12141f] overflow-hidden flex items-center justify-center">
           {personal.photoUrl ? (
             <img 

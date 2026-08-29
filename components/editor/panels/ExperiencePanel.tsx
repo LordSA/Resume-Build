@@ -98,15 +98,12 @@ export default function ExperiencePanel() {
   };
 
   return (
-    <div className="flex flex-col gap-3.5">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-sm font-bold text-white">Employment History</h3>
-          <p className="text-[11px] text-zinc-400 mt-0.5">Past roles, companies, and quantifiable impact</p>
-        </div>
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-between pb-1">
+        <span className="text-[11px] font-semibold text-zinc-400">Past roles and positions</span>
         <button
           onClick={handleAdd}
-          className="flex items-center gap-1 text-[11px] font-bold bg-blue-600/15 border border-blue-500/30 text-blue-400 hover:bg-blue-600/25 px-2.5 py-1.5 rounded-xl transition-all shadow-sm cursor-pointer"
+          className="flex items-center gap-1 text-[11px] font-bold bg-blue-600/15 border border-blue-500/30 text-blue-400 hover:bg-blue-600/25 px-2.5 py-1 rounded-xl transition-all shadow-sm cursor-pointer"
         >
           <Plus className="h-3 w-3" />
           Add Role

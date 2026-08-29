@@ -47,13 +47,8 @@ export default function SummaryPanel() {
   };
 
   return (
-    <div className="flex flex-col gap-3.5">
-      <div>
-        <h3 className="text-sm font-bold text-white">Professional Summary</h3>
-        <p className="text-[11px] text-zinc-400 mt-0.5">Brief overview of your core skills and career impact</p>
-      </div>
-
-      <div className="flex flex-col gap-1.5 mt-1">
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-1.5">
         <textarea
           value={resumeData.summary}
           onChange={(e) => updateSummary(e.target.value)}
