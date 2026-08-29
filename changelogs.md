@@ -2,7 +2,38 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
-## [2026-08-29] - Accordion Flex Item Shrink Fix & Compact Panels
+## [2026-08-29] - Distinct Dashboard Action Redirections & Query Param Integration
+
+### Fixed
+- **Dashboard Action Card Redirections (`app/dashboard/dashboard-client.tsx`)**: Replaced generic fallback paths with dedicated deep links for each creation option:
+  - **AI Resume Builder**: Navigates directly to `/create?mode=ai` (opens bio/text parser).
+  - **ATS Optimization**: Opens the user's latest resume directly in the workspace editor (`/editor/[id]`) with an ATS notification, or `/create?mode=ai&template=ats` if no resumes exist.
+  - **Template Library**: Navigates directly to `/create?mode=template` (opens the visual template selector for Modern, Minimalist, Classic, and ATS).
+- **Create Page Query Parameter Handling (`app/create/page.tsx`)**: Wrapped in `Suspense` with dynamic `useSearchParams` parsing for mode and template initialization.
+
+### Changed
+- **Dashboard Sidebar Logo (`app/dashboard/dashboard-client.tsx`)**: Replaced the placeholder sparkles/AI icon in the dashboard navigation rail with the official `/nv.svg` brand logo for consistent brand visual identity.
+
+### Added
+- **Reworked Resume Creator (`app/create/page.tsx`)**: Rebuilt the creation page to match the smooth midnight studio dark theme with dual creation modes:
+  - **AI Generator Mode**: Allows pasting unstructured career background, LinkedIn bio, or work notes with a 1-click sample prompt filler and real-time structured entity extraction.
+  - **Template Starter Mode**: Direct template visual chooser (Modern, Minimalist, Classic, Standard ATS) with instant document scaffolding.
+  - **Animated Loading Step Card**: Progress bar and step indicators during AI resume generation.
+
+### Changed
+- **Functional Dashboard Experience (`app/dashboard/dashboard-client.tsx`)**: Aligned the dashboard to strictly reflect the real capabilities of the Resume Solutions platform in the smooth midnight dark theme:
+  - **Resume Document Actions**: Live real-time search filtering, instant routing to `/editor/[id]`, real Supabase resume deletion, and 1-click **Resume Duplication** (cloning JSON & theme payloads).
+  - **AI Creation Actions**: Direct triggers for **AI Resume Builder**, **ATS Optimization**, and **Template Library**.
+  - **Account & Security View**: Integrated Supabase profile update (Full Name) and password reset/change with validation.
+  - **Clean Sidebar & Links**: Direct access to My Resumes, AI Creator, Account Security, Privacy Policy, Terms & Conditions, and user sign-out.
+
+### Added
+- **Reference Tablet Grid Dashboard (`app/dashboard/dashboard-client.tsx`)**: Rebuilt the main dashboard layout to match the provided tablet design in the editor's smooth midnight dark theme (`#0d0f17`), featuring:
+  - Left navigation rail (`Dashboard`, `Templates`, `Jobs & ATS Match`, `Job Applications`, `Settings`, `Help & Policies`, and User Profile card with Pro badge).
+  - Top header with search bar, notifications bell, and `+ Create New` button.
+  - Greeting hero with quick creation action cards (`Resume`, `Cover Letter`, `Resignation Letter`).
+  - Document showcase with pastel-dark gradient thumbnails, live layout preview cards, update timestamps, and contextual actions.
+  - Bottom grid featuring **Trending Jobs & ATS Opportunities** and **Create Your Own Job Application** banner.
 
 ### Fixed
 - **Accordion Item Squishing Bug (`components/editor/EditorSidebar.tsx`)**: Added `shrink-0` and explicit minimum header heights (`min-h-[46px]`) to all accordion card items, preventing collapsed section items from being compressed or cut off when any section expands.

@@ -59,7 +59,7 @@ resume-build/
 │   ├── privacy/            # Privacy Policy documentation page
 │   ├── terms/              # Terms and Conditions documentation page
 │   ├── dashboard/          # User Dashboard for listing resumes & profile settings
-│   ├── create/             # Initial prompt paste page for AI resume generation
+│   ├── create/             # Resume Creation Hub (AI Generator from raw bio/text + Template Starter)
 │   ├── editor/             # Main workspace editor interface
 │   │   └── [id]/           # Dynamic route for a specific resume
 │   ├── api/                # API routes
@@ -236,7 +236,7 @@ The download system targets the `.resume-print-container` element inside `Resume
 | `ClassicTemplate` | `components/templates/ClassicTemplate.tsx` | Traditional corporate resume layout |
 | `AtsTemplate` | `components/templates/AtsTemplate.tsx` | Centered, single/multi-page, ATS-optimized layout with grids |
 | `InitialLoader` | `components/InitialLoader.tsx` | Global entrance loader wrapping the layout and executing a GSAP animation |
-| `Loading` | `app/loading.tsx` | Next.js page loader for route changes and page transitions with a top-bar progress line |
+| `DashboardClient` | `app/dashboard/dashboard-client.tsx` | Main dashboard interface with functional resume management (edit, delete, clone/duplicate, search), AI creation quick-actions, template badges, and account profile/password security in midnight dark theme |
 | `EditorLoading` | `app/editor/[id]/loading.tsx` | Custom Next.js loader for the editor path, rendering a pulsing skeleton layout |
 | `NotFound` | `app/not-found.tsx` | Creative, resume-themed 404 error page with ATS gap analysis and navigation actions |
 | `PrivacyPolicyPage` | `app/privacy/page.tsx` | Public privacy policy and data protection documentation |
