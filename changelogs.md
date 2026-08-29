@@ -2,7 +2,15 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
-## [2026-08-29] - CLI Binary Restoration & Webpack Build Configuration
+## [2026-08-29] - Distinct Template Showcase Previews & Lenis Smooth Scrolling
+
+### Added
+- **Lenis Smooth Inertia Scrolling (`components/LenisScrollProvider.tsx`, `app/layout.tsx`, `app/globals.css`)**: Implemented global Lenis smooth scrolling for desktop experiences while gracefully preserving standard native scrolling on mobile and touch devices.
+- **Distinct Template Previews (`app/create/page.tsx`)**: Replaced duplicate demo cards with 4 custom miniature layout mockups accurately reflecting each template's design structure:
+  - **Modern Studio**: Two-column layout with colored sidebar, skills chips, and timeline cards.
+  - **Minimalist Executive**: Single-column layout with emerald divider rules and indented achievements.
+  - **Classic Academic**: Traditional serif header with centered contact dot-lines and formal section borders.
+  - **Standard ATS**: High-density uppercase bracketed category headers and keyword strings.
 
 ### Fixed
 - **Next.js CLI Binaries & Scripts (`package.json`, `node_modules/.bin`)**: Restored `next.cmd` and `next.ps1` execution wrappers and configured scripts (`"dev": "next dev --webpack"`, `"build": "next build --webpack"`) for full compatibility on Windows.

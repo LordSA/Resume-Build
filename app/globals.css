@@ -145,14 +145,24 @@
     @apply border-border outline-ring/50;
   }
 
-  body {
-    @apply bg-zinc-950 text-zinc-100;
+  html {
+    @apply font-sans;
   }
 
-  html {
-    @apply font-sans scroll-smooth;
-    scrollbar-color: #27272a #09090b;
-    scrollbar-width: thin;
+  html.lenis, html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
   }
 
   ::-webkit-scrollbar {

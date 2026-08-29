@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "react-hot-toast";
 import InitialLoader from "@/components/InitialLoader";
+import LenisScrollProvider from "@/components/LenisScrollProvider";
 
 const playfairDisplayHeading = Playfair_Display({ subsets: ['latin'], variable: '--font-heading' });
 
@@ -76,9 +77,11 @@ export default function RootLayout({
       className={cn("antialiased", geistSans.variable, geistMono.variable, "font-sans", notoSans.variable, playfairDisplayHeading.variable)}
     >
       <body className="min-h-full flex flex-col">
-        <InitialLoader>
-          {children}
-        </InitialLoader>
+        <LenisScrollProvider>
+          <InitialLoader>
+            {children}
+          </InitialLoader>
+        </LenisScrollProvider>
         <Toaster
           position="bottom-right"
           toastOptions={{

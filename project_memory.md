@@ -236,6 +236,7 @@ The download system targets the `.resume-print-container` element inside `Resume
 | `ClassicTemplate` | `components/templates/ClassicTemplate.tsx` | Traditional corporate resume layout |
 | `AtsTemplate` | `components/templates/AtsTemplate.tsx` | Centered, single/multi-page, ATS-optimized layout with grids |
 | `InitialLoader` | `components/InitialLoader.tsx` | Global entrance loader wrapping the layout and executing a GSAP animation |
+| `LenisScrollProvider` | `components/LenisScrollProvider.tsx` | Smooth inertia scrolling provider using Lenis for desktop and standard native scroll for mobile |
 | `AtsMatchCheckerModal` | `components/modals/AtsMatchCheckerModal.tsx` | Interactive modal to evaluate resume match against target job descriptions with keyword gap detection |
 | `UploadResumeModal` | `components/modals/UploadResumeModal.tsx` | Modal allowing users to upload existing resumes (PDF/Word/TXT) and edit them directly in the workspace editor |
 | `DashboardClient` | `app/dashboard/dashboard-client.tsx` | Main dashboard interface with functional resume management (edit, delete, clone/duplicate, search), AI creation quick-actions, template badges, and account profile/password security in midnight dark theme |

@@ -16,8 +16,9 @@ import {
   Lightbulb,
   Upload,
   FileText,
-  Eye,
-  ArrowRight
+  Briefcase,
+  Mail,
+  MapPin
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -35,6 +36,165 @@ const LOADING_STEPS = [
 ];
 
 const SAMPLE_PROMPT = `Hi, I'm Alex Rivera. I worked at Netflix for 2 years as a Cloud Developer. I designed microservice logging systems in Go, TypeScript, and AWS, boosting throughput by 40%. Previously, I finished my BS in Computer Science at UC Berkeley where I was a TA. My core skills are React, Next.js, Node.js, Python, Docker, and PostgreSQL.`;
+
+function TemplateMockCard({ templateId }: { templateId: string }) {
+  if (templateId === "modern") {
+    return (
+      <div className="p-4 rounded-2xl bg-white text-zinc-900 shadow-xl flex flex-col gap-2.5 pointer-events-none select-none border border-zinc-200">
+        <div className="border-b-2 border-blue-600 pb-2 flex justify-between items-center">
+          <div>
+            <div className="text-xs font-black text-blue-600">Alex Rivera</div>
+            <div className="text-[10px] font-bold text-zinc-600">Senior Full Stack Engineer</div>
+          </div>
+          <div className="text-[8px] text-zinc-500 text-right">San Francisco, CA</div>
+        </div>
+
+        <div className="grid grid-cols-12 gap-3 text-[9px]">
+          <div className="col-span-4 border-r border-zinc-200 pr-2 flex flex-col gap-2">
+            <div>
+              <div className="font-bold text-blue-600 text-[8.5px] uppercase">Contact</div>
+              <div className="text-zinc-600 text-[8px] truncate">alex.rivera@example.com</div>
+              <div className="text-zinc-600 text-[8px]">+1 555-382-9102</div>
+            </div>
+            <div>
+              <div className="font-bold text-blue-600 text-[8.5px] uppercase">Skills</div>
+              <div className="flex flex-wrap gap-1 mt-0.5">
+                <span className="px-1 py-0.2 rounded bg-blue-50 text-blue-700 text-[7.5px] font-semibold">React</span>
+                <span className="px-1 py-0.2 rounded bg-blue-50 text-blue-700 text-[7.5px] font-semibold">Next.js</span>
+                <span className="px-1 py-0.2 rounded bg-blue-50 text-blue-700 text-[7.5px] font-semibold">TypeScript</span>
+                <span className="px-1 py-0.2 rounded bg-blue-50 text-blue-700 text-[7.5px] font-semibold">Go</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-span-8 flex flex-col gap-1.5">
+            <div>
+              <div className="font-bold text-blue-600 text-[8.5px] uppercase">Work History</div>
+              <div className="flex justify-between font-bold text-[8.5px] text-zinc-800">
+                <span>Lead Engineer · Vanguard Tech</span>
+                <span className="text-zinc-500 font-normal">2022 – Present</span>
+              </div>
+              <div className="text-zinc-600 text-[8px] leading-tight mt-0.5">
+                • Directed GraphQL architecture serving 12M monthly users.<br />
+                • Boosted API response speed by 45% using Redis caching.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (templateId === "minimal") {
+    return (
+      <div className="p-4 rounded-2xl bg-white text-zinc-900 shadow-xl flex flex-col gap-2 pointer-events-none select-none border border-zinc-200">
+        <div className="flex justify-between items-baseline border-b border-zinc-200 pb-1.5">
+          <div className="text-xs font-bold text-zinc-900">Alex Rivera</div>
+          <div className="text-[8px] text-zinc-500">San Francisco, CA · alex.rivera@example.com</div>
+        </div>
+
+        <div className="flex flex-col gap-2 text-[9px] pt-1">
+          <div>
+            <div className="text-[8.5px] font-bold uppercase tracking-wider text-emerald-600 border-b border-emerald-500/20 pb-0.5 mb-1">
+              Experience
+            </div>
+            <div className="flex justify-between text-[8.5px]">
+              <span className="font-semibold text-zinc-900">Lead Software Engineer — <span className="text-zinc-600 font-normal italic">Vanguard Tech Cloud</span></span>
+              <span className="text-zinc-400 text-[8px]">2022 – Present</span>
+            </div>
+            <div className="text-zinc-600 text-[8px] leading-tight pl-2 border-l border-zinc-200 mt-1">
+              Architected real-time WebSocket ingestion processing 25K events/sec. Mentored 8 engineers with CI/CD code quality gates.
+            </div>
+          </div>
+
+          <div>
+            <div className="text-[8.5px] font-bold uppercase tracking-wider text-emerald-600 border-b border-emerald-500/20 pb-0.5 mb-1">
+              Proficiencies
+            </div>
+            <div className="text-[8px] text-zinc-600 flex flex-wrap gap-1">
+              TypeScript · Next.js · Node.js · Go · Python · GraphQL · AWS · Docker
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (templateId === "classic") {
+    return (
+      <div className="p-4 rounded-2xl bg-white text-zinc-900 shadow-xl flex flex-col gap-2 pointer-events-none select-none border border-zinc-200 font-serif">
+        <div className="text-center border-b border-zinc-300 pb-2">
+          <div className="text-sm font-bold text-zinc-900 tracking-wide uppercase">ALEX RIVERA</div>
+          <div className="text-[8px] text-zinc-600 font-sans mt-0.5">
+            San Francisco, CA • alex.rivera@example.com • (555) 382-9102 • alexrivera.dev
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2 text-[9px] pt-1 font-sans">
+          <div>
+            <div className="text-[8.5px] font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-300 pb-0.5 mb-1 font-serif">
+              EMPLOYMENT HISTORY
+            </div>
+            <div className="flex justify-between text-[8.5px] font-bold text-zinc-800">
+              <span>Lead Software Engineer, Vanguard Tech Cloud</span>
+              <span className="font-normal text-zinc-600">2022 – Present</span>
+            </div>
+            <div className="text-zinc-700 text-[8px] leading-tight mt-0.5">
+              • Spearheaded distributed microservices migration serving 12M users.<br />
+              • Improved core API throughput by 40% with zero downtime.
+            </div>
+          </div>
+
+          <div>
+            <div className="text-[8.5px] font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-300 pb-0.5 mb-1 font-serif">
+              EDUCATION
+            </div>
+            <div className="flex justify-between text-[8px] text-zinc-700">
+              <span className="font-semibold">B.S. in Computer Science — UC Berkeley</span>
+              <span>2015 – 2019</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-4 rounded-2xl bg-white text-zinc-900 shadow-xl flex flex-col gap-2 pointer-events-none select-none border border-zinc-200 font-mono">
+      <div className="border-b-2 border-black pb-1.5">
+        <div className="text-xs font-black text-black tracking-tight">ALEX RIVERA</div>
+        <div className="text-[8px] text-zinc-700 font-sans">
+          San Francisco, CA | alex.rivera@example.com | 555-382-9102 | linkedin.com/in/alexrivera
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-1.5 text-[8.5px] font-sans">
+        <div>
+          <div className="font-black text-black uppercase tracking-wider text-[8px] border-b border-zinc-400 pb-0.2">
+            [TECHNICAL SKILLS]
+          </div>
+          <div className="text-[8px] text-zinc-700 mt-0.5">
+            <strong>Languages:</strong> TypeScript, JavaScript, Go, Python | <strong>Frameworks:</strong> React, Next.js, Node.js | <strong>Cloud:</strong> AWS, Docker, Kubernetes
+          </div>
+        </div>
+
+        <div>
+          <div className="font-black text-black uppercase tracking-wider text-[8px] border-b border-zinc-400 pb-0.2">
+            [PROFESSIONAL EXPERIENCE]
+          </div>
+          <div className="flex justify-between text-[8px] font-bold text-black mt-0.5">
+            <span>Lead Software Engineer | Vanguard Tech Cloud</span>
+            <span>2022 - Present</span>
+          </div>
+          <div className="text-zinc-700 text-[8px] leading-tight">
+            - Built high-throughput telemetry pipelines processing 25K events/sec.<br />
+            - Optimized ATS parsing compliance score to 100% across all ATS bots.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function CreateResumeContent() {
   const router = useRouter();
@@ -358,29 +518,7 @@ function CreateResumeContent() {
 
                         <p className="text-xs text-zinc-300 leading-relaxed">{tmpl.description}</p>
 
-                        <div className="p-4 rounded-2xl bg-white/95 text-zinc-900 shadow-lg flex flex-col gap-2 pointer-events-none">
-                          <div className="flex items-center justify-between border-b border-zinc-200 pb-2">
-                            <div>
-                              <div className="text-xs font-black text-zinc-900">Alex Rivera</div>
-                              <div className="text-[10px] font-semibold text-blue-600">Senior Full Stack Engineer</div>
-                            </div>
-                            <div className="text-[9px] text-zinc-500 text-right">
-                              San Francisco, CA<br />alex.rivera@example.com
-                            </div>
-                          </div>
-
-                          <div className="flex flex-col gap-1 text-[9px] text-zinc-700">
-                            <div className="font-bold text-zinc-900">Experience</div>
-                            <div className="flex justify-between font-semibold">
-                              <span>Lead Engineer · Vanguard Tech Cloud</span>
-                              <span className="text-zinc-500">2022 - Present</span>
-                            </div>
-                            <div className="text-zinc-600 line-clamp-2">
-                              • Spearheaded migration to GraphQL federation serving 12M users.<br />
-                              • Reduced API latency by 45% using distributed caching.
-                            </div>
-                          </div>
-                        </div>
+                        <TemplateMockCard templateId={tmpl.id} />
 
                         <div className="flex flex-wrap gap-1.5 pt-1">
                           {tmpl.features.map((feat, i) => (
