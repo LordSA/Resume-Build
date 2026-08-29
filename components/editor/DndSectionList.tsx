@@ -54,7 +54,7 @@ export default function DndSectionList() {
       <div className="flex flex-col gap-1.5 mt-2">
         {sectionOrder.map((section, index) => {
           const label = SECTION_LABELS[section] || section;
-          if (section === "personal") return null; // Personal info stays at the top
+          if (section === "personal") return null;
 
           return (
             <div

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/client";
 import { toast } from "react-hot-toast";
-import { Loader2, ArrowRight, Mail, ChevronLeft, ShieldCheck, Lock, User } from "lucide-react";
+import { Loader2, ArrowRight, Mail, ChevronLeft, ShieldCheck, Lock, User, Check } from "lucide-react";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -14,12 +14,18 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [agreeTerms, setAgreeTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email) {
       toast.error("Please enter your name and email address");
+      return;
+    }
+
+    if (!agreeTerms) {
+      toast.error("Please accept the Terms of Service and Privacy Policy to continue");
       return;
     }
 
@@ -57,6 +63,11 @@ export default function SignupPage() {
   };
 
   const handleGoogleSignup = async () => {
+    if (!agreeTerms) {
+      toast.error("Please accept the Terms of Service and Privacy Policy to continue");
+      return;
+    }
+
     setIsLoading(true);
     try {
       const { error } = await supabase.auth.signInWithOAuth({
@@ -75,7 +86,7 @@ export default function SignupPage() {
   return (
     <div className="flex min-h-screen w-full bg-zinc-950 text-white selection:bg-blue-600/30 font-sans relative overflow-hidden">
       <div className="w-full lg:w-[45%] flex flex-col justify-between p-8 sm:p-12 relative z-10 bg-zinc-950">
-        <div className="flex items-center justify-between w-full mb-12">
+        <div className="flex items-center justify-between w-full mb-8">
           <Link
             href="/login"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-900 bg-zinc-900/30 text-xs font-semibold text-zinc-400 hover:text-white hover:border-zinc-800 transition-all cursor-pointer"
@@ -94,8 +105,8 @@ export default function SignupPage() {
           />
         </div>
 
-        <div className="mx-auto w-full max-w-[360px] flex flex-col gap-7 my-auto">
-          <div className="flex flex-col gap-1.5">
+        <div className="mx-auto w-full max-w-[360px] flex flex-col gap-6 my-auto">
+          <div className="flex flex-col gap-1">
             <h2 className="text-3xl font-extrabold tracking-tight text-white">Create an account</h2>
             <p className="text-xs text-zinc-450 font-medium mt-1">
               Already have an account?{" "}
@@ -119,7 +130,7 @@ export default function SignupPage() {
             Google
           </button>
 
-          <div className="relative flex items-center justify-center py-1.5">
+          <div className="relative flex items-center justify-center py-1">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-zinc-900"></div>
             </div>
@@ -128,7 +139,7 @@ export default function SignupPage() {
             </span>
           </div>
 
-          <form onSubmit={handleSignupSubmit} className="flex flex-col gap-4.5">
+          <form onSubmit={handleSignupSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 font-sans">
                 Full Name
@@ -180,6 +191,46 @@ export default function SignupPage() {
               <span className="text-[9px] text-zinc-550 font-medium">Leave blank to use passwordless magic link signup instead.</span>
             </div>
 
+            <div className="flex items-start gap-2.5 pt-1">
+              <button
+                type="button"
+                role="checkbox"
+                aria-checked={agreeTerms}
+                onClick={() => setAgreeTerms(!agreeTerms)}
+                className={`flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-md border transition-all mt-0.5 cursor-pointer ${
+                  agreeTerms
+                    ? "bg-blue-600 border-blue-500 text-white shadow-sm shadow-blue-500/30"
+                    : "border-zinc-700 bg-zinc-900/60 hover:border-zinc-500"
+                }`}
+              >
+                {agreeTerms && <Check className="h-3 w-3 stroke-[3]" />}
+              </button>
+              <label 
+                onClick={() => setAgreeTerms(!agreeTerms)}
+                className="text-[11px] text-zinc-400 leading-snug cursor-pointer select-none"
+              >
+                I agree to the{" "}
+                <Link 
+                  href="/terms" 
+                  target="_blank"
+                  onClick={(e) => e.stopPropagation()} 
+                  className="text-blue-400 hover:text-blue-300 font-semibold underline underline-offset-2"
+                >
+                  Terms of Service
+                </Link>{" "}
+                and{" "}
+                <Link 
+                  href="/privacy" 
+                  target="_blank"
+                  onClick={(e) => e.stopPropagation()} 
+                  className="text-blue-400 hover:text-blue-300 font-semibold underline underline-offset-2"
+                >
+                  Privacy Policy
+                </Link>
+                .
+              </label>
+            </div>
+
             <button
               type="submit"
               disabled={isLoading}
@@ -200,7 +251,7 @@ export default function SignupPage() {
           </form>
         </div>
 
-        <div className="flex items-center gap-1.5 text-[10px] text-zinc-550 font-semibold justify-center mt-12 border-t border-zinc-900/60 pt-4">
+        <div className="flex items-center gap-1.5 text-[10px] text-zinc-550 font-semibold justify-center mt-8 border-t border-zinc-900/60 pt-4">
           <ShieldCheck className="h-3.5 w-3.5" />
           <span>Secure authentication via Supabase SSR</span>
         </div>

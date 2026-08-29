@@ -48,7 +48,7 @@ resume-build/
 ├── app/                    # Next.js App Router folders
 │   ├── (auth)/             # Authentication group
 │   │   ├── login/          # Login page (split-screen with Google OAuth + OTP + Passwords)
-│   │   ├── signup/         # Signup page (split-screen with Google OAuth + unified Email/Password signup)
+│   │   ├── signup/         # Signup page with mandatory Terms & Privacy check
 │   │   ├── forgot-password/# Forgot password request page
 │   │   │   └── verify/     # Check recovery instructions page
 │   │   ├── reset-password/ # Password reset handler page
@@ -56,6 +56,8 @@ resume-build/
 │   │   └── verified/       # Email confirmed landing page
 │   ├── auth/               # Callback handler folder
 │   │   └── callback/       # OAuth & confirmation redirects callback
+│   ├── privacy/            # Privacy Policy documentation page
+│   ├── terms/              # Terms and Conditions documentation page
 │   ├── dashboard/          # User Dashboard for listing resumes & profile settings
 │   ├── create/             # Initial prompt paste page for AI resume generation
 │   ├── editor/             # Main workspace editor interface
@@ -219,12 +221,14 @@ The download system targets the `.resume-print-container` element inside `Resume
 
 | Component | Path | Responsibility |
 |-----------|------|----------------|
+| `WpsMobileDock` | `components/editor/WpsMobileDock.tsx` | Pinned mobile bottom dock for quick access to Edit, Theme, Templates, ATS Match, and Export |
+| `WpsEditDrawer` | `components/editor/WpsEditDrawer.tsx` | WPS Office-inspired bottom drawer with drag handle, horizontal category pills, and responsive panel editors |
 | `Footer` | `components/Footer.tsx` | Shared footer with copyright, project links, contact, support button |
-| `EditorWorkspace` | `app/editor/[id]/editor-workspace.tsx` | Main editor shell with toolbar, sidebar, preview, and PDF download |
-| `EditorSidebar` | `components/editor/EditorSidebar.tsx` | Collapsible sidebar with section panels |
+| `EditorWorkspace` | `app/editor/[id]/editor-workspace.tsx` | Main editor shell with responsive toolbar, desktop sidebar, WPS mobile dock/drawer, preview, and PDF download |
+| `EditorSidebar` | `components/editor/EditorSidebar.tsx` | Collapsible sidebar with section panels (desktop only via `hidden md:flex`) |
 | `PersonalPanel` | `components/editor/panels/PersonalPanel.tsx` | Personal info editor with Supabase photo uploader |
 | `ThemePanel` | `components/editor/panels/ThemePanel.tsx` | Theme controls, color pickers, font selector, custom font uploader |
-| `ResumePreview` | `components/resume/ResumePreview.tsx` | Renders A4 preview with zoom controls |
+| `ResumePreview` | `components/resume/ResumePreview.tsx` | Renders A4 preview with responsive auto-fit scaling and zoom controls |
 | `TemplateRenderer` | `components/resume/TemplateRenderer.tsx` | Selects and renders the active template |
 | `ModernTemplate` | `components/templates/ModernTemplate.tsx` | Two-column modern resume layout |
 | `MinimalTemplate` | `components/templates/MinimalTemplate.tsx` | Single-column minimal resume layout |
@@ -233,3 +237,5 @@ The download system targets the `.resume-print-container` element inside `Resume
 | `InitialLoader` | `components/InitialLoader.tsx` | Global entrance loader wrapping the layout and executing a GSAP animation |
 | `Loading` | `app/loading.tsx` | Next.js page loader for route changes and page transitions with a top-bar progress line |
 | `EditorLoading` | `app/editor/[id]/loading.tsx` | Custom Next.js loader for the editor path, rendering a pulsing skeleton layout |
+| `PrivacyPolicyPage` | `app/privacy/page.tsx` | Public privacy policy and data protection documentation |
+| `TermsPage` | `app/terms/page.tsx` | Public terms of service and acceptable use agreement |

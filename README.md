@@ -16,13 +16,14 @@ Resume Solutions is a high-fidelity, state-driven web application built with **N
 - **Premium Fluid Motion**: Handcrafted Framer Motion entrances, staggered dashboard animations, and sliding panel drawer actions.
 
 ### Main Capabilities
-1. **Passwordless OTP Authentication**: Enter your email, receive a 6-digit OTP confirmation token, and log in directly. Supported by Google OAuth sign-in.
+1. **Passwordless OTP Authentication & Legal Consent**: Enter your email, accept the Terms & Conditions and Privacy Policy, receive a 6-digit OTP confirmation token, and log in directly. Supported by Google OAuth sign-in.
 2. **Instant Resume Creator**: Paste messy bio summaries or LinkedIn history, and the system automatically extracts and formats it into clean JSON section nodes.
-3. **ATS Compatibility Analyzer**: Paste your target job listing requirements to calculate keyword match scores, flag missing terms, and generate list optimizations.
-4. **Local-First Autosave**: Edits automatically sync back to Supabase using a 2-second debounced buffer to prevent typing delays.
-5. **Print-Perfect PDF Outputs**: Uses `html2pdf.js` for high-fidelity PDF generation with `window.print()` fallback.
-6. **Custom Font Uploads**: Upload your own `.ttf`, `.otf`, `.woff`, `.woff2` fonts and apply them to your resume in real-time.
-7. **Supabase File Storage**: Profile photos and custom fonts stored in the `resume-assets` Supabase Storage bucket.
+3. **WPS Office Mobile UI System**: On mobile devices, enjoy a document-first view with an auto-scaled A4 canvas, a floating bottom action dock, and an expandable bottom drawer with section ribbon navigation.
+4. **ATS Compatibility Analyzer**: Paste your target job listing requirements to calculate keyword match scores, flag missing terms, and generate list optimizations.
+5. **Local-First Autosave**: Edits automatically sync back to Supabase using a 2-second debounced buffer to prevent typing delays.
+6. **Print-Perfect PDF Outputs**: Uses high-fidelity PDF generation with `window.print()` and custom vector formatting.
+7. **Custom Font Uploads**: Upload your own `.ttf`, `.otf`, `.woff`, `.woff2` fonts and apply them to your resume in real-time.
+8. **Supabase File Storage**: Profile photos and custom fonts stored in the `resume-assets` Supabase Storage bucket.
 
 ---
 

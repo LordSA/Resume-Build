@@ -5,20 +5,22 @@ import { useEffect, useRef, useState } from "react";
 import { useThemeStore } from "@/store/themeStore";
 import { useEditorStore } from "@/store/editorStore";
 import TemplateRenderer from "./TemplateRenderer";
-import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { ZoomIn, ZoomOut, RotateCcw, Maximize2 } from "lucide-react";
 
 export default function ResumePreview() {
   const { resumeData, template } = useResumeStore();
   const { themeConfig } = useThemeStore();
   const { previewZoom, setPreviewZoom } = useEditorStore();
   const [totalPages, setTotalPages] = useState(1);
+  const [containerWidth, setContainerWidth] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!contentRef.current) return;
 
     const observer = new ResizeObserver((entries) => {
-      for (let entry of entries) {
+      for (const entry of entries) {
         const height = entry.contentRect.height;
         setTotalPages(Math.max(1, Math.ceil(height / 1123)));
       }
@@ -28,6 +30,26 @@ export default function ResumePreview() {
     return () => observer.disconnect();
   }, [resumeData]);
 
+  useEffect(() => {
+    if (!wrapperRef.current) return;
+
+    const updateDimensions = () => {
+      if (wrapperRef.current) {
+        const w = wrapperRef.current.clientWidth;
+        setContainerWidth(w);
+        if (w < 768 && w > 0) {
+          const fitScale = Math.max(0.38, Math.min(0.9, (w - 24) / 794));
+          setPreviewZoom(Number(fitScale.toFixed(2)));
+        }
+      }
+    };
+
+    updateDimensions();
+    const observer = new ResizeObserver(updateDimensions);
+    observer.observe(wrapperRef.current);
+    return () => observer.disconnect();
+  }, [setPreviewZoom]);
+
   if (!resumeData) {
     return (
       <div className="flex-1 flex items-center justify-center bg-zinc-900/10 text-zinc-500 text-xs">
@@ -36,50 +58,65 @@ export default function ResumePreview() {
     );
   }
 
-  const handleZoomIn = () => setPreviewZoom(Math.min(previewZoom + 0.05, 1.3));
-  const handleZoomOut = () => setPreviewZoom(Math.max(previewZoom - 0.05, 0.6));
-  const handleZoomReset = () => setPreviewZoom(1.0);
+  const handleZoomIn = () => setPreviewZoom(Math.min(previewZoom + 0.05, 1.4));
+  const handleZoomOut = () => setPreviewZoom(Math.max(previewZoom - 0.05, 0.35));
+  const handleZoomReset = () => {
+    if (containerWidth > 0 && containerWidth < 768) {
+      const fitScale = Math.max(0.38, Math.min(0.9, (containerWidth - 24) / 794));
+      setPreviewZoom(Number(fitScale.toFixed(2)));
+    } else {
+      setPreviewZoom(1.0);
+    }
+  };
 
   return (
     <div className="flex-1 flex flex-col min-w-0 bg-zinc-900 overflow-hidden relative print:p-0 print:bg-white print:overflow-visible">
-      <div className="flex items-center justify-between px-6 py-2.5 bg-zinc-950 border-b border-zinc-850 shrink-0 print:hidden z-10">
-        <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Live Preview</span>
-        <div className="flex items-center gap-1.5 bg-zinc-900 border border-zinc-800 p-0.5 rounded-xl">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-2 sm:py-2.5 bg-zinc-950 border-b border-zinc-850 shrink-0 print:hidden z-10">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider hidden sm:inline">Live Preview</span>
+          <span className="text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full">
+            {totalPages} {totalPages === 1 ? "Page" : "Pages"}
+          </span>
+        </div>
+        <div className="flex items-center gap-1 sm:gap-1.5 bg-zinc-900 border border-zinc-800 p-0.5 rounded-xl">
           <button
             onClick={handleZoomOut}
-            className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-all"
+            className="p-1 sm:p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-all cursor-pointer"
             title="Zoom Out"
           >
-            <ZoomOut className="h-3.5 w-3.5" />
+            <ZoomOut className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
           </button>
-          <span className="text-[10px] font-bold text-zinc-400 px-1 w-11 text-center select-none uppercase">
+          <span className="text-[9px] sm:text-[10px] font-bold text-zinc-300 px-1 w-9 sm:w-11 text-center select-none">
             {Math.round(previewZoom * 100)}%
           </span>
           <button
             onClick={handleZoomIn}
-            className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-all"
+            className="p-1 sm:p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-all cursor-pointer"
             title="Zoom In"
           >
-            <ZoomIn className="h-3.5 w-3.5" />
+            <ZoomIn className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
           </button>
-          <div className="h-4 w-[1px] bg-zinc-800 mx-0.5"></div>
+          <div className="h-3.5 sm:h-4 w-[1px] bg-zinc-800 mx-0.5"></div>
           <button
             onClick={handleZoomReset}
-            className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-all"
-            title="Reset Zoom"
+            className="p-1 sm:p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-all cursor-pointer"
+            title="Fit to Screen"
           >
-            <RotateCcw className="h-3.5 w-3.5" />
+            <RotateCcw className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
           </button>
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto p-8 flex justify-center bg-zinc-900/40 scrollbar-thin print:p-0 print:bg-white print:overflow-visible">
+      <div 
+        ref={wrapperRef}
+        className="flex-1 overflow-auto p-3 sm:p-8 pb-20 md:pb-8 flex justify-center bg-zinc-900/40 scrollbar-thin print:p-0 print:bg-white print:overflow-visible"
+      >
         <div
           className="resume-print-container shadow-2xl origin-top transition-transform duration-75 print:shadow-none print:transform-none shrink-0"
           style={{
             transform: `scale(${previewZoom})`,
             width: "794px",
-            // minHeight: "1123px",
+            marginBottom: `${(totalPages * 1123 * (previewZoom - 1))}px`,
           }}
         >
           <div id="resume-print-area" ref={contentRef} className="w-full h-full bg-white text-zinc-900" style={{ minHeight: `${totalPages * 1123}px` }}>
@@ -107,7 +144,7 @@ export default function ResumePreview() {
 
       <style jsx global>{`
         @page {
-          size: A4 potrait;
+          size: A4 portrait;
           margin: 15mm 0;
         }
         @media print {

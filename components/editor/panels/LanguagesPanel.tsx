@@ -30,7 +30,7 @@ export default function LanguagesPanel() {
         </div>
         <button
           onClick={handleAdd}
-          className="flex items-center gap-1 text-xs font-semibold bg-blue-600/10 border border-blue-500/30 text-blue-400 hover:bg-blue-600/25 px-3 py-1.5 rounded-xl transition-all"
+          className="flex items-center gap-1 text-xs font-semibold bg-blue-600/10 border border-blue-500/30 text-blue-400 hover:bg-blue-600/25 px-3 py-1.5 rounded-xl transition-all cursor-pointer"
         >
           <Plus className="h-3.5 w-3.5" />
           Add Language
@@ -41,9 +41,9 @@ export default function LanguagesPanel() {
         {languages.map((item, index) => (
           <div
             key={index}
-            className="grid grid-cols-12 gap-3 border border-zinc-850 bg-zinc-900/10 rounded-2xl p-4 items-end relative"
+            className="flex flex-col sm:grid sm:grid-cols-12 gap-3 border border-zinc-850 bg-zinc-900/10 rounded-2xl p-4 sm:items-end relative"
           >
-            <div className="flex flex-col gap-1.5 col-span-5">
+            <div className="flex flex-col gap-1.5 sm:col-span-5">
               <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Language</label>
               <input
                 type="text"
@@ -54,7 +54,7 @@ export default function LanguagesPanel() {
               />
             </div>
 
-            <div className="flex flex-col gap-1.5 col-span-5">
+            <div className="flex flex-col gap-1.5 sm:col-span-5">
               <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Proficiency</label>
               <input
                 type="text"
@@ -65,11 +65,11 @@ export default function LanguagesPanel() {
               />
             </div>
 
-            <div className="col-span-2 flex justify-center pb-0.5">
+            <div className="sm:col-span-2 flex justify-end sm:justify-center pt-2 sm:pt-0 sm:pb-0.5">
               <button
                 type="button"
                 onClick={() => deleteLanguage(index)}
-                className="p-2 border border-zinc-800 hover:bg-red-500/10 hover:border-red-500/30 text-zinc-500 hover:text-red-400 rounded-xl transition-all"
+                className="p-2 border border-zinc-800 hover:bg-red-500/10 hover:border-red-500/30 text-zinc-500 hover:text-red-400 rounded-xl transition-all cursor-pointer"
               >
                 <Trash2 className="h-4 w-4" />
               </button>

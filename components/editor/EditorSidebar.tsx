@@ -86,9 +86,9 @@ export default function EditorSidebar() {
   };
 
   return (
-    <div className="relative flex h-full shrink-0 select-none z-20 print:hidden">
-      <div className={`flex h-full transition-all duration-300 ${sidebarOpen ? "w-[480px]" : "w-0"}`}>
-        <div className="flex h-full w-[80px] flex-col items-center gap-1.5 border-r border-zinc-850 bg-zinc-950 py-4 overflow-y-auto overflow-x-hidden shrink-0 scrollbar-none">
+    <div className="relative hidden md:flex h-full shrink-0 select-none z-20 print:hidden">
+      <div className={`flex h-full transition-all duration-300 ${sidebarOpen ? "w-[420px] lg:w-[460px]" : "w-0"}`}>
+        <div className="flex h-full w-[70px] lg:w-[76px] flex-col items-center gap-1.5 border-r border-zinc-850 bg-zinc-950 py-4 overflow-y-auto overflow-x-hidden shrink-0 scrollbar-none">
           {SIDEBAR_TABS.map((tab) => {
             const isActive = activeSection === tab.id;
             const Icon = tab.icon;
@@ -96,7 +96,7 @@ export default function EditorSidebar() {
               <button
                 key={tab.id}
                 onClick={() => setActiveSection(tab.id)}
-                className={`group relative flex h-12 w-12 items-center justify-center rounded-xl transition-all ${
+                className={`group relative flex h-11 w-11 lg:h-12 lg:w-12 items-center justify-center rounded-xl transition-all cursor-pointer ${
                   isActive
                     ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
                     : "text-zinc-500 hover:bg-zinc-900 hover:text-white"
@@ -112,16 +112,16 @@ export default function EditorSidebar() {
           })}
         </div>
 
-        <div className="flex-1 h-full border-r border-zinc-850 bg-zinc-900/30 overflow-y-auto px-6 py-6 scrollbar-none">
+        <div className="flex-1 h-full border-r border-zinc-850 bg-zinc-900/30 overflow-y-auto px-5 lg:px-6 py-6 scrollbar-none">
           {renderPanel()}
         </div>
       </div>
 
       <button
         onClick={toggleSidebar}
-        className="absolute top-1/2 -translate-y-1/2 -right-4 flex h-8 w-8 items-center justify-center rounded-full border border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-white transition-all shadow-md z-30"
+        className="absolute top-1/2 -translate-y-1/2 -right-3.5 flex h-7 w-7 items-center justify-center rounded-full border border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-white transition-all shadow-md z-30 cursor-pointer"
       >
-        {sidebarOpen ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+        {sidebarOpen ? <ChevronLeft className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
       </button>
     </div>
   );

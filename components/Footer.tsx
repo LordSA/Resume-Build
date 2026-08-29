@@ -1,12 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 
 export default function Footer() {
   return (
     <footer className="border-t border-zinc-900 bg-zinc-950 pt-12 pb-6 text-zinc-400 z-10 w-full overflow-hidden max-w-full">
-      <div className="mx-auto max-w-7xl px-6 grid grid-cols-1 md:grid-cols-4 gap-10 text-left w-full">
-        <div className="flex flex-col gap-4 col-span-1 md:col-span-2">
+      <div className="mx-auto max-w-7xl px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 text-left w-full">
+        <div className="flex flex-col gap-4 col-span-1 sm:col-span-2">
           <div className="flex items-center gap-2.5">
             <img
               src="/nv.svg"
@@ -28,16 +29,16 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col gap-4">
-          <h4 className="font-bold text-xs uppercase tracking-wider text-white">Project</h4>
+          <h4 className="font-bold text-xs uppercase tracking-wider text-white">Legal & Policies</h4>
           <div className="flex flex-col gap-2.5 text-xs text-zinc-500 font-medium">
-            <a href="https://github.com/LordSA" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-              Created by Shibili Aman TK
-            </a>
+            <Link href="/privacy" className="hover:text-white transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="hover:text-white transition-colors">
+              Terms & Conditions
+            </Link>
             <a href="https://github.com/LordSA" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
               GitHub Repository
-            </a>
-            <a href="https://www.shibili.xyz" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-              Personal Website
             </a>
           </div>
         </div>

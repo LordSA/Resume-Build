@@ -8,9 +8,10 @@ This document outlines the UI/UX architecture, visual aesthetics, theme properti
 The application workspace features a premium, modern design following these core principles:
 - **Clean Contrast**: A dark-mode workspace editor dashboard contrasts with a clean, high-fidelity light-mode resume preview. This ensures ease of editing and accurate print visualization.
 - **Glassmorphism**: Subtle backdrops, thin borders, and soft shadows for sidebar panels.
-- **Micro-Animations**: Framer Motion handles section dragging, active button states, and live update indicators.
+- **Micro-Animations**: Framer Motion handles section dragging, active button states, live update indicators, and WPS drawer transitions.
 - **Typography Hierarchy**: Clear font scale adjustments between heading and body fonts.
 - **Custom Scrollbar**: Themed scrollbar matching the zinc palette (`#27272a` thumb, `#09090b` track, blue hover accent).
+- **WPS Office Mobile UI System**: On mobile viewports (`< 768px`), the workspace transitions seamlessly into a document-first view with an auto-scaled A4 canvas, a floating/pinned bottom navigation dock (`WpsMobileDock`), and an expandable bottom drawer (`WpsEditDrawer`) equipped with a drag handle, horizontal section pill carousel, and touch-optimized form panels.
 
 ---
 

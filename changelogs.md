@@ -2,6 +2,32 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
+## [2026-08-29] - Privacy Policy, Terms & Mandatory Signup Agreement
+
+### Added
+- **Privacy Policy Page (`app/privacy/page.tsx`)**: Created comprehensive privacy policy explaining data collection, AI processing safeguards, data retention, and contact channels.
+- **Terms and Conditions Page (`app/terms/page.tsx`)**: Created legal terms detailing acceptance, user ownership of resumes, acceptable use policies, and liability disclaimers.
+- **Mandatory Terms & Privacy Checkbox (`app/(auth)/signup/page.tsx`)**: Added a mandatory interactive consent checkbox for account creations (email and Google OAuth signup) with direct links to Terms and Privacy pages.
+- **Footer Legal Navigation (`components/Footer.tsx`)**: Added dedicated "Legal & Policies" column linking to Privacy Policy and Terms & Conditions.
+- **Middleware Whitelisting (`lib/middleware.ts`)**: Whitelisted `/privacy` and `/terms` routes for public access without authentication.
+
+---
+
+## [2026-08-29] - Responsive Redesign & WPS Office Mobile UI System
+
+### Added
+- **WPS Mobile Bottom Dock (`components/editor/WpsMobileDock.tsx`)**: Created a bottom-pinned mobile navigation dock providing instant access to Edit Content, Theme, Templates, ATS Match, and Export actions.
+- **WPS Expandable Bottom Edit Drawer (`components/editor/WpsEditDrawer.tsx`)**: Created a mobile bottom sheet modal featuring tactile drag handle physics, horizontal category pill navigation, real-time sync, and full-screen-capable editing views.
+- **Mobile Auto-Fit Scaling (`components/resume/ResumePreview.tsx`)**: Added automated container dimension detection via `ResizeObserver` to dynamically scale the A4 preview canvas to fit phone screens without cutoffs or horizontal scrolling.
+
+### Changed
+- **Editor Workspace (`app/editor/[id]/editor-workspace.tsx`)**: Redesigned header to be fully responsive with compact mobile inputs, autosave indicators, and action buttons; integrated WPS mobile dock and bottom drawer.
+- **Desktop Sidebar (`components/editor/EditorSidebar.tsx`)**: Configured sidebar to render cleanly on desktop viewports (`hidden md:flex`) while deferring to WPS mobile system on smaller screens.
+- **Languages Panel (`components/editor/panels/LanguagesPanel.tsx`)**: Updated grid layout for responsive wrapping on small phone screens.
+- **Clean Code Verification**: Removed all comments across all modified source code files.
+
+---
+
 ## [2026-08-22] - Domain URL Migration
 
 ### Changed
