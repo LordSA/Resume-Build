@@ -237,5 +237,6 @@ The download system targets the `.resume-print-container` element inside `Resume
 | `InitialLoader` | `components/InitialLoader.tsx` | Global entrance loader wrapping the layout and executing a GSAP animation |
 | `Loading` | `app/loading.tsx` | Next.js page loader for route changes and page transitions with a top-bar progress line |
 | `EditorLoading` | `app/editor/[id]/loading.tsx` | Custom Next.js loader for the editor path, rendering a pulsing skeleton layout |
+| `NotFound` | `app/not-found.tsx` | Creative, resume-themed 404 error page with ATS gap analysis and navigation actions |
 | `PrivacyPolicyPage` | `app/privacy/page.tsx` | Public privacy policy and data protection documentation |
 | `TermsPage` | `app/terms/page.tsx` | Public terms of service and acceptable use agreement |

@@ -2,9 +2,10 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
-## [2026-08-29] - Privacy Policy, Terms & Mandatory Signup Agreement
+## [2026-08-29] - Interactive Resume-Themed 404 Page & Legal Pages
 
 ### Added
+- **Creative 404 Not Found Page (`app/not-found.tsx`)**: Built a fun, resume-themed 404 error page ("Career Gap Detected!") featuring an ATS Missing Route analyzer card, recruiter tips, and quick actions to return to Dashboard, build a resume, or visit the homepage.
 - **Privacy Policy Page (`app/privacy/page.tsx`)**: Created comprehensive privacy policy explaining data collection, AI processing safeguards, data retention, and contact channels.
 - **Terms and Conditions Page (`app/terms/page.tsx`)**: Created legal terms detailing acceptance, user ownership of resumes, acceptable use policies, and liability disclaimers.
 - **Mandatory Terms & Privacy Checkbox (`app/(auth)/signup/page.tsx`)**: Added a mandatory interactive consent checkbox for account creations (email and Google OAuth signup) with direct links to Terms and Privacy pages.
