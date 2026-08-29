@@ -449,10 +449,6 @@ export default function LoginPage() {
           </AnimatePresence>
         </div>
 
-        <div className="flex items-center gap-1.5 text-[10px] text-zinc-550 font-semibold justify-center mt-12 border-t border-zinc-900/60 pt-4">
-          <ShieldCheck className="h-3.5 w-3.5" />
-          <span>Secure authentication via Supabase SSR</span>
-        </div>
       </div>
 
       <div className="hidden lg:flex lg:w-[55%] bg-zinc-900 border-l border-zinc-900 relative items-center justify-center p-16 select-none overflow-hidden">

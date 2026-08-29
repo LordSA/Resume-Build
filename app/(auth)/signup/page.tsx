@@ -197,32 +197,31 @@ export default function SignupPage() {
                 role="checkbox"
                 aria-checked={agreeTerms}
                 onClick={() => setAgreeTerms(!agreeTerms)}
-                className={`flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-md border transition-all mt-0.5 cursor-pointer ${
-                  agreeTerms
+                className={`flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-md border transition-all mt-0.5 cursor-pointer ${agreeTerms
                     ? "bg-blue-600 border-blue-500 text-white shadow-sm shadow-blue-500/30"
                     : "border-zinc-700 bg-zinc-900/60 hover:border-zinc-500"
-                }`}
+                  }`}
               >
                 {agreeTerms && <Check className="h-3 w-3 stroke-[3]" />}
               </button>
-              <label 
+              <label
                 onClick={() => setAgreeTerms(!agreeTerms)}
                 className="text-[11px] text-zinc-400 leading-snug cursor-pointer select-none"
               >
                 I agree to the{" "}
-                <Link 
-                  href="/terms" 
+                <Link
+                  href="/terms"
                   target="_blank"
-                  onClick={(e: React.MouseEvent) => e.stopPropagation()} 
+                  onClick={(e: React.MouseEvent) => e.stopPropagation()}
                   className="text-blue-400 hover:text-blue-300 font-semibold underline underline-offset-2"
                 >
                   Terms of Service
                 </Link>{" "}
                 and{" "}
-                <Link 
-                  href="/privacy" 
+                <Link
+                  href="/privacy"
                   target="_blank"
-                  onClick={(e: React.MouseEvent) => e.stopPropagation()} 
+                  onClick={(e: React.MouseEvent) => e.stopPropagation()}
                   className="text-blue-400 hover:text-blue-300 font-semibold underline underline-offset-2"
                 >
                   Privacy Policy
@@ -249,11 +248,6 @@ export default function SignupPage() {
               )}
             </button>
           </form>
-        </div>
-
-        <div className="flex items-center gap-1.5 text-[10px] text-zinc-550 font-semibold justify-center mt-8 border-t border-zinc-900/60 pt-4">
-          <ShieldCheck className="h-3.5 w-3.5" />
-          <span>Secure authentication via Supabase SSR</span>
         </div>
       </div>
 

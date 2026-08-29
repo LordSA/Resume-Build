@@ -10,23 +10,21 @@ import {
   Plus, 
   Trash2, 
   Edit3, 
-  Clock, 
   User, 
   Shield, 
-  AlertTriangle, 
   Key, 
-  Loader2,
   LayoutDashboard,
   Layers,
   Settings,
   HelpCircle,
   Search,
   MoreVertical,
-  Sparkles,
   Copy,
   Wand2,
   Upload,
-  Target
+  Target,
+  Menu,
+  X
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
@@ -62,6 +60,7 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
   const [activeNav, setActiveNav] = useState<"resumes" | "settings">("resumes");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const [isAtsModalOpen, setIsAtsModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -81,6 +80,17 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
     };
     fetchUserData();
   }, [supabase]);
+
+  useEffect(() => {
+    if (isMobileSidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileSidebarOpen]);
 
   const handleLogout = async () => {
     try {
@@ -202,128 +212,188 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
 
   const displayName = fullName || userEmail.split("@")[0] || "User";
 
-  return (
-    <div className="flex h-screen bg-[#0d0f17] text-zinc-100 font-sans overflow-hidden select-none">
-      
-      <aside className="hidden md:flex flex-col w-[240px] xl:w-[260px] bg-[#12141f] border-r border-[#1f2333] shrink-0 justify-between p-4 z-20 shadow-xl">
-        <div className="flex flex-col gap-6">
-          <div className="flex items-center gap-2.5 px-2 pt-1">
+  const renderSidebarContent = () => (
+    <div className="flex flex-col h-full justify-between">
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center justify-between px-2 pt-1">
+          <Link href="/" className="flex items-center transition-transform hover:scale-105">
             <img
               src="/nv.svg"
               alt="Resume Solutions"
               className="h-8 w-auto"
             />
-          </div>
-
-          <nav className="flex flex-col gap-1.5">
-            <button
-              onClick={() => setActiveNav("resumes")}
-              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                activeNav === "resumes"
-                  ? "bg-[#1f2334] text-white border border-[#2b3047] shadow-sm shadow-black/20"
-                  : "text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28]"
-              }`}
-            >
-              <LayoutDashboard className={`h-4 w-4 ${activeNav === "resumes" ? "text-blue-400" : "text-zinc-400"}`} />
-              <span>My Resumes</span>
-            </button>
-
-            <button
-              onClick={() => router.push("/create?mode=ai")}
-              className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28] transition-all cursor-pointer"
-            >
-              <Wand2 className="h-4 w-4 text-blue-400" />
-              <span>AI Resume Creator</span>
-            </button>
-
-            <button
-              onClick={() => setIsUploadModalOpen(true)}
-              className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28] transition-all cursor-pointer"
-            >
-              <Upload className="h-4 w-4 text-cyan-400" />
-              <span>Upload & Edit CV</span>
-            </button>
-
-            <button
-              onClick={() => setIsAtsModalOpen(true)}
-              className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28] transition-all cursor-pointer"
-            >
-              <Target className="h-4 w-4 text-purple-400" />
-              <span>ATS Match Checker</span>
-            </button>
-
-            <button
-              onClick={() => router.push("/create?mode=template")}
-              className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28] transition-all cursor-pointer"
-            >
-              <Layers className="h-4 w-4 text-emerald-400" />
-              <span>Template Library</span>
-            </button>
-
-            <button
-              onClick={() => setActiveNav("settings")}
-              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                activeNav === "settings"
-                  ? "bg-[#1f2334] text-white border border-[#2b3047] shadow-sm shadow-black/20"
-                  : "text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28]"
-              }`}
-            >
-              <Settings className={`h-4 w-4 ${activeNav === "settings" ? "text-blue-400" : "text-zinc-400"}`} />
-              <span>Account & Security</span>
-            </button>
-          </nav>
+          </Link>
+          <button
+            onClick={() => setIsMobileSidebarOpen(false)}
+            aria-label="Close Sidebar"
+            className="md:hidden h-8 w-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-1 border-t border-[#1f2333] pt-3">
-            <Link
-              href="/privacy"
-              className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition-colors"
-            >
-              <HelpCircle className="h-3.5 w-3.5 text-zinc-400" />
-              <span>Privacy & Policy</span>
-            </Link>
-            <Link
-              href="/terms"
-              className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition-colors"
-            >
-              <Shield className="h-3.5 w-3.5 text-zinc-400" />
-              <span>Terms & Conditions</span>
-            </Link>
-          </div>
+        <nav className="flex flex-col gap-1.5">
+          <button
+            onClick={() => {
+              setActiveNav("resumes");
+              setIsMobileSidebarOpen(false);
+            }}
+            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              activeNav === "resumes"
+                ? "bg-[#1f2334] text-white border border-[#2b3047] shadow-sm shadow-black/20"
+                : "text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28]"
+            }`}
+          >
+            <LayoutDashboard className={`h-4 w-4 ${activeNav === "resumes" ? "text-blue-400" : "text-zinc-400"}`} />
+            <span>My Resumes</span>
+          </button>
 
-          <div className="p-3 bg-[#161824] border border-[#23273a] rounded-2xl flex flex-col gap-2.5 shadow-inner">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-600/20 border border-blue-500/30 text-blue-400 font-bold text-xs">
-                {displayName.charAt(0).toUpperCase()}
-              </div>
-              <div className="flex flex-col min-w-0 flex-1">
-                <span className="text-xs font-bold text-white truncate">{displayName}</span>
-                <span className="text-[10px] text-zinc-400 truncate">{userEmail}</span>
-              </div>
+          <button
+            onClick={() => {
+              setIsMobileSidebarOpen(false);
+              router.push("/create?mode=ai");
+            }}
+            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28] transition-all cursor-pointer"
+          >
+            <Wand2 className="h-4 w-4 text-blue-400" />
+            <span>AI Resume Creator</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setIsMobileSidebarOpen(false);
+              setIsUploadModalOpen(true);
+            }}
+            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28] transition-all cursor-pointer"
+          >
+            <Upload className="h-4 w-4 text-cyan-400" />
+            <span>Upload & Edit CV</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setIsMobileSidebarOpen(false);
+              setIsAtsModalOpen(true);
+            }}
+            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28] transition-all cursor-pointer"
+          >
+            <Target className="h-4 w-4 text-purple-400" />
+            <span>ATS Match Checker</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setIsMobileSidebarOpen(false);
+              router.push("/create?mode=template");
+            }}
+            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28] transition-all cursor-pointer"
+          >
+            <Layers className="h-4 w-4 text-emerald-400" />
+            <span>Template Library</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveNav("settings");
+              setIsMobileSidebarOpen(false);
+            }}
+            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              activeNav === "settings"
+                ? "bg-[#1f2334] text-white border border-[#2b3047] shadow-sm shadow-black/20"
+                : "text-zinc-400 hover:text-zinc-200 hover:bg-[#181b28]"
+            }`}
+          >
+            <Settings className={`h-4 w-4 ${activeNav === "settings" ? "text-blue-400" : "text-zinc-400"}`} />
+            <span>Account & Security</span>
+          </button>
+        </nav>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1 border-t border-[#1f2333] pt-3">
+          <Link
+            href="/privacy"
+            className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition-colors"
+          >
+            <HelpCircle className="h-3.5 w-3.5 text-zinc-400" />
+            <span>Privacy & Policy</span>
+          </Link>
+          <Link
+            href="/terms"
+            className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition-colors"
+          >
+            <Shield className="h-3.5 w-3.5 text-zinc-400" />
+            <span>Terms & Conditions</span>
+          </Link>
+        </div>
+
+        <div className="p-3 bg-[#161824] border border-[#23273a] rounded-2xl flex flex-col gap-2.5 shadow-inner">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-600/20 border border-blue-500/30 text-blue-400 font-bold text-xs">
+              {displayName.charAt(0).toUpperCase()}
             </div>
-
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-xl border border-[#262a3d] bg-[#181b28] hover:bg-red-500/10 hover:border-red-500/30 text-zinc-400 hover:text-red-400 text-xs font-semibold transition-all cursor-pointer"
-            >
-              <LogOut className="h-3.5 w-3.5" />
-              <span>Sign Out</span>
-            </button>
+            <div className="flex flex-col min-w-0 flex-1">
+              <span className="text-xs font-bold text-white truncate">{displayName}</span>
+              <span className="text-[10px] text-zinc-400 truncate">{userEmail}</span>
+            </div>
           </div>
+
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-xl border border-[#262a3d] bg-[#181b28] hover:bg-red-500/10 hover:border-red-500/30 text-zinc-400 hover:text-red-400 text-xs font-semibold transition-all cursor-pointer"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+            <span>Sign Out</span>
+          </button>
         </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex h-screen bg-[#0d0f17] text-zinc-100 font-sans overflow-hidden select-none">
+      
+      <aside className="hidden md:flex flex-col w-[240px] xl:w-[260px] bg-[#12141f] border-r border-[#1f2333] shrink-0 p-4 z-20 shadow-xl">
+        {renderSidebarContent()}
+      </aside>
+
+      {isMobileSidebarOpen && (
+        <div 
+          onClick={() => setIsMobileSidebarOpen(false)}
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300"
+        />
+      )}
+
+      <aside 
+        className={`fixed top-0 bottom-0 left-0 w-[280px] bg-[#12141f] border-r border-[#1f2333] p-5 z-50 md:hidden shadow-2xl flex flex-col justify-between transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {renderSidebarContent()}
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[#0d0f17]">
         
-        <header className="flex items-center justify-between px-5 sm:px-8 py-3 border-b border-[#1f2333] bg-[#12141f]/80 backdrop-blur-xl shrink-0 z-10">
-          <div className="flex items-center gap-3">
-            <h1 className="text-lg sm:text-xl font-black text-white tracking-tight">
+        <header className="flex items-center justify-between px-4 sm:px-8 py-3 border-b border-[#1f2333] bg-[#12141f]/80 backdrop-blur-xl shrink-0 z-10">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <button
+              onClick={() => setIsMobileSidebarOpen(true)}
+              aria-label="Open Sidebar Menu"
+              className="md:hidden flex items-center justify-center h-9 w-9 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors"
+            >
+              <Menu className="h-4.5 w-4.5" />
+            </button>
+
+            <Link href="/" className="md:hidden flex items-center shrink-0 mr-1">
+              <img src="/nv.svg" alt="Logo" className="h-6 w-auto" />
+            </Link>
+
+            <h1 className="text-base sm:text-xl font-black text-white tracking-tight truncate">
               {activeNav === "settings" ? "Account Settings" : "Resume Dashboard"}
             </h1>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {activeNav === "resumes" && (
               <div className="relative hidden sm:flex items-center">
                 <Search className="absolute left-3.5 h-3.5 w-3.5 text-zinc-400" />
@@ -339,10 +409,10 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
 
             <button
               onClick={() => router.push("/create?mode=ai")}
-              className="flex items-center gap-1.5 sm:gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white px-3.5 sm:px-4 py-2 text-xs font-bold tracking-wide transition-all shadow-md shadow-blue-600/30 cursor-pointer"
+              className="flex items-center gap-1.5 sm:gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white px-3 sm:px-4 py-2 text-xs font-bold tracking-wide transition-all shadow-md shadow-blue-600/30 cursor-pointer shrink-0"
             >
               <Plus className="h-4 w-4" />
-              <span>Create Resume</span>
+              <span>Create</span>
             </button>
           </div>
         </header>
@@ -352,7 +422,7 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
             <div className="max-w-4xl mx-auto flex flex-col gap-6">
               <div className="flex items-center justify-between pb-2 border-b border-[#1f2333]">
                 <div>
-                  <h2 className="text-xl font-extrabold text-white">Profile & Security</h2>
+                  <h2 className="text-lg sm:text-xl font-extrabold text-white">Profile & Security</h2>
                   <p className="text-xs text-zinc-400 mt-0.5">Manage your credentials and authentication settings</p>
                 </div>
                 <button
@@ -443,11 +513,11 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
               </div>
             </div>
           ) : (
-            <div className="max-w-7xl mx-auto flex flex-col gap-7">
+            <div className="max-w-7xl mx-auto flex flex-col gap-6 sm:gap-7">
               
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  <h2 className="text-xl sm:text-3xl font-black text-white tracking-tight">
                     Hey, {displayName}!
                   </h2>
                   <p className="text-xs sm:text-sm text-zinc-400 mt-1">
@@ -455,56 +525,56 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full lg:w-auto">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 w-full lg:w-auto">
                   <button
                     onClick={() => router.push("/create?mode=ai")}
-                    className="flex items-center gap-3 p-3 rounded-2xl border border-[#23273a] bg-[#12141f] hover:bg-[#181b28] hover:border-blue-500/40 transition-all cursor-pointer shadow-sm"
+                    className="flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-2xl border border-[#23273a] bg-[#12141f] hover:bg-[#181b28] hover:border-blue-500/40 transition-all cursor-pointer shadow-sm"
                   >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-400 shrink-0">
-                      <Wand2 className="h-4 w-4" />
+                    <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-400 shrink-0">
+                      <Wand2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </div>
                     <div className="flex flex-col text-left min-w-0">
-                      <span className="text-xs font-bold text-white truncate">AI Builder</span>
-                      <span className="text-[10px] text-zinc-400">Generate from bio</span>
+                      <span className="text-[11px] sm:text-xs font-bold text-white truncate">AI Builder</span>
+                      <span className="text-[9px] sm:text-[10px] text-zinc-400 truncate">From bio</span>
                     </div>
                   </button>
 
                   <button
                     onClick={() => setIsUploadModalOpen(true)}
-                    className="flex items-center gap-3 p-3 rounded-2xl border border-[#23273a] bg-[#12141f] hover:bg-[#181b28] hover:border-cyan-500/40 transition-all cursor-pointer shadow-sm"
+                    className="flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-2xl border border-[#23273a] bg-[#12141f] hover:bg-[#181b28] hover:border-cyan-500/40 transition-all cursor-pointer shadow-sm"
                   >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 shrink-0">
-                      <Upload className="h-4 w-4" />
+                    <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 shrink-0">
+                      <Upload className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </div>
                     <div className="flex flex-col text-left min-w-0">
-                      <span className="text-xs font-bold text-white truncate">Upload & Edit</span>
-                      <span className="text-[10px] text-zinc-400">Import PDF/Doc</span>
+                      <span className="text-[11px] sm:text-xs font-bold text-white truncate">Upload & Edit</span>
+                      <span className="text-[9px] sm:text-[10px] text-zinc-400 truncate">PDF/Doc</span>
                     </div>
                   </button>
 
                   <button
                     onClick={() => setIsAtsModalOpen(true)}
-                    className="flex items-center gap-3 p-3 rounded-2xl border border-[#23273a] bg-[#12141f] hover:bg-[#181b28] hover:border-purple-500/40 transition-all cursor-pointer shadow-sm"
+                    className="flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-2xl border border-[#23273a] bg-[#12141f] hover:bg-[#181b28] hover:border-purple-500/40 transition-all cursor-pointer shadow-sm"
                   >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-400 shrink-0">
-                      <Target className="h-4 w-4" />
+                    <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-400 shrink-0">
+                      <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </div>
                     <div className="flex flex-col text-left min-w-0">
-                      <span className="text-xs font-bold text-white truncate">ATS Match</span>
-                      <span className="text-[10px] text-zinc-400">Check match score</span>
+                      <span className="text-[11px] sm:text-xs font-bold text-white truncate">ATS Match</span>
+                      <span className="text-[9px] sm:text-[10px] text-zinc-400 truncate">Check score</span>
                     </div>
                   </button>
 
                   <button
                     onClick={() => router.push("/create?mode=template")}
-                    className="flex items-center gap-3 p-3 rounded-2xl border border-[#23273a] bg-[#12141f] hover:bg-[#181b28] hover:border-emerald-500/40 transition-all cursor-pointer shadow-sm"
+                    className="flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-2xl border border-[#23273a] bg-[#12141f] hover:bg-[#181b28] hover:border-emerald-500/40 transition-all cursor-pointer shadow-sm"
                   >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shrink-0">
-                      <Layers className="h-4 w-4" />
+                    <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shrink-0">
+                      <Layers className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </div>
                     <div className="flex flex-col text-left min-w-0">
-                      <span className="text-xs font-bold text-white truncate">Templates</span>
-                      <span className="text-[10px] text-zinc-400">4 Pro Layouts</span>
+                      <span className="text-[11px] sm:text-xs font-bold text-white truncate">Templates</span>
+                      <span className="text-[9px] sm:text-[10px] text-zinc-400 truncate">4 Layouts</span>
                     </div>
                   </button>
                 </div>
@@ -514,7 +584,7 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
                 <div className="flex items-center justify-between border-b border-[#1f2333] pb-3">
                   <div className="flex items-center gap-2">
                     <FileText className="h-4 w-4 text-blue-400" />
-                    <h3 className="text-sm font-bold text-white">Your Saved Resumes</h3>
+                    <h3 className="text-xs sm:text-sm font-bold text-white">Your Saved Resumes</h3>
                   </div>
 
                   <span className="text-xs font-semibold text-zinc-400">
@@ -523,11 +593,11 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
                 </div>
 
                 {filteredResumes.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center border border-dashed border-[#262a3d] rounded-3xl py-16 px-6 text-center bg-[#12141f]/40">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#181b28] border border-[#2a2f45] text-blue-400 mb-4">
-                      <FileText className="h-7 w-7" />
+                  <div className="flex flex-col items-center justify-center border border-dashed border-[#262a3d] rounded-3xl py-12 sm:py-16 px-6 text-center bg-[#12141f]/40">
+                    <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-[#181b28] border border-[#2a2f45] text-blue-400 mb-4">
+                      <FileText className="h-6 w-6 sm:h-7 sm:w-7" />
                     </div>
-                    <h3 className="text-base font-bold text-white mb-1">No resumes created yet</h3>
+                    <h3 className="text-sm sm:text-base font-bold text-white mb-1">No resumes created yet</h3>
                     <p className="text-xs text-zinc-400 max-w-sm mb-6">
                       Paste your career history, upload an existing PDF, or choose from our designer templates.
                     </p>
@@ -557,7 +627,7 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
                       return (
                         <div
                           key={resume.id}
-                          className="group relative rounded-2xl border border-[#212435] bg-[#12141f] hover:border-[#353c59] p-4 transition-all duration-200 flex flex-col justify-between h-[230px] shadow-md hover:shadow-xl hover:translate-y-[-2px]"
+                          className="group relative rounded-2xl border border-[#212435] bg-[#12141f] hover:border-[#353c59] p-3.5 sm:p-4 transition-all duration-200 flex flex-col justify-between h-[230px] shadow-md hover:shadow-xl hover:translate-y-[-2px]"
                         >
                           <div 
                             onClick={() => router.push(`/editor/${resume.id}`)}

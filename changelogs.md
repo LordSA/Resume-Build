@@ -2,7 +2,18 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
-## [2026-08-29] - Home Page & Navbar CTA Redirection to Sign Up
+## [2026-08-29] - Dashboard Mobile Sidebar Drawer & Touch-Responsive Layout
+
+### Added & Fixed
+- **Dashboard Mobile Sidebar (`app/dashboard/dashboard-client.tsx`)**: Added a mobile slideover drawer with smooth transitions, backdrop blur overlay, and hamburger menu toggle in the header. Full access on mobile devices to:
+  - My Resumes view toggle
+  - AI Resume Creator (`/create?mode=ai`)
+  - Upload & Edit CV modal trigger
+  - ATS Match Checker modal trigger
+  - Template Library navigation
+  - Account & Security profile settings
+  - Sign Out action
+- **Responsive Dashboard Header**: Integrated `/nv.svg` logo, hamburger button, compact title, and quick create CTA for small touch screens.
 
 ### Updated
 - **Home Page Hero & CTAs (`app/page.tsx`)**: Updated "Create Resume", "Upload Existing CV", and bottom "Get Started" buttons to redirect directly to `/signup`.
