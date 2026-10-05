@@ -2,16 +2,25 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
-## [2026-10-05] - Guided Resume Data Collection Builder
+## [2026-10-05] - Fix Vercel Dependency Conflict (ERESOLVE Peer Dependency)
+
+### Fixed
+- **ESLint & Next.js Peer Dependency Mismatch (`package.json`, `package-lock.json`)**: Resolved Vercel deployment crash (`npm error ERESOLVE could not resolve peer eslint@"^7.23.0 || ^8.0.0" from eslint-config-next@14.2.35` against `eslint@10`).
+  - Upgraded `eslint-config-next` to `^16.3.8` to match `next@16.3.8`.
+  - Aligned `eslint` to `^9` to satisfy all Next.js 16 peer dependencies and ESLint plugins cleanly without conflicts.
+  - Added `.npmrc` configured with `legacy-peer-deps=true` as a safeguard against build-time peer dependency resolution errors during Vercel CI deployments.
+
+## [2026-10-05] - Guided Resume Data Collection Builder & Human-Made UI Refactor
 
 ### Added & Redesigned
 - **Guided Career Data Collection (`app/create/page.tsx`)**: Replaced the single unstructured paragraph textarea with a human-crafted, SaaS-grade guided form:
+  - **Standard Human-Made SaaS UI**: Stripped AI gimmicks, rainbow badges, glow blobs, and generative icons (`Sparkles`, `Wand2`) in favor of clear numbered sections, clean borders, and standard SaaS icons (`ArrowRight`, `Plus`, `Trash2`, `Upload`, `LayoutTemplate`, `Check`, `Loader2`).
   - **Target Position & Title**: Clear inputs for Target Job Title and Document Name.
   - **Personal & Contact Details**: Full Name, Email, Phone, Location, and LinkedIn/Portfolio links.
   - **Work Experience List**: Structured position cards with Company, Role, Duration, and Key Duties/Achievements, equipped with seamless `+ Add Position` and remove controls.
   - **Education & Skills**: Two-column layout for Degree, University, Graduation Year, and comma-separated Core Skills.
   - **Bottom Description & Notes**: Dedicated multiline area for additional career highlights, certifications, awards, or custom objectives.
-  - **1-Click Sample Data**: "Fill Sample Data" button allowing instant testing with rich candidate details.
+  - **1-Click Sample Data**: "Auto-fill sample" button allowing instant testing with rich candidate details.
 - **Structured Payload Processing (`app/api/ai/generate/route.ts`)**: Added support for `candidateData` object payload, compiling guided sections into an organized candidate dossier while retaining full backwards compatibility for plain text.
 - **Prompt Optimization (`constants/prompts.ts`)**: Enhanced prompt instructions to faithfully preserve explicit personal details, work history, and skills, while synthesizing additional description notes into impactful bullet points and summaries.
 - **Dashboard Quick Action Sync (`app/dashboard/dashboard-client.tsx`)**: Updated AI Builder card subtitle from "From bio" to "Guided AI".

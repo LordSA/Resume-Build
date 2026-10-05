@@ -8,20 +8,11 @@ import {
   ArrowLeft, 
   ArrowRight,
   Loader2, 
-  CheckCircle, 
-  Sparkles, 
-  Wand2, 
-  LayoutTemplate, 
-  Layers, 
   Check, 
   Upload,
-  FileText,
-  Briefcase,
-  GraduationCap,
-  User,
-  Plus,
-  Trash2,
-  Code2
+  LayoutTemplate, 
+  Plus, 
+  Trash2
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -461,9 +452,6 @@ function CreateResumeContent() {
 
   return (
     <div className="min-h-screen bg-[#0d0f17] text-zinc-100 font-sans flex flex-col selection:bg-blue-600/30 overflow-x-hidden relative">
-      <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-blue-600/5 blur-[150px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-purple-600/5 blur-[150px] pointer-events-none" />
-
       <AnimatePresence mode="wait">
         {isGenerating ? (
           <motion.div 
@@ -474,38 +462,34 @@ function CreateResumeContent() {
             className="flex-1 flex flex-col items-center justify-center px-6 text-center select-none z-10 my-auto"
           >
             <div className="relative flex flex-col items-center max-w-md w-full">
-              <div className="relative mb-8 flex h-24 w-24 items-center justify-center">
-                <div className="absolute inset-0 rounded-3xl border border-blue-500/20 bg-blue-500/10 animate-pulse" />
-                <div className="absolute inset-2 rounded-2xl border border-blue-500/40 bg-blue-500/15 animate-spin [animation-duration:12s]" />
-                <Sparkles className="h-10 w-10 text-blue-400 animate-pulse" />
+              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl border border-[#262a3d] bg-[#12141f] text-blue-400 shadow-md">
+                <Loader2 className="h-5 w-5 animate-spin" />
               </div>
 
-              <h2 className="text-2xl font-black tracking-tight text-white mb-2">
-                Crafting Your Resume
+              <h2 className="text-xl font-bold tracking-tight text-white mb-1.5">
+                Creating Your Resume
               </h2>
+              <p className="text-xs text-zinc-400 mb-6 text-center max-w-sm">
+                Formatting your background into a clean, interview-ready layout.
+              </p>
               
-              <div className="w-full bg-[#12141f] border border-[#23273a] rounded-3xl p-6 min-h-[160px] flex flex-col justify-center items-center backdrop-blur-xl shadow-2xl">
-                <Loader2 className="h-6 w-6 text-blue-400 animate-spin mb-4" />
-                <p className="text-zinc-200 font-semibold text-xs sm:text-sm leading-relaxed transition-all duration-500">
+              <div className="w-full bg-[#12141f] border border-[#23273a] rounded-2xl p-5 flex flex-col justify-center items-center shadow-lg">
+                <p className="text-zinc-200 font-medium text-xs leading-relaxed transition-all duration-500">
                   {LOADING_STEPS[loadingStepIdx]}
                 </p>
                 
-                <div className="w-full bg-[#181b28] h-2 rounded-full mt-6 overflow-hidden border border-[#262a3d]">
+                <div className="w-full bg-[#181b28] h-1.5 rounded-full mt-4 overflow-hidden border border-[#262a3d]">
                   <div 
-                    className="bg-gradient-to-r from-blue-600 to-indigo-500 h-full rounded-full transition-all duration-1000 ease-out"
+                    className="bg-blue-600 h-full rounded-full transition-all duration-1000 ease-out"
                     style={{ width: `${((loadingStepIdx + 1) / LOADING_STEPS.length) * 100}%` }}
                   />
                 </div>
                 
-                <div className="flex justify-between items-center w-full mt-2.5 text-[10px] uppercase font-bold tracking-wider text-zinc-400">
+                <div className="flex justify-between items-center w-full mt-2 text-[10px] font-medium text-zinc-500">
                   <span>Step {loadingStepIdx + 1} of {LOADING_STEPS.length}</span>
                   <span>{Math.round(((loadingStepIdx + 1) / LOADING_STEPS.length) * 100)}%</span>
                 </div>
               </div>
-
-              <p className="mt-6 text-xs text-zinc-400 max-w-xs leading-relaxed">
-                Formatting your career background into a professional, interview-ready layout.
-              </p>
             </div>
           </motion.div>
         ) : (
@@ -537,36 +521,35 @@ function CreateResumeContent() {
                 <div className="flex items-center p-1 bg-[#181b28] border border-[#262a3d] rounded-xl shadow-inner">
                   <button
                     onClick={() => setMode("ai")}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    className={`flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                       mode === "ai"
                         ? "bg-blue-600 text-white shadow-sm"
                         : "text-zinc-400 hover:text-zinc-200"
                     }`}
                   >
-                    <User className="h-3.5 w-3.5" />
                     <span>Guided Builder</span>
                   </button>
                   <button
                     onClick={() => setMode("upload")}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                       mode === "upload"
                         ? "bg-blue-600 text-white shadow-sm"
                         : "text-zinc-400 hover:text-zinc-200"
                     }`}
                   >
                     <Upload className="h-3.5 w-3.5" />
-                    <span>Upload & Edit CV</span>
+                    <span>Upload CV</span>
                   </button>
                   <button
                     onClick={() => setMode("template")}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                       mode === "template"
                         ? "bg-blue-600 text-white shadow-sm"
                         : "text-zinc-400 hover:text-zinc-200"
                     }`}
                   >
                     <LayoutTemplate className="h-3.5 w-3.5" />
-                    <span>Template Library</span>
+                    <span>Templates</span>
                   </button>
                 </div>
               </div>
@@ -618,22 +601,22 @@ function CreateResumeContent() {
 
                       <button
                         onClick={() => handleCreateFromTemplate(tmpl.id)}
-                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/30 cursor-pointer"
+                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-all shadow-sm cursor-pointer"
                       >
-                        <Sparkles className="h-4 w-4" />
-                        <span>Use This Template</span>
+                        <span>Use Template</span>
+                        <ArrowRight className="h-4 w-4" />
                       </button>
                     </div>
                   ))}
                 </div>
               ) : mode === "upload" ? (
-                <div className="max-w-2xl mx-auto w-full p-6 sm:p-8 rounded-3xl border border-[#262a3d] bg-[#12141f] shadow-2xl flex flex-col gap-6">
+                <div className="max-w-2xl mx-auto w-full p-6 sm:p-8 rounded-2xl border border-[#262a3d] bg-[#12141f] shadow-xl flex flex-col gap-6">
                   <form onSubmit={handleUploadImport} className="flex flex-col gap-5">
-                    <label className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-[#262a3d] hover:border-cyan-500/50 rounded-2xl bg-[#10121c] cursor-pointer transition-all">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 mb-3">
-                        <Upload className="h-6 w-6" />
+                    <label className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-[#262a3d] hover:border-zinc-500 rounded-xl bg-[#10121c] cursor-pointer transition-all">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#181b28] border border-[#262a3d] text-zinc-300 mb-3">
+                        <Upload className="h-5 w-5" />
                       </div>
-                      <span className="text-sm font-bold text-white text-center">
+                      <span className="text-sm font-semibold text-white text-center">
                         {uploadFile ? uploadFile.name : "Choose PDF, DOCX, or TXT Resume"}
                       </span>
                       <span className="text-xs text-zinc-400 mt-1 text-center">
@@ -655,27 +638,27 @@ function CreateResumeContent() {
                     </label>
 
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Resume Name</label>
+                      <label className="text-xs font-medium text-zinc-300">Resume Name</label>
                       <input
                         type="text"
                         placeholder="e.g. Imported Full Stack Resume"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-cyan-500"
+                        className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Target Layout Template</label>
+                      <label className="text-xs font-medium text-zinc-300">Target Layout Template</label>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         {TEMPLATE_SHOWCASE_LIST.map((tmpl) => (
                           <button
                             key={tmpl.id}
                             type="button"
                             onClick={() => setSelectedTemplate(tmpl.id)}
-                            className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                            className={`p-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
                               selectedTemplate === tmpl.id
-                                ? "bg-cyan-500/15 border-cyan-500/40 text-cyan-300"
+                                ? "bg-blue-600/15 border-blue-500/40 text-blue-300"
                                 : "bg-[#181b28] border-[#262a3d] text-zinc-400 hover:text-white"
                             }`}
                           >
@@ -688,17 +671,17 @@ function CreateResumeContent() {
                     <button
                       type="submit"
                       disabled={isUploading || !uploadFile}
-                      className="mt-2 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold transition-all shadow-md shadow-cyan-600/30 cursor-pointer disabled:opacity-50"
+                      className="mt-2 flex items-center justify-center gap-2 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-all shadow-sm cursor-pointer disabled:opacity-50"
                     >
                       {isUploading ? (
                         <>
                           <Loader2 className="h-4 w-4 animate-spin" />
-                          <span>{uploadStatus || "Parsing Resume..."}</span>
+                          <span>{uploadStatus || "Importing Resume..."}</span>
                         </>
                       ) : (
                         <>
-                          <Sparkles className="h-4 w-4" />
-                          <span>Parse & Open in Studio Editor</span>
+                          <span>Import & Open in Editor</span>
+                          <ArrowRight className="h-4 w-4" />
                         </>
                       )}
                     </button>
@@ -707,31 +690,26 @@ function CreateResumeContent() {
               ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   <div className="lg:col-span-2 flex flex-col gap-6">
-                    <form onSubmit={handleGenerateAI} className="flex flex-col gap-6">
-                      <div className="p-6 rounded-3xl border border-[#212435] bg-[#12141f] shadow-sm flex flex-col gap-4">
+                    <form onSubmit={handleGenerateAI} className="p-6 sm:p-8 rounded-2xl border border-[#212435] bg-[#12141f] shadow-sm flex flex-col gap-6">
+                      
+                      <div className="flex flex-col gap-3.5">
                         <div className="flex items-center justify-between pb-3 border-b border-[#1f2333]">
-                          <div className="flex items-center gap-2.5">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
-                              <User className="h-4 w-4" />
-                            </div>
-                            <div>
-                              <h2 className="text-sm font-bold text-white">Target Position & Title</h2>
-                              <p className="text-[11px] text-zinc-400">What role are you targeting with this resume?</p>
-                            </div>
+                          <div>
+                            <h2 className="text-sm font-semibold text-white tracking-tight">1. Target Position & Title</h2>
+                            <p className="text-xs text-zinc-400">Position and document naming</p>
                           </div>
                           <button
                             type="button"
                             onClick={handleFillSample}
-                            className="text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-blue-500/20 bg-blue-500/10 hover:bg-blue-500/20"
+                            className="text-xs text-zinc-300 hover:text-white border border-[#2a2e42] hover:border-zinc-600 bg-[#161826] hover:bg-[#1f2235] px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
                           >
-                            <Sparkles className="h-3.5 w-3.5" />
-                            <span>Fill Sample Data</span>
+                            Auto-fill sample
                           </button>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                           <div className="flex flex-col gap-1.5">
-                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Target Job Title</label>
+                            <label className="text-xs font-medium text-zinc-300">Target Job Title</label>
                             <input
                               type="text"
                               placeholder="e.g. Senior Full Stack Engineer"
@@ -742,7 +720,7 @@ function CreateResumeContent() {
                             />
                           </div>
                           <div className="flex flex-col gap-1.5">
-                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Resume Name</label>
+                            <label className="text-xs font-medium text-zinc-300">Resume Name</label>
                             <input
                               type="text"
                               placeholder="e.g. Alex Rivera - Tech Lead 2026"
@@ -754,15 +732,15 @@ function CreateResumeContent() {
                         </div>
                       </div>
 
-                      <div className="p-6 rounded-3xl border border-[#212435] bg-[#12141f] shadow-sm flex flex-col gap-4">
-                        <div className="pb-3 border-b border-[#1f2333]">
-                          <h2 className="text-sm font-bold text-white">Personal & Contact Information</h2>
-                          <p className="text-[11px] text-zinc-400">How recruiters and hiring managers reach you</p>
+                      <div className="flex flex-col gap-3.5 pt-4 border-t border-[#1f2333]">
+                        <div className="pb-1">
+                          <h2 className="text-sm font-semibold text-white tracking-tight">2. Contact Information</h2>
+                          <p className="text-xs text-zinc-400">How recruiters and hiring managers reach you</p>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                           <div className="flex flex-col gap-1.5 sm:col-span-2">
-                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Full Name</label>
+                            <label className="text-xs font-medium text-zinc-300">Full Name</label>
                             <input
                               type="text"
                               placeholder="e.g. Alex Rivera"
@@ -774,7 +752,7 @@ function CreateResumeContent() {
                           </div>
 
                           <div className="flex flex-col gap-1.5">
-                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Email Address</label>
+                            <label className="text-xs font-medium text-zinc-300">Email Address</label>
                             <input
                               type="email"
                               placeholder="e.g. alex.rivera@example.com"
@@ -785,7 +763,7 @@ function CreateResumeContent() {
                           </div>
 
                           <div className="flex flex-col gap-1.5">
-                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Phone Number</label>
+                            <label className="text-xs font-medium text-zinc-300">Phone Number</label>
                             <input
                               type="tel"
                               placeholder="e.g. +1 (555) 382-9102"
@@ -796,7 +774,7 @@ function CreateResumeContent() {
                           </div>
 
                           <div className="flex flex-col gap-1.5">
-                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Location</label>
+                            <label className="text-xs font-medium text-zinc-300">Location</label>
                             <input
                               type="text"
                               placeholder="e.g. San Francisco, CA"
@@ -807,7 +785,7 @@ function CreateResumeContent() {
                           </div>
 
                           <div className="flex flex-col gap-1.5">
-                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">LinkedIn or Portfolio URL</label>
+                            <label className="text-xs font-medium text-zinc-300">LinkedIn or Portfolio URL</label>
                             <input
                               type="text"
                               placeholder="e.g. linkedin.com/in/alexrivera"
@@ -819,21 +797,16 @@ function CreateResumeContent() {
                         </div>
                       </div>
 
-                      <div className="p-6 rounded-3xl border border-[#212435] bg-[#12141f] shadow-sm flex flex-col gap-4">
-                        <div className="flex items-center justify-between pb-3 border-b border-[#1f2333]">
-                          <div className="flex items-center gap-2.5">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
-                              <Briefcase className="h-4 w-4" />
-                            </div>
-                            <div>
-                              <h2 className="text-sm font-bold text-white">Work Experience</h2>
-                              <p className="text-[11px] text-zinc-400">List your recent positions and key accomplishments</p>
-                            </div>
+                      <div className="flex flex-col gap-3.5 pt-4 border-t border-[#1f2333]">
+                        <div className="flex items-center justify-between pb-1">
+                          <div>
+                            <h2 className="text-sm font-semibold text-white tracking-tight">3. Work Experience</h2>
+                            <p className="text-xs text-zinc-400">List your recent positions and accomplishments</p>
                           </div>
                           <button
                             type="button"
                             onClick={handleAddExperience}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#262a3d] bg-[#181b28] hover:bg-[#202436] text-xs font-semibold text-zinc-200 transition-all cursor-pointer"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#2a2e42] bg-[#161826] hover:bg-[#1f2235] text-xs font-medium text-zinc-200 transition-colors cursor-pointer"
                           >
                             <Plus className="h-3.5 w-3.5" />
                             <span>Add Position</span>
@@ -842,14 +815,15 @@ function CreateResumeContent() {
 
                         <div className="flex flex-col gap-4">
                           {experiences.map((exp, index) => (
-                            <div key={exp.id} className="p-4 rounded-2xl border border-[#262a3d] bg-[#10121c] flex flex-col gap-3 relative">
+                            <div key={exp.id} className="p-4 rounded-xl border border-[#262a3d] bg-[#10121c] flex flex-col gap-3 relative">
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-bold text-zinc-300">Position {index + 1}</span>
+                                <span className="text-xs font-medium text-zinc-300">Role {index + 1}</span>
                                 {experiences.length > 1 && (
                                   <button
                                     type="button"
                                     onClick={() => handleRemoveExperience(exp.id)}
-                                    className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-red-500/10 transition-all cursor-pointer"
+                                    className="p-1 rounded-md text-zinc-500 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+                                    title="Remove position"
                                   >
                                     <Trash2 className="h-3.5 w-3.5" />
                                   </button>
@@ -857,46 +831,46 @@ function CreateResumeContent() {
                               </div>
 
                               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                <div className="flex flex-col gap-1 sm:col-span-1">
-                                  <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Company Name</label>
+                                <div className="flex flex-col gap-1">
+                                  <label className="text-xs font-medium text-zinc-400">Company</label>
                                   <input
                                     type="text"
                                     placeholder="e.g. Netflix"
                                     value={exp.company}
                                     onChange={(e) => handleExperienceChange(exp.id, "company", e.target.value)}
-                                    className="w-full rounded-xl border border-[#262a3e] bg-[#141622] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all"
+                                    className="w-full rounded-lg border border-[#262a3e] bg-[#141622] px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all"
                                   />
                                 </div>
-                                <div className="flex flex-col gap-1 sm:col-span-1">
-                                  <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Job Title</label>
+                                <div className="flex flex-col gap-1">
+                                  <label className="text-xs font-medium text-zinc-400">Title</label>
                                   <input
                                     type="text"
                                     placeholder="e.g. Lead Software Engineer"
                                     value={exp.role}
                                     onChange={(e) => handleExperienceChange(exp.id, "role", e.target.value)}
-                                    className="w-full rounded-xl border border-[#262a3e] bg-[#141622] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all"
+                                    className="w-full rounded-lg border border-[#262a3e] bg-[#141622] px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all"
                                   />
                                 </div>
-                                <div className="flex flex-col gap-1 sm:col-span-1">
-                                  <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Dates / Duration</label>
+                                <div className="flex flex-col gap-1">
+                                  <label className="text-xs font-medium text-zinc-400">Dates</label>
                                   <input
                                     type="text"
                                     placeholder="e.g. 2022 – Present"
                                     value={exp.duration}
                                     onChange={(e) => handleExperienceChange(exp.id, "duration", e.target.value)}
-                                    className="w-full rounded-xl border border-[#262a3e] bg-[#141622] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all"
+                                    className="w-full rounded-lg border border-[#262a3e] bg-[#141622] px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all"
                                   />
                                 </div>
                               </div>
 
                               <div className="flex flex-col gap-1">
-                                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Key Duties & Quantifiable Impact</label>
+                                <label className="text-xs font-medium text-zinc-400">Key Responsibilities & Impact</label>
                                 <textarea
                                   rows={2}
                                   placeholder="e.g. Architected distributed GraphQL microservices serving 12M monthly users. Boosted core API throughput by 40% using Redis caching."
                                   value={exp.highlights}
                                   onChange={(e) => handleExperienceChange(exp.id, "highlights", e.target.value)}
-                                  className="w-full rounded-xl border border-[#262a3e] bg-[#141622] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all resize-none leading-relaxed"
+                                  className="w-full rounded-lg border border-[#262a3e] bg-[#141622] px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all resize-none leading-relaxed"
                                 />
                               </div>
                             </div>
@@ -904,109 +878,91 @@ function CreateResumeContent() {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div className="p-6 rounded-3xl border border-[#212435] bg-[#12141f] shadow-sm flex flex-col gap-4">
-                          <div className="flex items-center gap-2.5 pb-3 border-b border-[#1f2333]">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-                              <GraduationCap className="h-4 w-4" />
-                            </div>
-                            <div>
-                              <h2 className="text-sm font-bold text-white">Education</h2>
-                              <p className="text-[11px] text-zinc-400">Your academic background</p>
-                            </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4 border-t border-[#1f2333]">
+                        <div className="flex flex-col gap-3">
+                          <div>
+                            <h2 className="text-sm font-semibold text-white tracking-tight">4. Education</h2>
+                            <p className="text-xs text-zinc-400">Degrees and schools</p>
                           </div>
 
-                          <div className="flex flex-col gap-3">
+                          <div className="flex flex-col gap-2.5">
                             <div className="flex flex-col gap-1">
-                              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Degree & Major</label>
+                              <label className="text-xs font-medium text-zinc-400">Degree & Major</label>
                               <input
                                 type="text"
                                 placeholder="e.g. B.S. in Computer Science"
                                 value={education.degree}
                                 onChange={(e) => setEducation({ ...education, degree: e.target.value })}
-                                className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
+                                className="w-full rounded-lg border border-[#262a3e] bg-[#10121c] px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
                               />
                             </div>
                             <div className="flex flex-col gap-1">
-                              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">College / University</label>
+                              <label className="text-xs font-medium text-zinc-400">School / University</label>
                               <input
                                 type="text"
                                 placeholder="e.g. UC Berkeley"
                                 value={education.institution}
                                 onChange={(e) => setEducation({ ...education, institution: e.target.value })}
-                                className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
+                                className="w-full rounded-lg border border-[#262a3e] bg-[#10121c] px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
                               />
                             </div>
                             <div className="flex flex-col gap-1">
-                              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Year / Graduation</label>
+                              <label className="text-xs font-medium text-zinc-400">Graduation Year</label>
                               <input
                                 type="text"
                                 placeholder="e.g. 2016 – 2020"
                                 value={education.year}
                                 onChange={(e) => setEducation({ ...education, year: e.target.value })}
-                                className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
+                                className="w-full rounded-lg border border-[#262a3e] bg-[#10121c] px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
                               />
                             </div>
                           </div>
                         </div>
 
-                        <div className="p-6 rounded-3xl border border-[#212435] bg-[#12141f] shadow-sm flex flex-col gap-4">
-                          <div className="flex items-center gap-2.5 pb-3 border-b border-[#1f2333]">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
-                              <Code2 className="h-4 w-4" />
-                            </div>
-                            <div>
-                              <h2 className="text-sm font-bold text-white">Skills & Technologies</h2>
-                              <p className="text-[11px] text-zinc-400">Core competencies & tools</p>
-                            </div>
+                        <div className="flex flex-col gap-3">
+                          <div>
+                            <h2 className="text-sm font-semibold text-white tracking-tight">5. Core Skills</h2>
+                            <p className="text-xs text-zinc-400">Tools and technologies</p>
                           </div>
 
                           <div className="flex flex-col gap-1.5 flex-1">
-                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Core Skills (Comma-Separated)</label>
+                            <label className="text-xs font-medium text-zinc-400">Skills (Comma-separated)</label>
                             <textarea
                               rows={5}
                               placeholder="e.g. React, Next.js, TypeScript, Node.js, Python, PostgreSQL, AWS, Docker, Kubernetes, GraphQL"
                               value={skills}
                               onChange={(e) => setSkills(e.target.value)}
-                              className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner resize-none leading-relaxed flex-1"
+                              className="w-full rounded-lg border border-[#262a3e] bg-[#10121c] px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner resize-none leading-relaxed flex-1"
                             />
-                            <span className="text-[10px] text-zinc-500">Separate each skill with a comma.</span>
+                            <span className="text-[11px] text-zinc-500">Separate each skill with a comma.</span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="p-6 rounded-3xl border border-[#212435] bg-[#12141f] shadow-sm flex flex-col gap-4">
-                        <div className="flex items-center gap-2.5 pb-3 border-b border-[#1f2333]">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
-                            <FileText className="h-4 w-4" />
-                          </div>
-                          <div>
-                            <h2 className="text-sm font-bold text-white">Summary, Highlights & Additional Notes</h2>
-                            <p className="text-[11px] text-zinc-400">Extra context, key accomplishments, certifications, or custom career goals</p>
-                          </div>
+                      <div className="flex flex-col gap-3 pt-4 border-t border-[#1f2333]">
+                        <div>
+                          <h2 className="text-sm font-semibold text-white tracking-tight">6. Summary & Additional Notes</h2>
+                          <p className="text-xs text-zinc-400">Any extra achievements, certifications, projects, or context you want included</p>
                         </div>
 
-                        <div className="flex flex-col gap-1.5">
-                          <textarea
-                            rows={4}
-                            placeholder="e.g. Passionate about developer productivity and high-concurrency cloud architecture. Winner of 2023 Innovation Hackathon. Looking for senior or staff-level engineering leadership opportunities."
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-4 py-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner leading-relaxed resize-none"
-                          />
-                        </div>
+                        <textarea
+                          rows={3}
+                          placeholder="e.g. Passionate about developer productivity and high-concurrency cloud architecture. Winner of 2023 Innovation Hackathon. Looking for senior or staff-level engineering leadership opportunities."
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                          className="w-full rounded-lg border border-[#262a3e] bg-[#10121c] px-3 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner leading-relaxed resize-none"
+                        />
                       </div>
 
-                      <div className="flex items-center justify-between pt-2">
-                        <span className="text-xs text-zinc-400 flex items-center gap-1.5 font-medium">
-                          <CheckCircle className="h-4 w-4 text-emerald-400" />
-                          <span>Generates ATS-ready resume with zero formatting drift</span>
+                      <div className="flex items-center justify-between pt-4 border-t border-[#1f2333]">
+                        <span className="text-xs text-zinc-500">
+                          You can fine-tune every line and section in the editor.
                         </span>
                         <button
                           type="submit"
-                          className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white px-7 py-3 text-xs font-bold tracking-wide transition-all shadow-lg shadow-blue-600/25 cursor-pointer"
+                          className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 text-xs font-semibold tracking-wide transition-all shadow-sm cursor-pointer"
                         >
-                          <span>Create My Resume</span>
+                          <span>Create Resume</span>
                           <ArrowRight className="h-4 w-4" />
                         </button>
                       </div>
@@ -1014,10 +970,10 @@ function CreateResumeContent() {
                   </div>
 
                   <div className="flex flex-col gap-4">
-                    <div className="p-5 rounded-3xl border border-[#212435] bg-[#12141f] flex flex-col gap-3.5 shadow-sm">
-                      <div className="flex items-center gap-2 text-blue-400 font-bold text-xs border-b border-[#1f2333] pb-2.5">
-                        <Layers className="h-4 w-4" />
-                        <span>Target Template</span>
+                    <div className="p-5 rounded-2xl border border-[#212435] bg-[#12141f] flex flex-col gap-3.5 shadow-sm">
+                      <div className="flex items-center justify-between border-b border-[#1f2333] pb-2.5">
+                        <span className="text-xs font-semibold text-zinc-200">Template Style</span>
+                        <span className="text-[11px] text-zinc-500">4 designs</span>
                       </div>
 
                       <div className="flex flex-col gap-2">
@@ -1033,8 +989,8 @@ function CreateResumeContent() {
                             }`}
                           >
                             <div className="flex flex-col">
-                              <span className="text-xs font-bold">{tmpl.name}</span>
-                              <span className="text-[10px] text-zinc-400">{tmpl.tagline}</span>
+                              <span className="text-xs font-semibold">{tmpl.name}</span>
+                              <span className="text-[10px] text-zinc-500">{tmpl.tagline}</span>
                             </div>
                             {selectedTemplate === tmpl.id && (
                               <Check className="h-3.5 w-3.5 text-blue-400 shrink-0" />
@@ -1044,22 +1000,13 @@ function CreateResumeContent() {
                       </div>
                     </div>
 
-                    <div className="p-5 rounded-3xl border border-[#212435] bg-[#12141f] flex flex-col gap-3 shadow-sm">
-                      <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <Sparkles className="h-3.5 w-3.5 text-blue-400" />
-                        <span>How it works</span>
+                    <div className="p-5 rounded-2xl border border-[#212435] bg-[#12141f] flex flex-col gap-2.5 shadow-sm">
+                      <span className="text-xs font-semibold text-zinc-200">
+                        Next step: Editor Studio
                       </span>
-                      <div className="text-[11px] text-zinc-400 flex flex-col gap-2.5 leading-relaxed">
-                        <p>
-                          <strong className="text-zinc-200">1. Structured Input:</strong> Providing distinct sections ensures accurate parsing and eliminates messy text confusion.
-                        </p>
-                        <p>
-                          <strong className="text-zinc-200">2. Strong Phrasing:</strong> Your accomplishments are elevated with active verbs and quantifiable results.
-                        </p>
-                        <p>
-                          <strong className="text-zinc-200">3. Full Customization:</strong> Everything opens directly in the Studio Editor where you can fine-tune every line, color, and font.
-                        </p>
-                      </div>
+                      <p className="text-xs text-zinc-400 leading-relaxed">
+                        Once created, your resume opens directly in the Studio Editor. You have full freedom to edit text, add more sections, change layouts, and export a clean PDF.
+                      </p>
                     </div>
                   </div>
                 </div>

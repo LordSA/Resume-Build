@@ -18,6 +18,7 @@ The application is built using a modern, scalable web stack:
 - **File Storage**: Supabase Storage (`resume-assets` bucket) for profile photos and custom font files.
 - **AI Integrations**: Gemini 3.1 Flash Lite (Primary) with automated fallback to Groq (Secondary) and OpenRouter (Tertiary) for maximum reliability and uptime.
 - **Drag & Drop**: Native HTML5 Drag and Drop API for reordering resume sections (Experience, Projects, Education, etc.), avoiding React 19 library conflicts.
+- **Linting & CI/CD Dependencies**: `eslint@^9` paired with `eslint-config-next@^16.3.8` to match Next 16 peer dependencies, supported by `.npmrc` (`legacy-peer-deps=true`) for seamless Vercel / CI deployments.
 - **PDF Generation**: Client-side jsPDF rendering engine (`doc.html()`) configured in points (`pt` unit, `595.28 x 841.89` A4 size) and powered by `html2canvas-pro` (supporting CSS Color Module Level 4 spaces like OKLCH/lab without parsing crashes). Utilizes dynamic DOM isolation in the `onclone` sandbox (clearing the cloned body, placing the target element in an unscaled absolute wrapper with height overrides to `auto` and outer border/shadow resets, disabling root/body scroll limitations, and disabling broken/cross-origin stylesheets) to bypass parser crashes and strip active transforms/clippings, with page-break splitting (`autoPaging: "text"`) and print dialog fallback.
 
 ---
