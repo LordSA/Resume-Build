@@ -19,7 +19,7 @@ export default function EditorRightPanel() {
   } = useEditorStore();
 
   return (
-    <div className="relative hidden lg:flex h-full shrink-0 select-none z-20 print:hidden">
+    <div className="relative hidden lg:flex h-full min-h-0 shrink-0 z-20 print:hidden">
       <button
         onClick={toggleRightSidebar}
         className="absolute top-1/2 -translate-y-1/2 -left-3.5 flex h-7 w-7 items-center justify-center rounded-full border border-[#262a3d] bg-[#181b28] text-zinc-400 hover:text-white hover:border-[#353b54] transition-all shadow-md z-30 cursor-pointer"
@@ -28,7 +28,7 @@ export default function EditorRightPanel() {
         {rightSidebarOpen ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
       </button>
 
-      <div className={`flex flex-col h-full bg-[#12141f] border-l border-[#1f2333] transition-all duration-300 ${rightSidebarOpen ? "w-[320px] xl:w-[360px]" : "w-0 overflow-hidden"}`}>
+      <div className={`flex flex-col h-full min-h-0 overflow-hidden bg-[#12141f] border-l border-[#1f2333] transition-all duration-300 ${rightSidebarOpen ? "w-[320px] xl:w-[360px]" : "w-0"}`}>
         
         <div className="p-3 border-b border-[#1f2333] shrink-0 bg-[#12141f]">
           <div className="grid grid-cols-2 p-1 bg-[#181b28] border border-[#262a3d] rounded-xl shadow-inner">
@@ -57,7 +57,10 @@ export default function EditorRightPanel() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 py-4 scrollbar-thin bg-[#12141f]">
+        <div 
+          data-lenis-prevent
+          className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 py-4 scrollbar-thin bg-[#12141f]"
+        >
           {activeRightTab === "theme" ? <ThemePanel /> : <AIPanel />}
         </div>
       </div>

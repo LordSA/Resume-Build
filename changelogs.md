@@ -2,6 +2,16 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
+## [2026-10-05] - Fix Editor Sidebar Scrolling & Overflow Constraints
+
+### Fixed
+- **Sidebar Scrollability (`components/editor/EditorSidebar.tsx`, `components/editor/EditorRightPanel.tsx`)**: Resolved issue where sidebars failed to scroll and contents were clipped:
+  - Added `min-h-0` and `overflow-hidden` constraints to the flex containers so that `flex-1 overflow-y-auto` properly respects the viewport height instead of expanding unbounded.
+  - Added `overscroll-contain` and `data-lenis-prevent` attributes to ensure wheel and touch gestures directly scroll the panels.
+  - Removed container-level `select-none` to allow natural text selection within input fields.
+  - Added explicit `.scrollbar-thin` styling and Firefox `scrollbar-width: thin` support in `app/globals.css`.
+  - Added `min-h-0` and `overscroll-contain` to the mobile edit drawer in `components/editor/WpsEditDrawer.tsx`.
+
 ## [2026-10-05] - Editor Standard SaaS UI Refactor & Human-Made Polish
 
 ### Redesigned & Polished

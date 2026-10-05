@@ -60,8 +60,8 @@ export default function EditorSidebar() {
   };
 
   return (
-    <div className="relative hidden md:flex h-full shrink-0 select-none z-20 print:hidden">
-      <div className={`flex flex-col h-full bg-[#12141f] border-r border-[#1f2333] transition-all duration-300 ${sidebarOpen ? "w-[330px] xl:w-[380px]" : "w-0 overflow-hidden"}`}>
+    <div className="relative hidden md:flex h-full min-h-0 shrink-0 z-20 print:hidden">
+      <div className={`flex flex-col h-full min-h-0 overflow-hidden bg-[#12141f] border-r border-[#1f2333] transition-all duration-300 ${sidebarOpen ? "w-[330px] xl:w-[380px]" : "w-0"}`}>
         
         <div className="p-3 border-b border-[#1f2333] shrink-0 bg-[#12141f]">
           <div className="grid grid-cols-2 p-1 bg-[#181b28] border border-[#262a3d] rounded-xl shadow-inner">
@@ -90,7 +90,10 @@ export default function EditorSidebar() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 py-4 scrollbar-thin flex flex-col gap-2.5 bg-[#12141f]">
+        <div 
+          data-lenis-prevent
+          className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 py-4 scrollbar-thin flex flex-col gap-2.5 bg-[#12141f]"
+        >
           {activeLeftTab === "templates" ? (
             <TemplatesPanel />
           ) : (

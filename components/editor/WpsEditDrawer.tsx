@@ -149,7 +149,10 @@ export default function WpsEditDrawer({ isOpen, onClose }: WpsEditDrawerProps) {
               })}
             </div>
 
-            <div className="flex-1 overflow-y-auto px-5 py-5 pb-20 scrollbar-thin bg-[#12141f]">
+            <div 
+              data-lenis-prevent
+              className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 py-5 pb-24 scrollbar-thin bg-[#12141f]"
+            >
               {renderActivePanel()}
             </div>
           </motion.div>
