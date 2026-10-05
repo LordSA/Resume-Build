@@ -13,6 +13,7 @@ This document outlines the UI/UX architecture, visual aesthetics, theme properti
 - **Typography Hierarchy**: Clear font scale adjustments between heading and body fonts.
 - **Custom Scrollbar**: Themed scrollbar matching the zinc palette (`#27272a` thumb, `#09090b` track, blue hover accent).
 - **WPS Office Mobile UI System**: On mobile viewports (`< 768px`), the workspace transitions seamlessly into a document-first view with an auto-scaled A4 canvas, a floating/pinned bottom navigation dock (`WpsMobileDock`), and an expandable bottom drawer (`WpsEditDrawer`) equipped with a drag handle, horizontal section pill carousel, and touch-optimized form panels.
+- **Guided Form Aesthetics (`app/create/page.tsx`)**: Built a human-crafted, SaaS-standard guided form layout (Target Position, Contact, Work History cards with dynamic addition/removal, Education, Core Skills, and Bottom Description area) set in `#12141f` card containers with `#212435` borders and focused `#3b82f6` accents.
 
 ---
 

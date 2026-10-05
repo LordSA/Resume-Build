@@ -59,7 +59,7 @@ resume-build/
 │   ├── privacy/            # Privacy Policy documentation page
 │   ├── terms/              # Terms and Conditions documentation page
 │   ├── dashboard/          # User Dashboard for listing resumes & profile settings
-│   ├── create/             # Resume Creation Hub (AI Generator from raw bio/text + Template Starter)
+│   ├── create/             # Resume Creation Hub (Guided Career Builder with Bottom Description + Template Starter)
 │   ├── editor/             # Main workspace editor interface
 │   │   └── [id]/           # Dynamic route for a specific resume
 │   ├── api/                # API routes

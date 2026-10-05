@@ -9,13 +9,14 @@ Candidate's Raw Info:
 """
 
 Instructions:
-1. Extract all personal information, experience, education, projects, skills, achievements, certificates, languages, and interests.
-2. Rewrite the descriptions professionally. Use action verbs, impact-driven sentences, and add realistic metrics if implied (but keep facts truthful to the source).
-3. The response must follow the exact JSON schema provided below. Do not deviate.
-4. Ensure the output is strictly valid JSON. Do not wrap the JSON in markdown code blocks like \`\`\`json. Return only the raw JSON string starting with { and ending with }.
-5. Do not include any explanations, introduction, markdown elements, or HTML tags.
-6. For arrays like experience, education, projects, achievements, and certificates, generate a random 7-character alphanumeric string for the "id" field of each item (e.g. "x7a9m2b").
-7. Ensure that no properties are null; use empty strings or empty arrays instead.
+1. Extract all personal information, experience, education, projects, skills, achievements, certificates, languages, and interests from the candidate's input.
+2. If explicit personal details, work history, education, or skills are provided, preserve them faithfully. Seamlessly integrate any additional notes, summary points, or description into the candidate's profile, summary, and experience achievements.
+3. Rewrite the descriptions professionally. Use action verbs, impact-driven sentences, and add realistic metrics if implied (while keeping facts truthful to the source).
+4. The response must follow the exact JSON schema provided below. Do not deviate.
+5. Ensure the output is strictly valid JSON. Do not wrap the JSON in markdown code blocks like \`\`\`json. Return only the raw JSON string starting with { and ending with }.
+6. Do not include any explanations, introduction, markdown elements, or HTML tags.
+7. For arrays like experience, education, projects, achievements, and certificates, generate a random 7-character alphanumeric string for the "id" field of each item (e.g. "x7a9m2b").
+8. Ensure that no properties are null; use empty strings or empty arrays instead.
 
 JSON Schema Output Format:
 {

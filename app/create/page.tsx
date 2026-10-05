@@ -6,6 +6,7 @@ import { createClient } from "@/lib/client";
 import { toast } from "react-hot-toast";
 import { 
   ArrowLeft, 
+  ArrowRight,
   Loader2, 
   CheckCircle, 
   Sparkles, 
@@ -13,12 +14,14 @@ import {
   LayoutTemplate, 
   Layers, 
   Check, 
-  Lightbulb,
   Upload,
   FileText,
   Briefcase,
-  Mail,
-  MapPin
+  GraduationCap,
+  User,
+  Plus,
+  Trash2,
+  Code2
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,16 +29,14 @@ import { SAMPLE_RESUME_DATA, TEMPLATE_SHOWCASE_LIST } from "@/constants/sampleDa
 import { extractTextFromFile } from "@/lib/documentParser";
 
 const LOADING_STEPS = [
-  "Analyzing raw career details...",
-  "Extracting candidate contact and profile data...",
-  "Formatting employment history and duties...",
-  "Optimizing project details and technology tags...",
-  "Structuring skill sets and categorizing proficiencies...",
-  "Applying professional ATS formatting and action verbs...",
-  "Finalizing structured resume layout...",
+  "Structuring personal and contact information...",
+  "Formatting work history and quantifying achievements...",
+  "Organizing education and credentials...",
+  "Categorizing skills and proficiencies...",
+  "Polishing ATS phrasing with impactful action verbs...",
+  "Synthesizing your summary and custom highlights...",
+  "Finalizing your resume for the Studio Editor...",
 ];
-
-const SAMPLE_PROMPT = `Hi, I'm Alex Rivera. I worked at Netflix for 2 years as a Cloud Developer. I designed microservice logging systems in Go, TypeScript, and AWS, boosting throughput by 40%. Previously, I finished my BS in Computer Science at UC Berkeley where I was a TA. My core skills are React, Next.js, Node.js, Python, Docker, and PostgreSQL.`;
 
 function TemplateMockCard({ templateId }: { templateId: string }) {
   if (templateId === "modern") {
@@ -206,7 +207,39 @@ function CreateResumeContent() {
 
   const [mode, setMode] = useState<"ai" | "template" | "upload">(initialMode);
   const [title, setTitle] = useState("");
-  const [candidateInfo, setCandidateInfo] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [targetRole, setTargetRole] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [location, setLocation] = useState("");
+  const [linkedin, setLinkedin] = useState("");
+  const [portfolio, setPortfolio] = useState("");
+
+  const [experiences, setExperiences] = useState<Array<{
+    id: string;
+    company: string;
+    role: string;
+    duration: string;
+    highlights: string;
+  }>>([
+    {
+      id: "exp-1",
+      company: "",
+      role: "",
+      duration: "",
+      highlights: "",
+    },
+  ]);
+
+  const [education, setEducation] = useState({
+    degree: "",
+    institution: "",
+    year: "",
+  });
+
+  const [skills, setSkills] = useState("");
+  const [description, setDescription] = useState("");
+
   const [selectedTemplate, setSelectedTemplate] = useState(initialTemplate);
   const [isGenerating, setIsGenerating] = useState(false);
   const [loadingStepIdx, setLoadingStepIdx] = useState(0);
@@ -215,34 +248,73 @@ function CreateResumeContent() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
 
-  useEffect(() => {
-    const qMode = searchParams.get("mode");
-    if (qMode === "template" || qMode === "ai" || qMode === "upload") {
-      setMode(qMode);
-    }
-    const qTmpl = searchParams.get("template");
-    if (qTmpl) {
-      setSelectedTemplate(qTmpl);
-    }
-  }, [searchParams]);
+  const handleAddExperience = () => {
+    setExperiences((prev) => [
+      ...prev,
+      {
+        id: `exp-${Date.now()}`,
+        company: "",
+        role: "",
+        duration: "",
+        highlights: "",
+      },
+    ]);
+  };
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isGenerating) {
-      interval = setInterval(() => {
-        setLoadingStepIdx((prev) => (prev < LOADING_STEPS.length - 1 ? prev + 1 : prev));
-      }, 3000);
-    } else {
-      setLoadingStepIdx(0);
-    }
-    return () => clearInterval(interval);
-  }, [isGenerating]);
+  const handleRemoveExperience = (id: string) => {
+    setExperiences((prev) => prev.filter((exp) => exp.id !== id));
+  };
+
+  const handleExperienceChange = (
+    id: string,
+    field: "company" | "role" | "duration" | "highlights",
+    val: string
+  ) => {
+    setExperiences((prev) =>
+      prev.map((exp) => (exp.id === id ? { ...exp, [field]: val } : exp))
+    );
+  };
+
+  const handleFillSample = () => {
+    setTitle("Alex Rivera - Senior Full Stack Engineer");
+    setFullName("Alex Rivera");
+    setTargetRole("Senior Full Stack Engineer");
+    setEmail("alex.rivera@example.com");
+    setPhone("+1 (555) 382-9102");
+    setLocation("San Francisco, CA");
+    setLinkedin("linkedin.com/in/alexrivera");
+    setPortfolio("alexrivera.dev");
+    setExperiences([
+      {
+        id: "exp-1",
+        company: "Vanguard Tech Cloud",
+        role: "Lead Software Engineer",
+        duration: "2022 – Present",
+        highlights: "Directed GraphQL microservices architecture serving 12M monthly users. Boosted core API throughput by 45% using Redis caching and connection pooling.",
+      },
+      {
+        id: "exp-2",
+        company: "Netflix",
+        role: "Cloud Developer",
+        duration: "2020 – 2022",
+        highlights: "Designed microservice telemetry and observability pipelines in Go, TypeScript, and AWS, boosting throughput by 40%.",
+      },
+    ]);
+    setEducation({
+      degree: "B.S. in Computer Science",
+      institution: "UC Berkeley",
+      year: "2016 – 2020",
+    });
+    setSkills("React, Next.js, TypeScript, Go, Node.js, Python, PostgreSQL, AWS, Docker, Kubernetes, GraphQL");
+    setDescription("Recipient of 2023 Tech Excellence Award. Passionate about developer tooling, high-scale cloud architectures, and mentoring junior engineers.");
+    toast.success("Loaded sample details");
+  };
 
   const handleGenerateAI = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!candidateInfo.trim()) {
-      toast.error("Please enter your career information or history");
+    if (!fullName.trim() && !targetRole.trim() && !title.trim() && !description.trim()) {
+      toast.error("Please enter at least your name, target role, or a brief description");
       return;
     }
 
@@ -255,10 +327,25 @@ function CreateResumeContent() {
         return;
       }
 
+      const candidateData = {
+        title: title.trim() || `${fullName.trim() || targetRole.trim() || "My"} Resume`,
+        fullName: fullName.trim(),
+        targetRole: targetRole.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        location: location.trim(),
+        linkedin: linkedin.trim(),
+        portfolio: portfolio.trim(),
+        experiences: experiences.filter((exp) => exp.company.trim() || exp.role.trim() || exp.highlights.trim()),
+        education: education.degree.trim() || education.institution.trim() ? [education] : [],
+        skills: skills.trim(),
+        description: description.trim(),
+      };
+
       const response = await fetch("/api/ai/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: candidateInfo }),
+        body: JSON.stringify({ candidateData }),
       });
 
       if (!response.ok) {
@@ -272,7 +359,7 @@ function CreateResumeContent() {
         .from("resumes")
         .insert({
           user_id: user.id,
-          title: title.trim() || "My AI Resume",
+          title: title.trim() || `${fullName.trim() || "My"} Resume`,
           template: selectedTemplate,
           resume_json: resume,
         })
@@ -394,7 +481,7 @@ function CreateResumeContent() {
               </div>
 
               <h2 className="text-2xl font-black tracking-tight text-white mb-2">
-                Structuring Resume with AI
+                Crafting Your Resume
               </h2>
               
               <div className="w-full bg-[#12141f] border border-[#23273a] rounded-3xl p-6 min-h-[160px] flex flex-col justify-center items-center backdrop-blur-xl shadow-2xl">
@@ -417,7 +504,7 @@ function CreateResumeContent() {
               </div>
 
               <p className="mt-6 text-xs text-zinc-400 max-w-xs leading-relaxed">
-                Extracting entities, standardizing categories, and generating ATS action verbs.
+                Formatting your career background into a professional, interview-ready layout.
               </p>
             </div>
           </motion.div>
@@ -456,8 +543,8 @@ function CreateResumeContent() {
                         : "text-zinc-400 hover:text-zinc-200"
                     }`}
                   >
-                    <Wand2 className="h-3.5 w-3.5" />
-                    <span>AI Generator</span>
+                    <User className="h-3.5 w-3.5" />
+                    <span>Guided Builder</span>
                   </button>
                   <button
                     onClick={() => setMode("upload")}
@@ -488,12 +575,12 @@ function CreateResumeContent() {
             <main className="flex-1 mx-auto max-w-6xl w-full px-6 py-8 flex flex-col">
               <div className="mb-8">
                 <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-                  {mode === "ai" && "AI Resume Builder"}
+                  {mode === "ai" && "Guided Resume Builder"}
                   {mode === "upload" && "Upload Existing Resume to Edit"}
                   {mode === "template" && "Template Gallery Showcase"}
                 </h1>
                 <p className="text-zinc-400 text-xs sm:text-sm mt-1.5 max-w-2xl leading-relaxed">
-                  {mode === "ai" && "Paste your raw experience, LinkedIn bio, or career notes in plain text. The AI will extract and structure an ATS-friendly resume."}
+                  {mode === "ai" && "Fill in your background across the sections below. We'll format your career history and skills into a clean, interview-ready resume."}
                   {mode === "upload" && "Upload your old or current resume (PDF, Word, TXT). We'll parse it and open it in the Studio Editor with full freedom to customize."}
                   {mode === "template" && "Select from our 4 designer templates with live candidate data. Click any template to scaffold a new resume ready for editing."}
                 </p>
@@ -620,63 +707,314 @@ function CreateResumeContent() {
               ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   <div className="lg:col-span-2 flex flex-col gap-6">
-                    <form onSubmit={handleGenerateAI} className="flex flex-col gap-5">
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                          Resume Title
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="e.g. Senior Frontend Developer - Google Application"
-                          value={title}
-                          onChange={(e) => setTitle(e.target.value)}
-                          className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-4 py-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
-                          required
-                        />
-                      </div>
-
-                      <div className="flex flex-col gap-1.5">
-                        <div className="flex items-center justify-between">
-                          <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                            Paste Career Info, Bio, or LinkedIn Profile
-                          </label>
+                    <form onSubmit={handleGenerateAI} className="flex flex-col gap-6">
+                      <div className="p-6 rounded-3xl border border-[#212435] bg-[#12141f] shadow-sm flex flex-col gap-4">
+                        <div className="flex items-center justify-between pb-3 border-b border-[#1f2333]">
+                          <div className="flex items-center gap-2.5">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                              <User className="h-4 w-4" />
+                            </div>
+                            <div>
+                              <h2 className="text-sm font-bold text-white">Target Position & Title</h2>
+                              <p className="text-[11px] text-zinc-400">What role are you targeting with this resume?</p>
+                            </div>
+                          </div>
                           <button
                             type="button"
-                            onClick={() => setCandidateInfo(SAMPLE_PROMPT)}
-                            className="text-[10px] font-bold text-blue-400 hover:text-blue-300 transition-colors cursor-pointer flex items-center gap-1"
+                            onClick={handleFillSample}
+                            className="text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-blue-500/20 bg-blue-500/10 hover:bg-blue-500/20"
                           >
-                            <Lightbulb className="h-3 w-3" />
-                            <span>Insert Sample Text</span>
+                            <Sparkles className="h-3.5 w-3.5" />
+                            <span>Fill Sample Data</span>
                           </button>
                         </div>
-                        <textarea
-                          placeholder="e.g. Hi, I'm Alex. I worked at Netflix for 2 years as a Cloud Developer. I designed microservice logging systems in Go, TypeScript, and AWS, boosting throughput by 40%. Previously, I finished my BS in Computer Science at UCLA..."
-                          value={candidateInfo}
-                          onChange={(e) => setCandidateInfo(e.target.value)}
-                          rows={11}
-                          className="w-full rounded-2xl border border-[#262a3e] bg-[#10121c] px-4 py-3.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 font-sans leading-relaxed resize-none shadow-inner transition-all"
-                          required
-                        />
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Target Job Title</label>
+                            <input
+                              type="text"
+                              placeholder="e.g. Senior Full Stack Engineer"
+                              value={targetRole}
+                              onChange={(e) => setTargetRole(e.target.value)}
+                              className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
+                              required
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Resume Name</label>
+                            <input
+                              type="text"
+                              placeholder="e.g. Alex Rivera - Tech Lead 2026"
+                              value={title}
+                              onChange={(e) => setTitle(e.target.value)}
+                              className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-6 rounded-3xl border border-[#212435] bg-[#12141f] shadow-sm flex flex-col gap-4">
+                        <div className="pb-3 border-b border-[#1f2333]">
+                          <h2 className="text-sm font-bold text-white">Personal & Contact Information</h2>
+                          <p className="text-[11px] text-zinc-400">How recruiters and hiring managers reach you</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                          <div className="flex flex-col gap-1.5 sm:col-span-2">
+                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Full Name</label>
+                            <input
+                              type="text"
+                              placeholder="e.g. Alex Rivera"
+                              value={fullName}
+                              onChange={(e) => setFullName(e.target.value)}
+                              className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
+                              required
+                            />
+                          </div>
+
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Email Address</label>
+                            <input
+                              type="email"
+                              placeholder="e.g. alex.rivera@example.com"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
+                            />
+                          </div>
+
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Phone Number</label>
+                            <input
+                              type="tel"
+                              placeholder="e.g. +1 (555) 382-9102"
+                              value={phone}
+                              onChange={(e) => setPhone(e.target.value)}
+                              className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
+                            />
+                          </div>
+
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Location</label>
+                            <input
+                              type="text"
+                              placeholder="e.g. San Francisco, CA"
+                              value={location}
+                              onChange={(e) => setLocation(e.target.value)}
+                              className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
+                            />
+                          </div>
+
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">LinkedIn or Portfolio URL</label>
+                            <input
+                              type="text"
+                              placeholder="e.g. linkedin.com/in/alexrivera"
+                              value={linkedin}
+                              onChange={(e) => setLinkedin(e.target.value)}
+                              className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-6 rounded-3xl border border-[#212435] bg-[#12141f] shadow-sm flex flex-col gap-4">
+                        <div className="flex items-center justify-between pb-3 border-b border-[#1f2333]">
+                          <div className="flex items-center gap-2.5">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
+                              <Briefcase className="h-4 w-4" />
+                            </div>
+                            <div>
+                              <h2 className="text-sm font-bold text-white">Work Experience</h2>
+                              <p className="text-[11px] text-zinc-400">List your recent positions and key accomplishments</p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handleAddExperience}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#262a3d] bg-[#181b28] hover:bg-[#202436] text-xs font-semibold text-zinc-200 transition-all cursor-pointer"
+                          >
+                            <Plus className="h-3.5 w-3.5" />
+                            <span>Add Position</span>
+                          </button>
+                        </div>
+
+                        <div className="flex flex-col gap-4">
+                          {experiences.map((exp, index) => (
+                            <div key={exp.id} className="p-4 rounded-2xl border border-[#262a3d] bg-[#10121c] flex flex-col gap-3 relative">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-bold text-zinc-300">Position {index + 1}</span>
+                                {experiences.length > 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveExperience(exp.id)}
+                                    className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-red-500/10 transition-all cursor-pointer"
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </button>
+                                )}
+                              </div>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div className="flex flex-col gap-1 sm:col-span-1">
+                                  <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Company Name</label>
+                                  <input
+                                    type="text"
+                                    placeholder="e.g. Netflix"
+                                    value={exp.company}
+                                    onChange={(e) => handleExperienceChange(exp.id, "company", e.target.value)}
+                                    className="w-full rounded-xl border border-[#262a3e] bg-[#141622] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all"
+                                  />
+                                </div>
+                                <div className="flex flex-col gap-1 sm:col-span-1">
+                                  <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Job Title</label>
+                                  <input
+                                    type="text"
+                                    placeholder="e.g. Lead Software Engineer"
+                                    value={exp.role}
+                                    onChange={(e) => handleExperienceChange(exp.id, "role", e.target.value)}
+                                    className="w-full rounded-xl border border-[#262a3e] bg-[#141622] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all"
+                                  />
+                                </div>
+                                <div className="flex flex-col gap-1 sm:col-span-1">
+                                  <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Dates / Duration</label>
+                                  <input
+                                    type="text"
+                                    placeholder="e.g. 2022 – Present"
+                                    value={exp.duration}
+                                    onChange={(e) => handleExperienceChange(exp.id, "duration", e.target.value)}
+                                    className="w-full rounded-xl border border-[#262a3e] bg-[#141622] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="flex flex-col gap-1">
+                                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Key Duties & Quantifiable Impact</label>
+                                <textarea
+                                  rows={2}
+                                  placeholder="e.g. Architected distributed GraphQL microservices serving 12M monthly users. Boosted core API throughput by 40% using Redis caching."
+                                  value={exp.highlights}
+                                  onChange={(e) => handleExperienceChange(exp.id, "highlights", e.target.value)}
+                                  className="w-full rounded-xl border border-[#262a3e] bg-[#141622] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all resize-none leading-relaxed"
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="p-6 rounded-3xl border border-[#212435] bg-[#12141f] shadow-sm flex flex-col gap-4">
+                          <div className="flex items-center gap-2.5 pb-3 border-b border-[#1f2333]">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                              <GraduationCap className="h-4 w-4" />
+                            </div>
+                            <div>
+                              <h2 className="text-sm font-bold text-white">Education</h2>
+                              <p className="text-[11px] text-zinc-400">Your academic background</p>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-1">
+                              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Degree & Major</label>
+                              <input
+                                type="text"
+                                placeholder="e.g. B.S. in Computer Science"
+                                value={education.degree}
+                                onChange={(e) => setEducation({ ...education, degree: e.target.value })}
+                                className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1">
+                              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">College / University</label>
+                              <input
+                                type="text"
+                                placeholder="e.g. UC Berkeley"
+                                value={education.institution}
+                                onChange={(e) => setEducation({ ...education, institution: e.target.value })}
+                                className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1">
+                              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Year / Graduation</label>
+                              <input
+                                type="text"
+                                placeholder="e.g. 2016 – 2020"
+                                value={education.year}
+                                onChange={(e) => setEducation({ ...education, year: e.target.value })}
+                                className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="p-6 rounded-3xl border border-[#212435] bg-[#12141f] shadow-sm flex flex-col gap-4">
+                          <div className="flex items-center gap-2.5 pb-3 border-b border-[#1f2333]">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+                              <Code2 className="h-4 w-4" />
+                            </div>
+                            <div>
+                              <h2 className="text-sm font-bold text-white">Skills & Technologies</h2>
+                              <p className="text-[11px] text-zinc-400">Core competencies & tools</p>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-1.5 flex-1">
+                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Core Skills (Comma-Separated)</label>
+                            <textarea
+                              rows={5}
+                              placeholder="e.g. React, Next.js, TypeScript, Node.js, Python, PostgreSQL, AWS, Docker, Kubernetes, GraphQL"
+                              value={skills}
+                              onChange={(e) => setSkills(e.target.value)}
+                              className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner resize-none leading-relaxed flex-1"
+                            />
+                            <span className="text-[10px] text-zinc-500">Separate each skill with a comma.</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-6 rounded-3xl border border-[#212435] bg-[#12141f] shadow-sm flex flex-col gap-4">
+                        <div className="flex items-center gap-2.5 pb-3 border-b border-[#1f2333]">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+                            <FileText className="h-4 w-4" />
+                          </div>
+                          <div>
+                            <h2 className="text-sm font-bold text-white">Summary, Highlights & Additional Notes</h2>
+                            <p className="text-[11px] text-zinc-400">Extra context, key accomplishments, certifications, or custom career goals</p>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col gap-1.5">
+                          <textarea
+                            rows={4}
+                            placeholder="e.g. Passionate about developer productivity and high-concurrency cloud architecture. Winner of 2023 Innovation Hackathon. Looking for senior or staff-level engineering leadership opportunities."
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-4 py-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-all shadow-inner leading-relaxed resize-none"
+                          />
+                        </div>
                       </div>
 
                       <div className="flex items-center justify-between pt-2">
                         <span className="text-xs text-zinc-400 flex items-center gap-1.5 font-medium">
                           <CheckCircle className="h-4 w-4 text-emerald-400" />
-                          <span>Structured JSON & ATS optimization</span>
+                          <span>Generates ATS-ready resume with zero formatting drift</span>
                         </span>
                         <button
                           type="submit"
-                          className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 text-xs font-bold tracking-wide transition-all shadow-lg shadow-blue-600/25 cursor-pointer"
+                          className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white px-7 py-3 text-xs font-bold tracking-wide transition-all shadow-lg shadow-blue-600/25 cursor-pointer"
                         >
-                          <Wand2 className="h-4 w-4" />
-                          <span>Generate Resume</span>
+                          <span>Create My Resume</span>
+                          <ArrowRight className="h-4 w-4" />
                         </button>
                       </div>
                     </form>
                   </div>
 
                   <div className="flex flex-col gap-4">
-                    <div className="p-5 rounded-2xl border border-[#212435] bg-[#12141f] flex flex-col gap-3.5 shadow-sm">
+                    <div className="p-5 rounded-3xl border border-[#212435] bg-[#12141f] flex flex-col gap-3.5 shadow-sm">
                       <div className="flex items-center gap-2 text-blue-400 font-bold text-xs border-b border-[#1f2333] pb-2.5">
                         <Layers className="h-4 w-4" />
                         <span>Target Template</span>
@@ -706,16 +1044,22 @@ function CreateResumeContent() {
                       </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl border border-[#212435] bg-[#12141f] flex flex-col gap-2 shadow-sm">
+                    <div className="p-5 rounded-3xl border border-[#212435] bg-[#12141f] flex flex-col gap-3 shadow-sm">
                       <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-                        <span>Pro Tips</span>
+                        <Sparkles className="h-3.5 w-3.5 text-blue-400" />
+                        <span>How it works</span>
                       </span>
-                      <ul className="text-[11px] text-zinc-400 flex flex-col gap-1.5 list-disc pl-4 leading-relaxed">
-                        <li>Include metrics and percentages (e.g. <em>boosted performance by 40%</em>).</li>
-                        <li>Highlight key tools, programming languages, and frameworks.</li>
-                        <li>You can edit every section and reorder in the workspace editor afterwards.</li>
-                      </ul>
+                      <div className="text-[11px] text-zinc-400 flex flex-col gap-2.5 leading-relaxed">
+                        <p>
+                          <strong className="text-zinc-200">1. Structured Input:</strong> Providing distinct sections ensures accurate parsing and eliminates messy text confusion.
+                        </p>
+                        <p>
+                          <strong className="text-zinc-200">2. Strong Phrasing:</strong> Your accomplishments are elevated with active verbs and quantifiable results.
+                        </p>
+                        <p>
+                          <strong className="text-zinc-200">3. Full Customization:</strong> Everything opens directly in the Studio Editor where you can fine-tune every line, color, and font.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>

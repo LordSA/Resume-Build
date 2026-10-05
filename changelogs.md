@@ -2,6 +2,20 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
+## [2026-10-05] - Guided Resume Data Collection Builder
+
+### Added & Redesigned
+- **Guided Career Data Collection (`app/create/page.tsx`)**: Replaced the single unstructured paragraph textarea with a human-crafted, SaaS-grade guided form:
+  - **Target Position & Title**: Clear inputs for Target Job Title and Document Name.
+  - **Personal & Contact Details**: Full Name, Email, Phone, Location, and LinkedIn/Portfolio links.
+  - **Work Experience List**: Structured position cards with Company, Role, Duration, and Key Duties/Achievements, equipped with seamless `+ Add Position` and remove controls.
+  - **Education & Skills**: Two-column layout for Degree, University, Graduation Year, and comma-separated Core Skills.
+  - **Bottom Description & Notes**: Dedicated multiline area for additional career highlights, certifications, awards, or custom objectives.
+  - **1-Click Sample Data**: "Fill Sample Data" button allowing instant testing with rich candidate details.
+- **Structured Payload Processing (`app/api/ai/generate/route.ts`)**: Added support for `candidateData` object payload, compiling guided sections into an organized candidate dossier while retaining full backwards compatibility for plain text.
+- **Prompt Optimization (`constants/prompts.ts`)**: Enhanced prompt instructions to faithfully preserve explicit personal details, work history, and skills, while synthesizing additional description notes into impactful bullet points and summaries.
+- **Dashboard Quick Action Sync (`app/dashboard/dashboard-client.tsx`)**: Updated AI Builder card subtitle from "From bio" to "Guided AI".
+
 ## [2026-10-05] - Fix Tailwind CSS v4 Build Failure in globals.css
 
 ### Fixed

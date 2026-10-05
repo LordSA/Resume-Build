@@ -535,7 +535,7 @@ export default function DashboardClient({ initialResumes, userEmail }: Dashboard
                     </div>
                     <div className="flex flex-col text-left min-w-0">
                       <span className="text-[11px] sm:text-xs font-bold text-white truncate">AI Builder</span>
-                      <span className="text-[9px] sm:text-[10px] text-zinc-400 truncate">From bio</span>
+                      <span className="text-[9px] sm:text-[10px] text-zinc-400 truncate">Guided AI</span>
                     </div>
                   </button>
 
