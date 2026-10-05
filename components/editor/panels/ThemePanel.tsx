@@ -64,7 +64,7 @@ export default function ThemePanel() {
       const cleanFontName = customFontNameInput.trim().replace(/\s+/g, "-");
       const filePath = `fonts/${user.id}/${Date.now()}-${cleanFontName}.${fileExt}`;
 
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from("resume-assets")
         .upload(filePath, file, {
           upsert: true,
@@ -96,10 +96,10 @@ export default function ThemePanel() {
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-4">
       <div>
-        <h3 className="text-lg font-bold">Theme & Styling</h3>
-        <p className="text-xs text-zinc-400 mt-0.5">Customize the visual layout and styles of your resume</p>
+        <h3 className="text-sm font-bold text-white">Design & Styling</h3>
+        <p className="text-xs text-zinc-400 mt-0.5">Customize typography, palette colors and density</p>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -112,10 +112,10 @@ export default function ThemePanel() {
                 setTheme({ customFontName: "", customFontUrl: "" });
                 handleFieldChange("fontFamily", font.id);
               }}
-              className={`py-2 px-3 text-xs font-semibold rounded-xl border text-center transition-all ${
+              className={`py-2 px-3 text-xs font-semibold rounded-xl border text-center transition-all cursor-pointer ${
                 themeConfig.fontFamily === font.id && !themeConfig.customFontName
-                  ? "bg-blue-600/15 border-blue-500/40 text-blue-400"
-                  : "bg-zinc-900/40 border-zinc-800 hover:bg-zinc-800 text-zinc-400"
+                  ? "bg-blue-600/20 border-blue-500/40 text-blue-400 shadow-sm"
+                  : "bg-[#161824] border-[#212435] hover:bg-[#1a1d2e] hover:border-[#2d3249] text-zinc-300"
               }`}
             >
               {font.label}
@@ -124,46 +124,46 @@ export default function ThemePanel() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2.5 border-t border-zinc-850 pt-4">
+      <div className="flex flex-col gap-2.5 border-t border-[#212435] pt-3.5">
         <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Custom Font Uploader</label>
         
         {themeConfig.customFontName && themeConfig.customFontUrl ? (
-          <div className="flex items-center justify-between p-3.5 rounded-xl border border-blue-500/20 bg-blue-600/5 text-xs">
+          <div className="flex items-center justify-between p-3 rounded-xl border border-blue-500/30 bg-blue-600/10 text-xs">
             <div className="flex flex-col gap-0.5">
               <span className="font-bold text-blue-400">Active: {themeConfig.customFontName}</span>
-              <span className="text-[10px] text-zinc-500 truncate max-w-[180px]">Url: {themeConfig.customFontUrl}</span>
+              <span className="text-[10px] text-zinc-400 truncate max-w-[180px]">Url: {themeConfig.customFontUrl}</span>
             </div>
             <button
               onClick={() => {
                 setTheme({ customFontName: "", customFontUrl: "" });
                 toast.success("Reverted to standard font preset");
               }}
-              className="px-2.5 py-1 rounded-lg border border-red-950 hover:bg-red-950/20 text-[10px] font-bold text-red-400 transition-all cursor-pointer"
+              className="px-2.5 py-1 rounded-lg border border-red-500/20 hover:bg-red-500/10 text-[10px] font-bold text-red-400 transition-all cursor-pointer"
             >
               Clear
             </button>
           </div>
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             <div className="flex gap-2">
               <input
                 type="text"
                 placeholder="Font Family Name (e.g. MyFont)"
                 value={customFontNameInput}
                 onChange={(e) => setCustomFontNameInput(e.target.value.replace(/[^a-zA-Z0-9\s]/g, ""))}
-                className="flex-1 rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
+                className="flex-1 rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
               />
               <button
                 type="button"
                 onClick={() => fontFileInputRef.current?.click()}
                 disabled={isUploadingFont || !customFontNameInput.trim()}
-                className="px-3.5 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-bold text-zinc-300 hover:text-white hover:border-zinc-700 transition-all cursor-pointer disabled:opacity-40"
+                className="px-3.5 py-2 rounded-xl bg-[#181b28] border border-[#262a3e] text-xs font-semibold text-zinc-300 hover:text-white hover:border-[#353b54] transition-all cursor-pointer disabled:opacity-40"
               >
-                {isUploadingFont ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Upload File"}
+                {isUploadingFont ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Upload"}
               </button>
             </div>
             <p className="text-[10px] text-zinc-500">
-              Requirements: .ttf, .otf, .woff, or .woff2 files (Max 5MB). Enter family name first, then click Upload.
+              Requirements: .ttf, .otf, .woff, or .woff2 files (Max 5MB).
             </p>
             <input
               type="file"
@@ -176,7 +176,7 @@ export default function ThemePanel() {
         )}
       </div>
 
-      <div className="flex flex-col gap-2 border-t border-zinc-850 pt-4">
+      <div className="flex flex-col gap-2 border-t border-[#212435] pt-3.5">
         <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Curated Color Palettes</label>
         <div className="grid grid-cols-2 gap-2">
           {PALETTES.map((palette) => {
@@ -187,10 +187,10 @@ export default function ThemePanel() {
               <button
                 key={palette.id}
                 onClick={() => applyPalette(palette.primary, palette.secondary)}
-                className={`flex items-center gap-2.5 py-2 px-3 text-xs font-semibold rounded-xl border transition-all ${
+                className={`flex items-center gap-2.5 py-2 px-3 text-xs font-semibold rounded-xl border transition-all cursor-pointer ${
                   isActive
-                    ? "bg-blue-600/15 border-blue-500/40 text-blue-400"
-                    : "bg-zinc-900/40 border-zinc-800 hover:bg-zinc-800 text-zinc-400"
+                    ? "bg-blue-600/20 border-blue-500/40 text-blue-400 shadow-sm"
+                    : "bg-[#161824] border-[#212435] hover:bg-[#1a1d2e] hover:border-[#2d3249] text-zinc-300"
                 }`}
               >
                 <div className="flex shrink-0">
@@ -210,7 +210,7 @@ export default function ThemePanel() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 border-t border-zinc-850 pt-4">
+      <div className="grid grid-cols-2 gap-3 border-t border-[#212435] pt-3.5">
         <div className="flex flex-col gap-1.5">
           <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Primary Color</label>
           <div className="flex gap-2">
@@ -218,13 +218,13 @@ export default function ThemePanel() {
               type="color"
               value={themeConfig.primaryColor}
               onChange={(e) => handleFieldChange("primaryColor", e.target.value)}
-              className="h-9 w-9 rounded-xl border border-zinc-800 bg-transparent cursor-pointer overflow-hidden p-0"
+              className="h-8 w-8 rounded-xl border border-[#262a3e] bg-transparent cursor-pointer overflow-hidden p-0 shrink-0"
             />
             <input
               type="text"
               value={themeConfig.primaryColor}
               onChange={(e) => handleFieldChange("primaryColor", e.target.value)}
-              className="flex-1 rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-1 text-xs text-white uppercase focus:outline-none focus:border-blue-500"
+              className="flex-1 rounded-xl border border-[#262a3e] bg-[#10121c] px-3 py-1 text-xs text-white uppercase focus:outline-none focus:border-blue-500 font-mono"
             />
           </div>
         </div>
@@ -236,29 +236,29 @@ export default function ThemePanel() {
               type="color"
               value={themeConfig.secondaryColor}
               onChange={(e) => handleFieldChange("secondaryColor", e.target.value)}
-              className="h-9 w-9 rounded-xl border border-zinc-800 bg-transparent cursor-pointer overflow-hidden p-0"
+              className="h-8 w-8 rounded-xl border border-[#262a3e] bg-transparent cursor-pointer overflow-hidden p-0 shrink-0"
             />
             <input
               type="text"
               value={themeConfig.secondaryColor}
               onChange={(e) => handleFieldChange("secondaryColor", e.target.value)}
-              className="flex-1 rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-1 text-xs text-white uppercase focus:outline-none focus:border-blue-500"
+              className="flex-1 rounded-xl border border-[#262a3e] bg-[#10121c] px-3 py-1 text-xs text-white uppercase focus:outline-none focus:border-blue-500 font-mono"
             />
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 border-t border-zinc-850 pt-4">
+      <div className="flex flex-col gap-2 border-t border-[#212435] pt-3.5">
         <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Spacing / Density</label>
         <div className="grid grid-cols-3 gap-2">
           {["compact", "comfortable", "loose"].map((size) => (
             <button
               key={size}
               onClick={() => handleFieldChange("spacing", size)}
-              className={`py-2 px-1 text-xs font-semibold rounded-xl border text-center capitalize transition-all ${
+              className={`py-2 px-1 text-xs font-semibold rounded-xl border text-center capitalize transition-all cursor-pointer ${
                 themeConfig.spacing === size
-                  ? "bg-blue-600/15 border-blue-500/40 text-blue-400"
-                  : "bg-zinc-900/40 border-zinc-800 hover:bg-zinc-800 text-zinc-400"
+                  ? "bg-blue-600/20 border-blue-500/40 text-blue-400 shadow-sm"
+                  : "bg-[#161824] border-[#212435] hover:bg-[#1a1d2e] hover:border-[#2d3249] text-zinc-300"
               }`}
             >
               {size}
@@ -274,10 +274,10 @@ export default function ThemePanel() {
             <button
               key={size}
               onClick={() => handleFieldChange("fontSize", size)}
-              className={`py-2 px-1 text-xs font-semibold rounded-xl border text-center uppercase transition-all ${
+              className={`py-2 px-1 text-xs font-semibold rounded-xl border text-center uppercase transition-all cursor-pointer ${
                 themeConfig.fontSize === size
-                  ? "bg-blue-600/15 border-blue-500/40 text-blue-400"
-                  : "bg-zinc-900/40 border-zinc-800 hover:bg-zinc-800 text-zinc-400"
+                  ? "bg-blue-600/20 border-blue-500/40 text-blue-400 shadow-sm"
+                  : "bg-[#161824] border-[#212435] hover:bg-[#1a1d2e] hover:border-[#2d3249] text-zinc-300"
               }`}
             >
               {size}
@@ -293,10 +293,10 @@ export default function ThemePanel() {
             <button
               key={radius}
               onClick={() => handleFieldChange("borderRadius", radius)}
-              className={`py-2 px-1 text-xs font-semibold rounded-xl border text-center capitalize transition-all ${
+              className={`py-2 px-1 text-xs font-semibold rounded-xl border text-center capitalize transition-all cursor-pointer ${
                 themeConfig.borderRadius === radius
-                  ? "bg-blue-600/15 border-blue-500/40 text-blue-400"
-                  : "bg-zinc-900/40 border-zinc-800 hover:bg-zinc-800 text-zinc-400"
+                  ? "bg-blue-600/20 border-blue-500/40 text-blue-400 shadow-sm"
+                  : "bg-[#161824] border-[#212435] hover:bg-[#1a1d2e] hover:border-[#2d3249] text-zinc-300"
               }`}
             >
               {radius}

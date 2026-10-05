@@ -5,7 +5,7 @@ import {
   FileEdit, 
   Palette, 
   LayoutGrid, 
-  Sparkles, 
+  Target, 
   Download
 } from "lucide-react";
 
@@ -80,7 +80,7 @@ export default function WpsMobileDock({
         }`}
       >
         <div className={`p-1 rounded-lg ${isAiActive ? "bg-blue-500/15" : "bg-transparent"}`}>
-          <Sparkles className="h-5 w-5" />
+          <Target className="h-5 w-5" />
         </div>
         <span className="text-[10px] tracking-tight">ATS Match</span>
       </button>

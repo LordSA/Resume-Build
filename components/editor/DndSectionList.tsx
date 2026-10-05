@@ -45,10 +45,10 @@ export default function DndSectionList() {
   };
 
   return (
-    <div className="flex flex-col gap-2 mt-4 border border-zinc-850 rounded-2xl bg-zinc-900/10 p-5">
-      <div className="mb-2">
-        <h4 className="text-xs font-bold text-white uppercase tracking-wider">Drag to Reorder Sections</h4>
-        <p className="text-[10px] text-zinc-500 mt-0.5">Hold the handle to drag and drop sections up or down</p>
+    <div className="flex flex-col gap-2 mt-4 border border-[#212435] rounded-2xl bg-[#161824] p-4 shadow-sm">
+      <div className="mb-1">
+        <h4 className="text-xs font-semibold text-white">Reorder Sections</h4>
+        <p className="text-[11px] text-zinc-400 mt-0.5">Drag to rearrange the order in the exported resume</p>
       </div>
 
       <div className="flex flex-col gap-1.5 mt-2">
@@ -63,16 +63,16 @@ export default function DndSectionList() {
               onDragStart={() => handleDragStart(index)}
               onDragOver={(e) => handleDragOver(e, index)}
               onDragEnd={handleDragEnd}
-              className={`flex items-center justify-between p-3 rounded-xl border border-zinc-800 bg-zinc-900/40 text-xs font-semibold text-zinc-300 transition-all cursor-grab active:cursor-grabbing ${
-                draggedIndex === index ? "opacity-30 border-blue-500/35 bg-zinc-850" : "hover:bg-zinc-850/50"
+              className={`flex items-center justify-between p-2.5 rounded-xl border border-[#262a3e] bg-[#10121c] text-xs font-medium text-zinc-300 transition-all cursor-grab active:cursor-grabbing ${
+                draggedIndex === index ? "opacity-30 border-blue-500/40 bg-[#181b28]" : "hover:border-[#333852] hover:bg-[#141624]"
               }`}
             >
-              <div className="flex items-center gap-2.5">
-                <Grab className="h-4 w-4 text-zinc-500 shrink-0" />
+              <div className="flex items-center gap-2">
+                <Grab className="h-3.5 w-3.5 text-zinc-500 shrink-0" />
                 <span>{label}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Eye className="h-3.5 w-3.5 text-zinc-600 shrink-0" />
+                <Eye className="h-3 w-3 text-zinc-500 shrink-0" />
               </div>
             </div>
           );

@@ -3,7 +3,7 @@
 import { useEditorStore } from "@/store/editorStore";
 import { 
   Palette, 
-  Sparkles, 
+  Target, 
   ChevronRight, 
   ChevronLeft
 } from "lucide-react";
@@ -51,7 +51,7 @@ export default function EditorRightPanel() {
                   : "text-zinc-400 hover:text-zinc-200"
               }`}
             >
-              <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+              <Target className="h-3.5 w-3.5 text-amber-400" />
               <span>ATS Match</span>
             </button>
           </div>

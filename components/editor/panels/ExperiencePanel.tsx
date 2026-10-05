@@ -87,7 +87,7 @@ export default function ExperiencePanel() {
 
       const { rewritten } = await response.json();
       handleBulletChange(id, index, rewritten);
-      toast.success("Bullet point optimized!");
+      toast.success("Bullet point enhanced!");
     } catch (err: any) {
       console.error(err);
       toast.error(err.message || "Failed to optimize bullet point");
@@ -230,7 +230,7 @@ export default function ExperiencePanel() {
                                 onClick={() => handleOptimizeBullet(item.id, idx, bullet)}
                                 disabled={isAILoading}
                                 className="p-1.5 bg-blue-600/10 border border-blue-500/25 hover:bg-blue-600/20 text-blue-400 hover:text-blue-300 rounded-lg transition-all disabled:opacity-50 cursor-pointer"
-                                title="AI Optimize"
+                                title="Enhance Phrasing"
                               >
                                 {isBulletLoading ? (
                                   <Loader2 className="h-3.5 w-3.5 animate-spin" />

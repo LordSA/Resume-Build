@@ -73,7 +73,7 @@ resume-build/
 ├── components/             # Global React components
 │   ├── ui/                 # Shadcn raw primitive components
 │   ├── Footer.tsx          # Shared footer component (copyright, links, support)
-│   ├── editor/             # Sidebar edit panels (experience, skills, theme, fonts)
+│   ├── editor/             # Unified midnight SaaS editor panels (personal, experience, education, skills, projects, certificates, achievements, languages, interests, theme, templates, ATS match)
 │   ├── resume/             # Live preview and structural components
 │   └── templates/          # Renderers for Modern, Minimal, Classic, and ATS themes
 ├── lib/                    # Library initialization & configuration

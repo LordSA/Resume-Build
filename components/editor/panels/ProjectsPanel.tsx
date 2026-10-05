@@ -29,28 +29,27 @@ export default function ProjectsPanel() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-bold">Projects</h3>
-          <p className="text-xs text-zinc-400 mt-0.5">Showcase your side projects and core creations</p>
-        </div>
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-between pb-1">
+        <span className="text-[11px] font-semibold text-zinc-400">Featured applications & side projects</span>
         <button
           onClick={handleAdd}
-          className="flex items-center gap-1 text-xs font-semibold bg-blue-600/10 border border-blue-500/30 text-blue-400 hover:bg-blue-600/25 px-3 py-1.5 rounded-xl transition-all"
+          className="flex items-center gap-1 text-[11px] font-bold bg-blue-600/15 border border-blue-500/30 text-blue-400 hover:bg-blue-600/25 px-2.5 py-1 rounded-xl transition-all shadow-sm cursor-pointer"
         >
-          <Plus className="h-3.5 w-3.5" />
+          <Plus className="h-3 w-3" />
           Add Project
         </button>
       </div>
 
-      <div className="flex flex-col gap-3 mt-2">
+      <div className="flex flex-col gap-2.5 mt-1">
         {projects.map((item) => {
           const isExpanded = expandedId === item.id;
           return (
             <div
               key={item.id}
-              className="border border-zinc-850 rounded-2xl bg-zinc-900/10 overflow-hidden transition-all"
+              className={`rounded-2xl border transition-all overflow-hidden shadow-sm ${
+                isExpanded ? "border-[#2d3249] bg-[#161824]" : "border-[#212435] bg-[#12141f]"
+              }`}
             >
               <div
                 role="button"
@@ -62,10 +61,10 @@ export default function ProjectsPanel() {
                     setExpandedId(isExpanded ? null : item.id);
                   }
                 }}
-                className="flex items-center justify-between w-full px-5 py-4 bg-zinc-900/20 hover:bg-zinc-900/30 text-left font-bold text-sm cursor-pointer select-none focus:outline-none focus:bg-zinc-900/30"
+                className="flex items-center justify-between w-full px-4 py-3 bg-[#181b28]/60 hover:bg-[#1f2334] text-left font-bold text-xs cursor-pointer select-none transition-colors"
               >
-                <div className="text-white">{item.title || "Project Title"}</div>
-                <div className="flex items-center gap-3">
+                <div className="text-white truncate max-w-[200px]">{item.title || "Project Title"}</div>
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={(e) => {
@@ -74,37 +73,37 @@ export default function ProjectsPanel() {
                     }}
                     className="p-1 text-zinc-500 hover:text-red-400 transition-all cursor-pointer"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-3.5 w-3.5" />
                   </button>
-                  {isExpanded ? <ChevronUp className="h-4 w-4 text-zinc-400" /> : <ChevronDown className="h-4 w-4 text-zinc-400" />}
+                  {isExpanded ? <ChevronUp className="h-3.5 w-3.5 text-zinc-400" /> : <ChevronDown className="h-3.5 w-3.5 text-zinc-400" />}
                 </div>
               </div>
 
               {isExpanded && (
-                <div className="p-5 border-t border-zinc-850/50 flex flex-col gap-4">
-                  <div className="flex flex-col gap-1.5">
+                <div className="p-4 border-t border-[#23273a] flex flex-col gap-3 bg-[#12141f]">
+                  <div className="flex flex-col gap-1">
                     <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Project Title</label>
                     <input
                       type="text"
                       value={item.title}
                       onChange={(e) => handleUpdate(item.id, "title", e.target.value)}
                       placeholder="E-Commerce Analytics Platform"
-                      className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+                      className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
                     />
                   </div>
 
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Project Link (Optional)</label>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Project URL / Repository (Optional)</label>
                     <input
                       type="text"
                       value={item.link || ""}
                       onChange={(e) => handleUpdate(item.id, "link", e.target.value)}
                       placeholder="https://github.com/myusername/myproject"
-                      className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+                      className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
                     />
                   </div>
 
-                  <div className="flex flex-col gap-1.5">
+                  <div className="flex flex-col gap-1">
                     <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Technologies (Comma-separated)</label>
                     <input
                       type="text"
@@ -117,18 +116,18 @@ export default function ProjectsPanel() {
                         handleUpdate(item.id, "technologies", tags);
                       }}
                       placeholder="React, Next.js, Tailwind CSS, PostgreSQL"
-                      className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+                      className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
                     />
                   </div>
 
-                  <div className="flex flex-col gap-1.5">
+                  <div className="flex flex-col gap-1">
                     <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Project Description</label>
                     <textarea
                       value={item.description}
                       onChange={(e) => handleUpdate(item.id, "description", e.target.value)}
                       placeholder="Architected a responsive dashboard managing live sales metrics. Integrated web sockets for real-time charting..."
-                      rows={4}
-                      className="w-full rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all font-sans leading-relaxed resize-none"
+                      rows={3}
+                      className="w-full rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all font-sans leading-relaxed resize-none shadow-inner"
                     />
                   </div>
                 </div>

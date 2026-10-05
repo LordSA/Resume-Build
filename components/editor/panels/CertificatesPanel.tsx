@@ -29,28 +29,27 @@ export default function CertificatesPanel() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-bold">Certificates</h3>
-          <p className="text-xs text-zinc-400 mt-0.5">List professional certifications and credentials</p>
-        </div>
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-between pb-1">
+        <span className="text-[11px] font-semibold text-zinc-400">Licenses & verified certifications</span>
         <button
           onClick={handleAdd}
-          className="flex items-center gap-1 text-xs font-semibold bg-blue-600/10 border border-blue-500/30 text-blue-400 hover:bg-blue-600/25 px-3 py-1.5 rounded-xl transition-all"
+          className="flex items-center gap-1 text-[11px] font-bold bg-blue-600/15 border border-blue-500/30 text-blue-400 hover:bg-blue-600/25 px-2.5 py-1 rounded-xl transition-all shadow-sm cursor-pointer"
         >
-          <Plus className="h-3.5 w-3.5" />
-          Add Credential
+          <Plus className="h-3 w-3" />
+          Add Certificate
         </button>
       </div>
 
-      <div className="flex flex-col gap-3 mt-2">
+      <div className="flex flex-col gap-2.5 mt-1">
         {certificates.map((item) => {
           const isExpanded = expandedId === item.id;
           return (
             <div
               key={item.id}
-              className="border border-zinc-850 rounded-2xl bg-zinc-900/10 overflow-hidden transition-all"
+              className={`rounded-2xl border transition-all overflow-hidden shadow-sm ${
+                isExpanded ? "border-[#2d3249] bg-[#161824]" : "border-[#212435] bg-[#12141f]"
+              }`}
             >
               <div
                 role="button"
@@ -62,15 +61,15 @@ export default function CertificatesPanel() {
                     setExpandedId(isExpanded ? null : item.id);
                   }
                 }}
-                className="flex items-center justify-between w-full px-5 py-4 bg-zinc-900/20 hover:bg-zinc-900/30 text-left font-bold text-sm cursor-pointer select-none focus:outline-none focus:bg-zinc-900/30"
+                className="flex items-center justify-between w-full px-4 py-3 bg-[#181b28]/60 hover:bg-[#1f2334] text-left font-bold text-xs cursor-pointer select-none transition-colors"
               >
                 <div>
                   <span className="text-white">{item.name || "Certificate"}</span>
                   {item.issuer && (
-                    <span className="text-zinc-400 font-normal"> by {item.issuer}</span>
+                    <span className="text-zinc-400 font-normal"> • {item.issuer}</span>
                   )}
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={(e) => {
@@ -79,55 +78,55 @@ export default function CertificatesPanel() {
                     }}
                     className="p-1 text-zinc-500 hover:text-red-400 transition-all cursor-pointer"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-3.5 w-3.5" />
                   </button>
-                  {isExpanded ? <ChevronUp className="h-4 w-4 text-zinc-400" /> : <ChevronDown className="h-4 w-4 text-zinc-400" />}
+                  {isExpanded ? <ChevronUp className="h-3.5 w-3.5 text-zinc-400" /> : <ChevronDown className="h-3.5 w-3.5 text-zinc-400" />}
                 </div>
               </div>
 
               {isExpanded && (
-                <div className="p-5 border-t border-zinc-850/50 grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5 col-span-2">
+                <div className="p-4 border-t border-[#23273a] grid grid-cols-2 gap-3 bg-[#12141f]">
+                  <div className="flex flex-col gap-1 col-span-2">
                     <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Certificate Name</label>
                     <input
                       type="text"
                       value={item.name}
                       onChange={(e) => handleUpdate(item.id, "name", e.target.value)}
                       placeholder="AWS Certified Solutions Architect"
-                      className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+                      className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
                     />
                   </div>
 
-                  <div className="flex flex-col gap-1.5 col-span-2">
+                  <div className="flex flex-col gap-1 col-span-2">
                     <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Issuer / Organization</label>
                     <input
                       type="text"
                       value={item.issuer}
                       onChange={(e) => handleUpdate(item.id, "issuer", e.target.value)}
                       placeholder="Amazon Web Services"
-                      className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+                      className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
                     />
                   </div>
 
-                  <div className="flex flex-col gap-1.5">
+                  <div className="flex flex-col gap-1">
                     <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Earned Date</label>
                     <input
                       type="text"
                       value={item.date}
                       onChange={(e) => handleUpdate(item.id, "date", e.target.value)}
                       placeholder="Nov 2023"
-                      className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+                      className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
                     />
                   </div>
 
-                  <div className="flex flex-col gap-1.5">
+                  <div className="flex flex-col gap-1">
                     <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Credential URL (Optional)</label>
                     <input
                       type="text"
                       value={item.link || ""}
                       onChange={(e) => handleUpdate(item.id, "link", e.target.value)}
                       placeholder="https://credly.com/certs/..."
-                      className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+                      className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
                     />
                   </div>
                 </div>

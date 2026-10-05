@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useResumeStore } from "@/store/resumeStore";
 import { useEditorStore } from "@/store/editorStore";
 import { toast } from "react-hot-toast";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sliders, Loader2 } from "lucide-react";
 
 export default function SummaryPanel() {
   const { resumeData, updateSummary } = useResumeStore();
@@ -37,10 +37,10 @@ export default function SummaryPanel() {
 
       const { rewritten } = await response.json();
       updateSummary(rewritten);
-      toast.success("Summary optimized successfully!");
+      toast.success("Summary refined successfully!");
     } catch (err: any) {
       console.error("Rewrite error:", err);
-      toast.error(err.message || "Failed to optimize summary");
+      toast.error(err.message || "Failed to refine summary");
     } finally {
       setIsAILoading(false);
     }
@@ -60,11 +60,11 @@ export default function SummaryPanel() {
 
       <div className="border border-[#23273a] bg-[#161824] rounded-2xl p-3.5 flex flex-col gap-3 shadow-sm">
         <div className="flex flex-col gap-1.5">
-          <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">AI Optimization Mode</label>
+          <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Tone & Alignment</label>
           <div className="grid grid-cols-2 gap-1.5">
             {[
               { id: "improve", label: "Professionalize" },
-              { id: "ats", label: "ATS Friendly" },
+              { id: "ats", label: "ATS Calibrated" },
               { id: "shorten", label: "Concise" },
               { id: "expand", label: "Expand Impact" },
             ].map((opt) => (
@@ -93,12 +93,12 @@ export default function SummaryPanel() {
           {isAILoading ? (
             <>
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              <span>Optimizing with AI...</span>
+              <span>Refining text...</span>
             </>
           ) : (
             <>
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Optimize Summary</span>
+              <Sliders className="h-3.5 w-3.5" />
+              <span>Refine Summary</span>
             </>
           )}
         </button>

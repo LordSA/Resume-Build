@@ -29,57 +29,54 @@ export default function SkillsPanel() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-bold">Skills</h3>
-          <p className="text-xs text-zinc-400 mt-0.5">Categorize your expertise (e.g. Languages, Tools)</p>
-        </div>
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-between pb-1">
+        <span className="text-[11px] font-semibold text-zinc-400">Skill groups, tools & proficiencies</span>
         <button
           onClick={handleAdd}
-          className="flex items-center gap-1 text-xs font-semibold bg-blue-600/10 border border-blue-500/30 text-blue-400 hover:bg-blue-600/25 px-3 py-1.5 rounded-xl transition-all"
+          className="flex items-center gap-1 text-[11px] font-bold bg-blue-600/15 border border-blue-500/30 text-blue-400 hover:bg-blue-600/25 px-2.5 py-1 rounded-xl transition-all shadow-sm cursor-pointer"
         >
-          <Plus className="h-3.5 w-3.5" />
-          Add Category
+          <Plus className="h-3 w-3" />
+          Add Group
         </button>
       </div>
 
-      <div className="flex flex-col gap-4 mt-2">
+      <div className="flex flex-col gap-2.5 mt-1">
         {skills.map((skillGroup, index) => (
           <div
             key={index}
-            className="border border-zinc-850 rounded-2xl bg-zinc-900/10 p-5 flex flex-col gap-3 relative"
+            className="rounded-2xl border border-[#212435] bg-[#161824] p-3.5 flex flex-col gap-3 shadow-sm"
           >
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Group {index + 1}</span>
+            <div className="flex items-center justify-between border-b border-[#212435] pb-2">
+              <span className="text-xs font-semibold text-zinc-300">Group {index + 1}</span>
               <button
                 type="button"
                 onClick={() => deleteSkillCategory(index)}
-                className="p-1.5 text-zinc-500 hover:text-red-400 transition-all rounded-lg hover:bg-zinc-900/50"
+                className="p-1 text-zinc-500 hover:text-red-400 transition-all cursor-pointer"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-3.5 w-3.5" />
               </button>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Category Title</label>
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Category Name</label>
               <input
                 type="text"
                 value={skillGroup.category}
                 onChange={(e) => handleCategoryNameChange(index, e.target.value)}
                 placeholder="e.g. Frontend Frameworks"
-                className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+                className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
               />
             </div>
 
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-1">
               <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Skills (Comma-separated)</label>
               <input
                 type="text"
                 value={skillGroup.items.join(", ")}
                 onChange={(e) => handleItemsChange(index, e.target.value)}
-                placeholder="e.g. React, Next.js, Vue, Angular"
-                className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+                placeholder="e.g. React, Next.js, TypeScript, Tailwind CSS"
+                className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
               />
             </div>
           </div>

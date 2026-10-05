@@ -18,20 +18,19 @@ export default function InterestsPanel() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <h3 className="text-lg font-bold">Interests</h3>
-        <p className="text-xs text-zinc-400 mt-0.5">List personal interests, hobbies, or pursuits</p>
+    <div className="flex flex-col gap-3">
+      <div className="pb-1">
+        <span className="text-[11px] font-semibold text-zinc-400">Personal interests, hobbies & pursuits</span>
       </div>
 
-      <div className="flex flex-col gap-1.5 mt-2">
+      <div className="flex flex-col gap-1.5">
         <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Interests (Comma-separated)</label>
         <input
           type="text"
           value={interests.join(", ")}
           onChange={handleChange}
-          placeholder="e.g. Open Source, Hiking, Chess, Photography"
-          className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all"
+          placeholder="e.g. Open Source, Cloud Architecture, Cycling, Chess, Photography"
+          className="rounded-xl border border-[#262a3e] bg-[#10121c] px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all shadow-inner"
         />
       </div>
     </div>

@@ -15,7 +15,7 @@ import {
   Heart,
   Palette,
   LayoutGrid,
-  Sparkles,
+  Target,
   X
 } from "lucide-react";
 
@@ -46,7 +46,7 @@ const SECTIONS = [
   { id: "interests", icon: Heart, label: "Interests" },
   { id: "theme", icon: Palette, label: "Theme" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
-  { id: "ai", icon: Sparkles, label: "ATS Match" },
+  { id: "ai", icon: Target, label: "ATS Match" },
 ];
 
 interface WpsEditDrawerProps {
