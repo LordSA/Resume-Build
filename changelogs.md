@@ -2,6 +2,11 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
+## [2026-10-05] - Fix Tailwind CSS v4 Build Failure in globals.css
+
+### Fixed
+- **Invalid Tailwind Import (`app/globals.css`)**: Removed invalid `@import "shadcn/tailwind.css";` which caused PostCSS/Webpack module resolution failure (`Can't resolve 'shadcn/tailwind.css'`) and 500 runtime errors on all routes. Verified complete production build (`next build --webpack`) with 0 errors across all 32 routes.
+
 ## [2026-08-29] - Dashboard Mobile Sidebar Drawer & Touch-Responsive Layout
 
 ### Added & Fixed

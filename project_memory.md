@@ -11,7 +11,7 @@ The Resume Solutions builder is a high-performance, premium web application desi
 
 ## 2. Core Architecture & Tech Stack
 The application is built using a modern, scalable web stack:
-- **Frontend**: Next.js 16 (App Router) + React 19 + TypeScript + Tailwind CSS v4 + Shadcn UI + Framer Motion.
+- **Frontend**: Next.js 16 (App Router) + React 19 + TypeScript + Tailwind CSS v4 (imported via `@import "tailwindcss"` and `@import "tw-animate-css"` in `app/globals.css`) + Shadcn UI + Framer Motion.
 - **State Management**: Zustand (stores global resume state, theme, editor UI state, and user auth state).
 - **Forms**: React Hook Form + Zod (for type-safe schema validation).
 - **Backend & Auth**: Supabase (PostgreSQL, passwordless Email OTP verification for login, magic link signup flow, Google OAuth, and Supabase Storage for file assets).
