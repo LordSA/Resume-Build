@@ -12,12 +12,7 @@ export default function ResumePreview() {
   const { themeConfig } = useThemeStore();
   const { previewZoom, setPreviewZoom } = useEditorStore();
   const [totalPages, setTotalPages] = useState(1);
-  const [containerWidth, setContainerWidth] = useState<number>(() => {
-    if (typeof window !== "undefined") {
-      return window.innerWidth;
-    }
-    return 794;
-  });
+  const [containerWidth, setContainerWidth] = useState<number>(794);
   const contentRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 

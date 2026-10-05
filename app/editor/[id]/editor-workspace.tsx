@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useResumeStore } from "@/store/resumeStore";
 import { useThemeStore, ThemeConfig } from "@/store/themeStore";
@@ -38,6 +38,24 @@ export default function EditorWorkspace({
   initialResumeData,
   initialThemeConfig,
 }: EditorWorkspaceProps) {
+  const isInitialized = useRef(false);
+  if (!isInitialized.current || useResumeStore.getState().resumeId !== resumeId) {
+    useResumeStore.setState({
+      resumeId,
+      title: initialTitle,
+      template: initialTemplate,
+      resumeData: initialResumeData as ResumeData,
+      history: [JSON.parse(JSON.stringify(initialResumeData))],
+      historyIndex: 0,
+    });
+    if (initialThemeConfig) {
+      useThemeStore.setState({
+        themeConfig: initialThemeConfig as ThemeConfig,
+      });
+    }
+    isInitialized.current = true;
+  }
+
   const {
     title,
     isSaving,
@@ -100,8 +118,9 @@ export default function EditorWorkspace({
             <span className="text-xs font-semibold text-zinc-500 hidden md:inline">Dashboard &gt;</span>
             <input
               type="text"
-              value={title}
+              value={title || initialTitle}
               onChange={(e) => setTitle(e.target.value)}
+              suppressHydrationWarning
               className="bg-transparent border-none focus:outline-none focus:ring-0 text-sm sm:text-base font-bold text-white max-w-[130px] xs:max-w-[180px] sm:max-w-[260px] truncate hover:bg-[#181b28]/60 px-1.5 py-0.5 rounded-lg transition-colors"
             />
 
@@ -126,6 +145,7 @@ export default function EditorWorkspace({
             <button
               onClick={undo}
               disabled={historyIndex <= 0}
+              suppressHydrationWarning
               className="p-1.5 sm:p-2 text-zinc-400 hover:text-white hover:bg-[#222638] rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-all cursor-pointer"
               title="Undo"
             >
@@ -134,6 +154,7 @@ export default function EditorWorkspace({
             <button
               onClick={redo}
               disabled={historyIndex >= history.length - 1}
+              suppressHydrationWarning
               className="p-1.5 sm:p-2 text-zinc-400 hover:text-white hover:bg-[#222638] rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-all cursor-pointer"
               title="Redo"
             >
@@ -143,6 +164,7 @@ export default function EditorWorkspace({
 
           <button
             onClick={handleDownloadPDF}
+            suppressHydrationWarning
             className="flex items-center gap-1.5 sm:gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] text-white px-3.5 sm:px-4 py-2 sm:py-2 text-xs font-bold tracking-wide transition-all cursor-pointer shadow-md"
           >
             <Download className="h-3.5 w-3.5" />

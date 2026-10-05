@@ -28,9 +28,10 @@ export default function WpsMobileDock({
   const isAiActive = activeDrawerSection === "ai";
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#12141f]/95 backdrop-blur-xl border-t border-[#1f2333] px-3 py-2 flex items-center justify-around md:hidden shadow-2xl safe-area-pb">
+    <div suppressHydrationWarning className="fixed bottom-0 left-0 right-0 z-40 bg-[#12141f]/95 backdrop-blur-xl border-t border-[#1f2333] px-3 py-2 flex items-center justify-around md:hidden shadow-2xl safe-area-pb">
       <button
         onClick={() => onOpenDrawer(isContentActive ? undefined : (["theme", "templates", "ai"].includes(activeSection) ? "personal" : activeSection))}
+        suppressHydrationWarning
         className={`flex flex-col items-center justify-center gap-1 py-1 px-2.5 rounded-xl transition-all cursor-pointer ${
           isContentActive 
             ? "text-blue-400 font-bold" 
@@ -45,6 +46,7 @@ export default function WpsMobileDock({
 
       <button
         onClick={() => onOpenDrawer("theme")}
+        suppressHydrationWarning
         className={`flex flex-col items-center justify-center gap-1 py-1 px-2.5 rounded-xl transition-all cursor-pointer ${
           isThemeActive 
             ? "text-blue-400 font-bold" 
@@ -59,6 +61,7 @@ export default function WpsMobileDock({
 
       <button
         onClick={() => onOpenDrawer("templates")}
+        suppressHydrationWarning
         className={`flex flex-col items-center justify-center gap-1 py-1 px-2.5 rounded-xl transition-all cursor-pointer ${
           isTemplatesActive 
             ? "text-blue-400 font-bold" 
@@ -73,6 +76,7 @@ export default function WpsMobileDock({
 
       <button
         onClick={() => onOpenDrawer("ai")}
+        suppressHydrationWarning
         className={`flex flex-col items-center justify-center gap-1 py-1 px-2.5 rounded-xl transition-all cursor-pointer ${
           isAiActive 
             ? "text-blue-400 font-bold" 
@@ -87,6 +91,7 @@ export default function WpsMobileDock({
 
       <button
         onClick={onDownload}
+        suppressHydrationWarning
         className="flex flex-col items-center justify-center gap-1 py-1 px-2.5 rounded-xl text-zinc-400 hover:text-blue-400 transition-all cursor-pointer"
       >
         <div className="p-1 rounded-lg">

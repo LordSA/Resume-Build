@@ -2,6 +2,16 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
+## [2026-10-05] - Fix SSR Hydration Mismatch & Extension Autofill Warnings
+
+### Fixed
+- **SSR / Hydration Tree Mismatch (`components/resume/ResumePreview.tsx`, `app/editor/[id]/editor-workspace.tsx`)**:
+  - Eliminated the client/server branching `if (typeof window !== 'undefined')` within `useState` initializers, ensuring identical initial state (`containerWidth = 794`) on both SSR and client initial hydration. Responsive sizing is updated via client `ResizeObserver` post-hydration.
+  - Initialized Zustand resume and theme store data synchronously during the first render pass in `EditorWorkspace`, preventing server rendered values from falling back to default placeholder `"Untitled Resume"` while the client rendered real candidate titles.
+  - Added `suppressHydrationWarning` to the editor title `<input>`, undo/redo controls, and `WpsMobileDock` action buttons to prevent React 19 hydration mismatch warnings when browser extensions (Bitwarden, LastPass, 1Password, Chrome Autofill) inject `fdprocessedid` attributes into form elements.
+- **Strict Clean Code**: Enforced 100% comment-free production code across all modified files.
+
+
 ## [2026-10-05] - Canvas Centering, Responsive Mobile Zoom & Dock Clearance
 
 ### Fixed & Optimized
