@@ -2,6 +2,24 @@
 
 All notable changes to the Resume Solutions project will be documented in this file.
 
+## [2026-10-05] - Canvas Centering, Responsive Mobile Zoom & Dock Clearance
+
+### Fixed & Optimized
+- **Resume Preview Responsive Zoom (`components/resume/ResumePreview.tsx`)**:
+  - Replaced hardcoded 100% scale (794px) with dynamic `baseScale` calculation responding to `wrapperRef` client width:
+    - Mobile viewports (`< 768px`) automatically calculate `baseScale = Math.min(1.0, Math.max(0.3, (availableWidth - padding) / 794))`.
+    - In 100% mode (`previewZoom = 1.0`), the canvas now fits the mobile screen width with clean margins rather than overflowing past screen bounds.
+    - Added responsive dynamic observer updating `containerWidth` on screen rotation or window resize.
+    - Updated zoom controls: `[ - ]` and `[ + ]` step by 10% (50% to 200%), and clicking the percentage badge or reset button resets directly to 100% responsive fit.
+- **Canvas Symmetrical Centering (`components/resume/ResumePreview.tsx`)**:
+  - Replaced `top-0 left-0` and `transformOrigin: "top left"` with `top-0 left-1/2` and `transform: translateX(-50%) scale(effectiveScale)` paired with `origin-top`.
+  - Scaled wrapper uses `min-h-full w-fit min-w-full flex items-center justify-center` ensuring document is symmetrically centered both horizontally and vertically without left-clipping on zoom.
+- **Mobile Dock Clearance in Default Mode (`app/editor/[id]/editor-workspace.tsx`)**:
+  - Added `pb-[calc(64px+env(safe-area-inset-bottom,0px))] md:pb-0` to the main workspace container (`motion.div`).
+  - Ensures the preview canvas and scrolling area terminate cleanly above the fixed bottom `WpsMobileDock`, preventing any canvas obstruction in default mode.
+- **Zero Comments Maintained**: Verified strictly zero comments across all modified source files.
+
+
 ## [2026-10-05] - Fix Editor Sidebar Scrolling & Overflow Constraints
 
 ### Fixed

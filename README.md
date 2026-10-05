@@ -19,7 +19,7 @@ Resume Solutions is a high-fidelity, state-driven web application built with **N
 ### Main Capabilities
 1. **Passwordless OTP Authentication & Legal Consent**: Enter your email, accept the Terms & Conditions and Privacy Policy, receive a 6-digit OTP confirmation token, and log in directly. Supported by Google OAuth sign-in.
 2. **Guided Resume Creator**: Guided, human-crafted section inputs (Target Role, Contact, Work History, Education, Skills, and a Bottom Description area) that automatically formats career details into clean, ATS-compliant JSON with zero formatting drift.
-3. **WPS Office Mobile UI System**: On mobile devices, enjoy a document-first view with an auto-scaled A4 canvas, a floating bottom action dock, and an expandable bottom drawer with section ribbon navigation.
+3. **WPS Office Mobile UI System**: On mobile devices, enjoy a document-first view with an auto-scaled, symmetrically centered A4 canvas that adjusts responsively to screen width in 100% mode, a floating bottom action dock with safe clearance, and an expandable bottom drawer with section ribbon navigation.
 4. **ATS Compatibility Analyzer**: Paste your target job listing requirements to calculate keyword match scores, flag missing terms, and generate list optimizations.
 5. **Local-First Autosave**: Edits automatically sync back to Supabase using a 2-second debounced buffer to prevent typing delays.
 6. **Print-Perfect PDF Outputs**: Uses high-fidelity PDF generation with `window.print()` and custom vector formatting.

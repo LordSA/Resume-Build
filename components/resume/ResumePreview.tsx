@@ -1,7 +1,7 @@
 "use client";
 
 import { useResumeStore } from "@/store/resumeStore";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { useThemeStore } from "@/store/themeStore";
 import { useEditorStore } from "@/store/editorStore";
 import TemplateRenderer from "./TemplateRenderer";
@@ -12,7 +12,12 @@ export default function ResumePreview() {
   const { themeConfig } = useThemeStore();
   const { previewZoom, setPreviewZoom } = useEditorStore();
   const [totalPages, setTotalPages] = useState(1);
-  const [containerWidth, setContainerWidth] = useState(0);
+  const [containerWidth, setContainerWidth] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth;
+    }
+    return 794;
+  });
   const contentRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -30,37 +35,14 @@ export default function ResumePreview() {
     return () => observer.disconnect();
   }, [resumeData]);
 
-  const getOptimalScale = useCallback((width: number) => {
-    if (width <= 0) return 0.45;
-    if (width < 768) {
-      const padding = width < 420 ? 16 : 32;
-      const availableWidth = width - padding;
-      const targetScale = availableWidth / 794;
-      return Math.max(0.35, Math.min(0.85, Number(targetScale.toFixed(2))));
-    }
-    return 1.0;
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const initialWidth = window.innerWidth;
-      setContainerWidth(initialWidth);
-      if (initialWidth < 768) {
-        setPreviewZoom(getOptimalScale(initialWidth));
-      }
-    }
-  }, [getOptimalScale, setPreviewZoom]);
-
   useEffect(() => {
     if (!wrapperRef.current) return;
 
     const handleResize = () => {
       if (wrapperRef.current) {
         const w = wrapperRef.current.clientWidth;
-        setContainerWidth(w);
-        if (w < 768 && w > 0) {
-          const optimalScale = getOptimalScale(w);
-          setPreviewZoom(optimalScale);
+        if (w > 0) {
+          setContainerWidth(w);
         }
       }
     };
@@ -69,7 +51,26 @@ export default function ResumePreview() {
     const observer = new ResizeObserver(handleResize);
     observer.observe(wrapperRef.current);
     return () => observer.disconnect();
-  }, [getOptimalScale, setPreviewZoom]);
+  }, []);
+
+  const baseScale = useMemo(() => {
+    if (containerWidth <= 0) return 0.45;
+    if (containerWidth < 768) {
+      const padding = containerWidth < 400 ? 20 : 32;
+      const availableWidth = Math.max(containerWidth - padding, 260);
+      return Math.min(1.0, Math.max(0.3, Number((availableWidth / 794).toFixed(3))));
+    }
+    const padding = 48;
+    const availableWidth = Math.max(containerWidth - padding, 320);
+    if (availableWidth < 794) {
+      return Math.min(1.0, Math.max(0.4, Number((availableWidth / 794).toFixed(3))));
+    }
+    return 1.0;
+  }, [containerWidth]);
+
+  const effectiveScale = Number((baseScale * previewZoom).toFixed(3));
+  const scaledWidth = Math.round(794 * effectiveScale);
+  const scaledHeight = Math.round(totalPages * 1123 * effectiveScale);
 
   if (!resumeData) {
     return (
@@ -79,18 +80,9 @@ export default function ResumePreview() {
     );
   }
 
-  const handleZoomIn = () => setPreviewZoom(Number(Math.min(previewZoom + 0.05, 1.4).toFixed(2)));
-  const handleZoomOut = () => setPreviewZoom(Number(Math.max(previewZoom - 0.05, 0.3).toFixed(2)));
-  const handleZoomReset = () => {
-    if (containerWidth > 0 && containerWidth < 768) {
-      setPreviewZoom(getOptimalScale(containerWidth));
-    } else {
-      setPreviewZoom(1.0);
-    }
-  };
-
-  const scaledWidth = Math.round(794 * previewZoom);
-  const scaledHeight = Math.round(totalPages * 1123 * previewZoom);
+  const handleZoomIn = () => setPreviewZoom(Number(Math.min(previewZoom + 0.1, 2.0).toFixed(2)));
+  const handleZoomOut = () => setPreviewZoom(Number(Math.max(previewZoom - 0.1, 0.5).toFixed(2)));
+  const handleZoomReset = () => setPreviewZoom(1.0);
 
   return (
     <div className="flex-1 flex flex-col min-w-0 bg-[#0d0f17] overflow-hidden relative print:p-0 print:bg-white print:overflow-visible">
@@ -110,9 +102,13 @@ export default function ResumePreview() {
           >
             <ZoomOut className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
           </button>
-          <span className="text-[9px] sm:text-[10px] font-bold text-zinc-300 px-1 w-9 sm:w-11 text-center select-none font-mono">
+          <button
+            onClick={handleZoomReset}
+            className="text-[9px] sm:text-[10px] font-bold text-zinc-300 hover:text-white px-1 sm:px-1.5 py-0.5 rounded hover:bg-[#222638] transition-all w-9 sm:w-12 text-center select-none font-mono cursor-pointer"
+            title="Reset to 100% (Fit to Screen)"
+          >
             {Math.round(previewZoom * 100)}%
-          </span>
+          </button>
           <button
             onClick={handleZoomIn}
             className="p-1 sm:p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-[#222638] transition-all cursor-pointer"
@@ -133,43 +129,44 @@ export default function ResumePreview() {
 
       <div 
         ref={wrapperRef}
-        className="flex-1 overflow-x-hidden overflow-y-auto p-2 sm:p-8 pb-28 md:pb-8 flex justify-center items-start bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#131624] via-[#0d0f17] to-[#0a0b12] scrollbar-thin print:p-0 print:bg-white print:overflow-visible"
+        data-lenis-prevent
+        className="flex-1 overflow-auto p-3 sm:p-8 pb-6 sm:pb-8 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#131624] via-[#0d0f17] to-[#0a0b12] overscroll-contain scrollbar-thin print:p-0 print:bg-white print:overflow-visible"
       >
-        <div
-          className="relative transition-all duration-75 print:w-auto print:h-auto shrink-0 flex justify-center my-auto sm:my-0"
-          style={{
-            width: `${scaledWidth}px`,
-            height: `${scaledHeight}px`,
-            maxWidth: "100%",
-          }}
-        >
+        <div className="min-h-full w-fit min-w-full flex items-center justify-center py-2 sm:py-6">
           <div
-            className="resume-print-container shadow-[0_20px_50px_rgba(0,0,0,0.7)] transition-transform duration-75 print:shadow-none print:transform-none absolute top-0 left-0 rounded-sm"
+            className="relative transition-all duration-150 print:w-auto print:h-auto shrink-0"
             style={{
-              transform: `scale(${previewZoom})`,
-              transformOrigin: "top left",
-              width: "794px",
+              width: `${scaledWidth}px`,
+              height: `${scaledHeight}px`,
             }}
           >
-            <div id="resume-print-area" ref={contentRef} className="w-full h-full bg-white text-zinc-900 rounded-sm" style={{ minHeight: `${totalPages * 1123}px` }}>
-              <div className="absolute inset-0 pointer-events-none print:hidden z-50">
-                {Array.from({ length: totalPages - 1 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute w-full border-b-2 border-dashed border-blue-500/60 flex items-center justify-center"
-                    style={{ top: `${(i + 1) * 1123}px` }}
-                  >
-                    <span className="bg-blue-600 text-white text-[10px] px-3 py-1 rounded-full font-bold -translate-y-1/2 shadow-lg uppercase tracking-widest">
-                      Page {i + 2}
-                    </span>
-                  </div>
-                ))}
+            <div
+              className="resume-print-container shadow-[0_20px_50px_rgba(0,0,0,0.7)] transition-transform duration-150 print:shadow-none print:transform-none absolute top-0 left-1/2 rounded-sm origin-top"
+              style={{
+                transform: `translateX(-50%) scale(${effectiveScale})`,
+                width: "794px",
+              }}
+            >
+              <div id="resume-print-area" ref={contentRef} className="w-full h-full bg-white text-zinc-900 rounded-sm" style={{ minHeight: `${totalPages * 1123}px` }}>
+                <div className="absolute inset-0 pointer-events-none print:hidden z-50">
+                  {Array.from({ length: totalPages - 1 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute w-full border-b-2 border-dashed border-blue-500/60 flex items-center justify-center"
+                      style={{ top: `${(i + 1) * 1123}px` }}
+                    >
+                      <span className="bg-blue-600 text-white text-[10px] px-3 py-1 rounded-full font-bold -translate-y-1/2 shadow-lg uppercase tracking-widest">
+                        Page {i + 2}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <TemplateRenderer
+                  data={resumeData}
+                  template={template}
+                  theme={themeConfig}
+                />
               </div>
-              <TemplateRenderer
-                data={resumeData}
-                template={template}
-                theme={themeConfig}
-              />
             </div>
           </div>
         </div>

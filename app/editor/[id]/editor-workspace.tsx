@@ -155,7 +155,7 @@ export default function EditorWorkspace({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="flex flex-1 min-h-0 h-full overflow-hidden relative"
+        className="flex flex-1 min-h-0 h-full overflow-hidden relative pb-[calc(64px+env(safe-area-inset-bottom,0px))] md:pb-0"
       >
         <EditorSidebar />
         <ResumePreview />
